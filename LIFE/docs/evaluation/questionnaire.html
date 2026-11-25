@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Project L.I.F.E. - System Evaluation Questionnaire (ISO/IEC 25010)</title>
+<style>
+  @page { size: A4; margin: 14mm 14mm 14mm 14mm; }
+  html { font-family: Arial, Helvetica, sans-serif; font-size: 10.5pt; color: #0f2240; }
+  body { margin: 0; line-height: 1.35; }
+  h1 { font-size: 16pt; color: #0a2e56; margin: 0; }
+  .head { display: grid; grid-template-columns: 22mm 1fr; gap: 5mm; align-items: center; border-bottom: 3px solid #e3b657; padding-bottom: 3mm; margin-bottom: 4mm; }
+  .head img { width: 22mm; height: 22mm; }
+  .sub { color: #5b6880; font-size: 9.5pt; margin-top: 1mm; }
+  .draft { display: inline-block; background: #fdf0f3; color: #a81638; border: 1px solid #a81638; border-radius: 4px; padding: 0.5mm 2mm; font-size: 8.5pt; font-weight: 700; margin-left: 2mm; vertical-align: middle; }
+  .info { display: grid; grid-template-columns: 0.8fr 1.4fr 0.8fr; gap: 3mm 6mm; margin-bottom: 3mm; font-size: 10pt; }
+  .info span { display: block; border-bottom: 1px solid #8a96aa; height: 6mm; }
+  .box { border: 1px solid #dde2ea; background: #f5f6fa; border-radius: 5px; padding: 2.5mm 3.5mm; margin-bottom: 3mm; font-size: 9.5pt; }
+  .scale { display: grid; grid-template-columns: repeat(5, 1fr); gap: 2mm; text-align: center; font-size: 8.5pt; margin-top: 1.5mm; }
+  .scale div { border: 1px solid #dde2ea; background: #fff; border-radius: 4px; padding: 1mm; }
+  .scale b { display: block; font-size: 11pt; color: #0a2e56; }
+  table { width: 100%; border-collapse: collapse; margin-bottom: 2.5mm; break-inside: avoid; }
+  th { background: #0a2e56; color: #fff; padding: 1.6mm 2mm; font-size: 9.5pt; text-align: center; }
+  th.char { text-align: left; }
+  td { border-bottom: 1px solid #dde2ea; padding: 1.7mm 2mm; vertical-align: middle; font-size: 9.8pt; }
+  td.code { width: 9mm; font-weight: 700; color: #8a6420; }
+  td.c { width: 9mm; text-align: center; }
+  td.c::before { content: ""; display: inline-block; width: 3.6mm; height: 3.6mm; border: 1.2px solid #0a2e56; border-radius: 50%; }
+  .comments span { display: block; border-bottom: 1px solid #8a96aa; height: 7mm; }
+  .foot { font-size: 8pt; color: #5b6880; margin-top: 2mm; }
+</style>
+</head>
+<body>
+
+<div class="head">
+  <img src="../../dashboard/public/brand/logo-256.png" alt="Project L.I.F.E. emblem">
+  <div>
+    <h1>System Evaluation Questionnaire <span class="draft">DRAFT FOR EXPERT VALIDATION</span></h1>
+    <div class="sub">Project L.I.F.E. (Localized Intelligent First-aid Evaluator) &middot; based on the ISO/IEC 25010 software product quality model</div>
+  </div>
+</div>
+
+<div class="info">
+  <div>Respondent no.<span></span></div>
+  <div>Group (tick one): &#9744; Trainee &nbsp; &#9744; Trainer<span style="border:none"></span></div>
+  <div>Date<span></span></div>
+</div>
+
+<div class="box">
+  <strong>Instructions.</strong> After using L.I.F.E., read each statement and shade <strong>one</strong> circle that best matches your opinion.
+  There are no right or wrong answers. Your name is not required, and your answers are used only for this study.
+  <div class="scale">
+    <div><b>5</b>Strongly Agree</div><div><b>4</b>Agree</div><div><b>3</b>Neutral</div><div><b>2</b>Disagree</div><div><b>1</b>Strongly Disagree</div>
+  </div>
+</div>
+
+<table>
+  <tr><th class="char" colspan="2">A. Functional suitability</th><th>5</th><th>4</th><th>3</th><th>2</th><th>1</th></tr>
+  <tr><td class="code">FS1</td><td>The system correctly shows whether my elbows are locked (arms straight) during compressions.</td><td class="c"></td><td class="c"></td><td class="c"></td><td class="c"></td><td class="c"></td></tr>
+  <tr><td class="code">FS2</td><td>The system correctly shows my compression rate and tells me when to push faster or slow down.</td><td class="c"></td><td class="c"></td><td class="c"></td><td class="c"></td><td class="c"></td></tr>
+  <tr><td class="code">FS3</td><td>The step-by-step guide follows the correct adult CPR sequence (scene, response, breathing, call 911, compressions, breaths, AED).</td><td class="c"></td><td class="c"></td><td class="c"></td><td class="c"></td><td class="c"></td></tr>
+  <tr><td class="code">FS4</td><td>The session results, reports and certificate contain the information I need.</td><td class="c"></td><td class="c"></td><td class="c"></td><td class="c"></td><td class="c"></td></tr>
+</table>
+
+<table>
+  <tr><th class="char" colspan="2">B. Performance efficiency</th><th>5</th><th>4</th><th>3</th><th>2</th><th>1</th></tr>
+  <tr><td class="code">PE1</td><td>The feedback on the screen appears without noticeable delay.</td><td class="c"></td><td class="c"></td><td class="c"></td><td class="c"></td><td class="c"></td></tr>
+  <tr><td class="code">PE2</td><td>The camera view and body tracking run smoothly on the computer used.</td><td class="c"></td><td class="c"></td><td class="c"></td><td class="c"></td><td class="c"></td></tr>
+  <tr><td class="code">PE3</td><td>The system starts and is ready to use within an acceptable time.</td><td class="c"></td><td class="c"></td><td class="c"></td><td class="c"></td><td class="c"></td></tr>
+  <tr><td class="code">PE4</td><td>Saving a session and opening results and reports is fast.</td><td class="c"></td><td class="c"></td><td class="c"></td><td class="c"></td><td class="c"></td></tr>
+</table>
+
+<table>
+  <tr><th class="char" colspan="2">C. Usability</th><th>5</th><th>4</th><th>3</th><th>2</th><th>1</th></tr>
+  <tr><td class="code">US1</td><td>The system is easy to learn to use.</td><td class="c"></td><td class="c"></td><td class="c"></td><td class="c"></td><td class="c"></td></tr>
+  <tr><td class="code">US2</td><td>The on-screen messages and colors are easy to understand while doing compressions.</td><td class="c"></td><td class="c"></td><td class="c"></td><td class="c"></td><td class="c"></td></tr>
+  <tr><td class="code">US3</td><td>The buttons, menus and pages are clearly labeled and easy to find.</td><td class="c"></td><td class="c"></td><td class="c"></td><td class="c"></td><td class="c"></td></tr>
+  <tr><td class="code">US4</td><td>The feedback helped me improve my CPR technique.</td><td class="c"></td><td class="c"></td><td class="c"></td><td class="c"></td><td class="c"></td></tr>
+</table>
+
+<table>
+  <tr><th class="char" colspan="2">D. Reliability</th><th>5</th><th>4</th><th>3</th><th>2</th><th>1</th></tr>
+  <tr><td class="code">RE1</td><td>The system worked without crashing or freezing during my sessions.</td><td class="c"></td><td class="c"></td><td class="c"></td><td class="c"></td><td class="c"></td></tr>
+  <tr><td class="code">RE2</td><td>My session results were saved correctly.</td><td class="c"></td><td class="c"></td><td class="c"></td><td class="c"></td><td class="c"></td></tr>
+  <tr><td class="code">RE3</td><td>The system kept working when the trainee briefly moved out of the camera view.</td><td class="c"></td><td class="c"></td><td class="c"></td><td class="c"></td><td class="c"></td></tr>
+  <tr><td class="code">RE4</td><td>The system gives consistent results when the same technique is repeated.</td><td class="c"></td><td class="c"></td><td class="c"></td><td class="c"></td><td class="c"></td></tr>
+</table>
+
+<table>
+  <tr><th class="char" colspan="2">E. Security</th><th>5</th><th>4</th><th>3</th><th>2</th><th>1</th></tr>
+  <tr><td class="code">SE1</td><td>Only people with an account can sign in to the system.</td><td class="c"></td><td class="c"></td><td class="c"></td><td class="c"></td><td class="c"></td></tr>
+  <tr><td class="code">SE2</td><td>Trainees can see only their own results.</td><td class="c"></td><td class="c"></td><td class="c"></td><td class="c"></td><td class="c"></td></tr>
+  <tr><td class="code">SE3</td><td>I am confident that the camera video is not recorded or stored.</td><td class="c"></td><td class="c"></td><td class="c"></td><td class="c"></td><td class="c"></td></tr>
+  <tr><td class="code">SE4</td><td>Trainee information is kept private and protected by passwords.</td><td class="c"></td><td class="c"></td><td class="c"></td><td class="c"></td><td class="c"></td></tr>
+</table>
+
+<table>
+  <tr><th class="char" colspan="2">F. Portability</th><th>5</th><th>4</th><th>3</th><th>2</th><th>1</th></tr>
+  <tr><td class="code">PO1</td><td>The system can be set up easily on another computer.</td><td class="c"></td><td class="c"></td><td class="c"></td><td class="c"></td><td class="c"></td></tr>
+  <tr><td class="code">PO2</td><td>The system works in common web browsers (Chrome or Edge).</td><td class="c"></td><td class="c"></td><td class="c"></td><td class="c"></td><td class="c"></td></tr>
+  <tr><td class="code">PO3</td><td>The system works without an internet connection once installed on the laptop.</td><td class="c"></td><td class="c"></td><td class="c"></td><td class="c"></td><td class="c"></td></tr>
+  <tr><td class="code">PO4</td><td>The system works with an ordinary built-in or USB webcam.</td><td class="c"></td><td class="c"></td><td class="c"></td><td class="c"></td><td class="c"></td></tr>
+</table>
+
+<div class="comments"><strong>Comments and suggestions (optional)</strong><span></span><span></span></div>
+
+<div class="foot">
+  For the researchers: enter each form as one row of <em>docs/evaluation/likert-responses-template.csv</em> (columns respondent, group, FS1&ndash;PO4; values 1&ndash;5, blank if unanswered),
+  then run <em>node scripts/evaluate.mjs --likert responses.csv</em> for the weighted mean, standard deviation and interpretation (paper Table 5).
+  Items are to be reviewed by an IT instructor and a first-aid trainer before use.
+</div>
+
+</body>
+</html>

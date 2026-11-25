@@ -200,7 +200,7 @@ export function ReportsPage() {
         <div className="card-body">
           <div className="export-section">
             <h3>Sessions</h3>
-            <p className="export-desc">Session summaries, optionally filtered by trainee and date. Dates use this computer's time zone.</p>
+            <p className="export-desc">Session summaries with procedure adherence (each step followed or missed) and frame rate, optionally filtered by trainee and date. Use the CSV with the evaluation script (scripts/evaluate.mjs --procedure) for Chapter 4. Dates use this computer's time zone.</p>
             <div className="export-filters">
               <div className="filter-group">
                 <label className="form-label" htmlFor="export-trainee">Trainee</label>

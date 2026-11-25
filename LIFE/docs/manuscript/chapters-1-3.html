@@ -327,8 +327,9 @@
 <h2>3.8 Data Gathering Procedure and Participants</h2>
 <p>Testing is done in two parts:</p>
 <ol>
-  <li><strong>Accuracy testing.</strong> Participants (for example, 10 to 30 students or club members) perform compression sets on the prop under varying conditions (good and poor lighting, different distances and camera angles, and deliberately incorrect posture and rhythm, including bent elbows and rates of about 90 and 130 BPM). For each session, the system's per-compression output is exported from the Reports page. A trained observer, assisted by a video recording, labels each compression as locked or not locked, and the reference rate is set with a metronome or a timed count. The evaluation script generates a label sheet from the export and compares it with the observer's labels.</li>
-  <li><strong>User evaluation.</strong> After using the system, participants and trainers answer a questionnaire on its quality.</li>
+  <li><strong>Accuracy testing.</strong> Participants (for example, 10 to 30 students or club members) perform compression sets on the prop under varying conditions (good and poor lighting, different distances and camera angles, and deliberately incorrect posture and rhythm, including bent elbows and rates of about 90 and 130 BPM). For each session, the system's per-compression output (time, rate, elbow angle and locked status of every compression) is exported as CSV from the Reports &amp; Export page. The evaluation script turns the export into a label sheet with one row per detected compression. A trained observer, assisted by a video recording, labels each compression as locked or not locked, adds any compression the system missed, and records the test condition (for example, &ldquo;dim light&rdquo; or &ldquo;3 m&rdquo;); the reference rate is set with a metronome or a timed count. The script then compares the system with the observer's labels, overall and for each condition.</li>
+  <li><strong>Procedure and performance data.</strong> For every supervised session the system also records the trainer-confirmed CPR sequence, the cycles completed, skipped breaths, pauses over 10 seconds, the share of compressions with the hands stacked, the procedure score, and the average frame rate and pose-inference time. The sessions export lists these with one row per session, including each procedure item as followed, missed or not applicable. Self-practice sessions are marked and left out of the analysis.</li>
+  <li><strong>User evaluation.</strong> After using the system, participants and trainers answer the evaluation questionnaire (Section 3.9).</li>
 </ol>
 <p>Sampling is purposive, selecting students and trainers with some interest or background in first aid. The exact sample size is to be confirmed with the adviser.</p>
 
@@ -343,19 +344,20 @@
   <tr><td>2</td><td>1.81 to 2.60</td><td>Disagree (Fair)</td></tr>
   <tr><td>1</td><td>1.00 to 1.80</td><td>Strongly Disagree (Poor)</td></tr>
 </table>
-<p>The questionnaire is to be validated by experts (for example, an IT instructor and a first-aid trainer) before use.</p>
+<p>The draft questionnaire (provided with the project as <em>Project_LIFE_Evaluation_Questionnaire.pdf</em>) has 24 statements, four for each characteristic: functional suitability (FS1&ndash;FS4, e.g. &ldquo;The system correctly shows whether my elbows are locked during compressions&rdquo;), performance efficiency (PE1&ndash;PE4, e.g. &ldquo;The feedback on the screen appears without noticeable delay&rdquo;), usability (US1&ndash;US4), reliability (RE1&ndash;RE4), security (SE1&ndash;SE4, e.g. &ldquo;Trainees can see only their own results&rdquo;) and portability (PO1&ndash;PO4, e.g. &ldquo;The system works without an internet connection once installed&rdquo;). Each respondent also indicates whether they are a trainee or a trainer, so the two groups can be compared. The questionnaire is to be validated by experts (for example, an IT instructor and a first-aid trainer) before use.</p>
 
 <h2>3.10 Statistical Treatment</h2>
 <ul>
-  <li>Weighted mean and standard deviation for Likert responses.</li>
+  <li>Weighted mean and standard deviation of the Likert responses for each item, each ISO/IEC 25010 characteristic and overall, interpreted with Table 5, for all respondents and separately for trainees and trainers.</li>
   <li>Confusion matrix, accuracy, precision, recall, specificity and F1-score for locked-elbow classification (positive class: locked), and the same measures for "correct compression" (locked and in range).</li>
   <li>Compression detection rate: matched, missed and extra detections against the observer's labels, within a &plusmn;250 ms tolerance.</li>
+  <li>The accuracy, F1-score, BPM error and detection results for each test condition (lighting, distance, camera angle, intended error).</li>
   <li>Mean absolute error (MAE), root-mean-square error and bias of the measured BPM against the reference BPM, and the share of readings within &plusmn;5 BPM.</li>
-  <li>Optionally, Pearson correlation or a paired t-test to compare system and reference measurements.</li>
-  <li>Procedure adherence: percentage of applicable CPR procedure items followed per session, and the frequency of each missed item (for example, skipped breaths or pauses over 10 seconds) across participants.</li>
-  <li>Average frame rate and pose-inference time per session, recorded automatically, for performance efficiency.</li>
+  <li>Pearson correlation between the system and reference BPM, and a paired t-test of their difference (significance level 0.05).</li>
+  <li>Procedure adherence: mean and standard deviation of the percentage of applicable CPR procedure items followed per session, and the frequency of each missed item (for example, skipped breaths or pauses over 10 seconds) across sessions and participants.</li>
+  <li>Mean, standard deviation and extremes of the average frame rate and pose-inference time per session, recorded automatically, for performance efficiency.</li>
 </ul>
-<p>The accuracy measures are computed with the project's evaluation script (scripts/evaluate.mjs), which reads the exported test data and the observer's label sheet.</p>
+<p>All of these are computed with the project's evaluation script (scripts/evaluate.mjs): the accuracy measures from the test-data export and the observer's label sheet, procedure adherence and performance from the sessions export, and the questionnaire results from a spreadsheet of the responses (one row per respondent).</p>
 
 <h2>3.11 Testing Plan</h2>
 <table>

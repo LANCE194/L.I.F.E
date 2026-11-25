@@ -624,3 +624,42 @@ test('Reports & Export: PDF downloads (sessions, trainees, test data, certificat
     assert.equal((await download('/api/export/sessions?format=pdf', traineeToken)).status, 403);
     assert.equal((await download(`/api/export/certificate/${sessionId}?format=pdf`, traineeToken)).status, 403);
 });
+
+test('sessions CSV carries the Chapter 4 data and feeds the evaluation script', async () => {
+    const { parseCsv, procedureSummary } = await import('../../scripts/evaluate.mjs');
+    const created = await api('POST', '/api/trainees', { token: adminToken, body: { full_name: 'Chapter Four', consent_given: true } });
+    const traineeId = created.json.trainee.trainee_id;
+    const steps = { scene_safe: true, response_checked: true, breathing_checked: false, emergency_services_called: true, cpr_started: true, cpr_continued: false, aed_used: false };
+    const saved = await api('POST', '/api/sessions', {
+        token: trainerToken,
+        body: {
+            client_session_id: `ch4-${Math.random()}`, trainee_id: traineeId, duration_sec: 120, total_compressions: 214,
+            avg_bpm: 111.6, elbow_lock_pct: 92.3, accuracy_pct: 86.4,
+            counts: { correct: 184, incorrect: 30, total: 214, unscorable: 3, fps: 27.5, latency_ms: 14.2, hands_only: 0, compressions_per_cycle: 30,
+                rescuers: 1, victim_type: 0, breath_cycles: 5, skipped_breaths: 1, aed_shocks: 0, long_pauses: 0, procedure_pct: 75, hands_stacked_pct: 91 },
+            procedure_steps: steps,
+            details: [{ ts: 1000, bpm: 110, elbow_angle: 168, elbow_locked: true }],
+        },
+    });
+    assert.equal(saved.status, 201);
+
+    const response = await fetch(`${baseUrl}/api/export/sessions?trainee_id=${traineeId}`, { headers: { Authorization: `Bearer ${trainerToken}` } });
+    const text = await response.text();
+    const [row] = parseCsv(text);
+    assert.equal(row['session type'], 'Supervised');
+    assert.equal(row['cpr mode'], '30:2');
+    assert.equal(row.victim, 'Adult');
+    assert.equal(row['procedure %'], '75');
+    assert.equal(row['checked breathing'], 'No');
+    assert.equal(row['gave 2 breaths after every cycle'], 'No');
+    assert.equal(row['used the aed in order and resumed cpr'], 'N/A');
+    assert.equal(row['missed items'], 'Checked breathing; Gave 2 breaths after every cycle');
+    assert.equal(row['avg fps'], '27.5');
+    assert.equal(row['avg inference (ms)'], '14.2');
+
+    // 9 items apply to a 30:2 session with hand tracking; 2 were missed.
+    const summary = procedureSummary(text);
+    assert.equal(summary.sessions, 1);
+    assert.equal(summary.items.filter(item => item.missed).length, 2);
+    assert.equal(summary.items.length, 9);
+});

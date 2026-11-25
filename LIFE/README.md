@@ -101,14 +101,32 @@ npm test                 # server API tests, vision unit tests, evaluation-scrip
    ```bash
    node scripts/evaluate.mjs --template life_test_data_2026-11-25.csv --session 12 > labels.csv
    ```
-   Fill in `observer_locked` (Yes/No) and `reference_bpm`. To measure missed or extra detections, label by `timestamp_ms` instead of `compression` number.
+   Fill in `observer_locked` (Yes/No), `reference_bpm` and, optionally, `condition` (for example `good light 2 m`, `dim light`, `3 m`, `45 degrees`). To measure missed or extra detections, label by `timestamp_ms` instead of `compression` number.
 4. Compute the results:
    ```bash
    node scripts/evaluate.mjs life_test_data_2026-11-25.csv labels.csv
    ```
-   This prints the confusion matrix, accuracy, precision, recall, specificity and F1 for elbow lock and for correct compressions, plus BPM MAE, RMSE, bias and the share within ±5 BPM. Add `--json` for machine-readable output.
+   This prints the confusion matrix, accuracy, precision, recall, specificity and F1 for elbow lock and for correct compressions; BPM MAE, RMSE, bias, the share within ±5 BPM, Pearson r and a paired t-test; and the same measures for each test condition. Add `--json` for machine-readable output.
 
-Each saved session also records the average camera frame rate and pose-inference time (shown in the History detail view) for performance testing.
+### Procedure adherence and performance
+
+**Reports → Sessions → CSV** gives one row per session with the scores, CPR mode, cycles, skipped breaths, pauses over 10 s, hands-stacked %, the procedure score, every procedure item (Yes / No / N/A), the missed items, and the average frame rate and inference time. Then:
+
+```bash
+node scripts/evaluate.mjs --procedure life_sessions_export.csv
+```
+
+prints the mean and SD of procedure adherence, how often each item was missed (sessions and people), and the frame-rate and inference-time statistics. Self-practice sessions are left out unless `--include-self-practice` is given. The Sessions PDF shows the same missed-item table.
+
+### Questionnaire (ISO/IEC 25010)
+
+Print `docs/evaluation/questionnaire.html` (or `Project_LIFE_Evaluation_Questionnaire.pdf` in the repository root): 24 items, FS1–PO4. Enter each form as one row of `docs/evaluation/likert-responses-template.csv` (`group` = Trainee or Trainer), then:
+
+```bash
+node scripts/evaluate.mjs --likert responses.csv
+```
+
+prints the frequencies, weighted mean, SD and interpretation (paper Table 5) per item, per characteristic, overall and per group.
 
 ## Data, backups and privacy
 

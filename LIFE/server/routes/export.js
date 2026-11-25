@@ -17,6 +17,7 @@ import {
     COLORS, startReport, summaryRow, table, heading, finishReport, logo, safeText, tzOffsetFrom,
     formatDate, formatDateTime, fixed1, duration,
 } from '../lib/pdfReport.js';
+import { PROCEDURE_ITEMS, procedureItems, missedItems } from '../lib/procedure.js';
 
 const wantsPdf = req => String(req.query.format || '').toLowerCase() === 'pdf';
 const fileDate = () => new Date().toISOString().slice(0, 10);
@@ -65,6 +66,7 @@ router.get('/sessions', trainerOrAdmin, (req, res) => {
         SELECT
             s.session_id,
             s.date_time,
+            s.trainee_id,
             t.full_name as trainee_name,
             t.organization,
             s.duration_sec,
@@ -73,7 +75,8 @@ router.get('/sessions', trainerOrAdmin, (req, res) => {
             s.elbow_lock_pct,
             s.accuracy_pct,
             s.result,
-            s.counts
+            s.counts,
+            s.procedure_steps
         FROM sessions s
         JOIN trainees t ON s.trainee_id = t.trainee_id
         WHERE 1=1
@@ -99,7 +102,7 @@ router.get('/sessions', trainerOrAdmin, (req, res) => {
             start_date || end_date ? `Dates: ${start_date ? formatDate(start_date, tz) : 'start'} to ${end_date ? formatDate(new Date(new Date(end_date).getTime() - 1).toISOString(), tz) : 'today'}` : 'All dates',
         ];
         const doc = startReport(res, { filename: `life_sessions_${fileDate()}.pdf`, title: 'Session Report', filters, tzOffsetMin: tz });
-        const rows = sessions.map(row => ({ ...row, counts: safeJson(row.counts) }));
+        const rows = sessions.map(row => ({ ...row, counts: safeJson(row.counts), procedure_steps: safeJson(row.procedure_steps) }));
         const passes = rows.filter(row => row.result === 'Pass').length;
         const avg = rows.length ? rows.reduce((sum, row) => sum + (row.accuracy_pct || 0), 0) / rows.length : null;
         summaryRow(doc, [
@@ -111,33 +114,105 @@ router.get('/sessions', trainerOrAdmin, (req, res) => {
         table(doc, [
             { label: 'Date / time', width: 1.5, value: row => formatDateTime(row.date_time, tz) },
             { label: 'Trainee', width: 1.6, bold: true, value: row => row.trainee_name + (row.counts.self_practice === 1 ? ' (self-practice)' : '') },
-            { label: 'Organization', width: 1.3, value: row => row.organization || '—' },
+            { label: 'Organization', width: 1.0, value: row => row.organization || '—' },
             { label: 'Duration', width: 0.7, align: 'right', value: row => duration(row.duration_sec) },
             { label: 'Compressions', width: 0.9, align: 'right', value: row => String(row.total_compressions ?? 0) },
             { label: 'Avg BPM', width: 0.7, align: 'right', value: row => fixed1(row.avg_bpm) },
             { label: 'Elbow lock', width: 0.8, align: 'right', value: row => `${fixed1(row.elbow_lock_pct)}%` },
             { label: 'Accuracy', width: 0.8, align: 'right', bold: true, value: row => `${fixed1(row.accuracy_pct)}%` },
             { label: 'Procedure', width: 0.8, align: 'right', value: row => (row.counts.procedure_pct === undefined ? '—' : `${Math.round(row.counts.procedure_pct)}%`) },
-            { label: 'Result', width: 1.1, bold: true, value: row => row.result, color: resultColor },
+            { label: 'Result', width: 1.4, bold: true, value: row => row.result, color: resultColor },
         ], rows);
+
+        // Procedure adherence across sessions (paper 3.10): how often each item was missed.
+        if (rows.length) {
+            heading(doc, 'Procedure adherence: how often each item was missed');
+            const perItem = PROCEDURE_ITEMS.map(([key, label]) => {
+                const applicable = rows.map(row => procedureItems(row)[key]).filter(value => value !== null);
+                const missed = applicable.filter(value => value === false).length;
+                return { label, applicable: applicable.length, missed };
+            }).filter(item => item.applicable > 0);
+            table(doc, [
+                { label: 'Procedure item', width: 3, value: item => item.label },
+                { label: 'Sessions where it applies', width: 1.2, align: 'right', value: item => String(item.applicable) },
+                { label: 'Missed', width: 0.8, align: 'right', bold: true, value: item => String(item.missed), color: item => (item.missed ? COLORS.crimson : COLORS.green) },
+                { label: 'Missed %', width: 0.8, align: 'right', value: item => `${Math.round((item.missed / item.applicable) * 100)}%` },
+            ], perItem);
+
+            const withFps = rows.filter(row => Number(row.counts.fps) > 0);
+            if (withFps.length) {
+                const mean = values => values.reduce((a, b) => a + b, 0) / values.length;
+                heading(doc, 'Performance (recorded automatically)');
+                summaryRow(doc, [
+                    ['Average frame rate', `${mean(withFps.map(row => Number(row.counts.fps))).toFixed(1)} FPS`],
+                    ['Lowest session frame rate', `${Math.min(...withFps.map(row => Number(row.counts.fps))).toFixed(1)} FPS`],
+                    ['Average inference time', `${mean(withFps.map(row => Number(row.counts.latency_ms) || 0)).toFixed(1)} ms`],
+                ]);
+            }
+        }
         return finishReport(doc);
     }
 
-    // Convert to CSV
+    // CSV: one row per session with everything Chapter 4 analyses (paper 3.10): compression
+    // scores, CPR mode, procedure adherence item by item, and frame rate / inference time.
     const columns = {
         session_id: 'Session ID',
         date_time: 'Date/Time',
+        trainee_id: 'Trainee ID',
         trainee_name: 'Trainee',
         organization: 'Organization',
+        session_type: 'Session Type',
         duration_sec: 'Duration (sec)',
         total_compressions: 'Total Compressions',
+        correct: 'Correct',
+        incorrect: 'Incorrect',
+        unscorable: 'Elbow Not Visible',
         avg_bpm: 'Avg BPM',
         elbow_lock_pct: 'Elbow Lock %',
         accuracy_pct: 'Accuracy %',
-        result: 'Result'
+        result: 'Result',
+        victim: 'Victim',
+        rescuers: 'Rescuers',
+        cpr_mode: 'CPR Mode',
+        breath_cycles: 'Cycles Completed',
+        skipped_breaths: 'Skipped Breaths',
+        long_pauses: 'Pauses Over 10 s',
+        hands_stacked_pct: 'Hands Stacked %',
+        aed_shocks: 'AED Shocks',
+        procedure_pct: 'Procedure %',
+        ...Object.fromEntries(PROCEDURE_ITEMS.map(([key, label]) => [`item_${key}`, label])),
+        missed_items: 'Missed Items',
+        avg_fps: 'Avg FPS',
+        inference_ms: 'Avg Inference (ms)',
     };
-
-    sendCsv(res, 'life_sessions_export.csv', columns, sessions.map(({ counts, ...row }) => row));
+    const yesNo = value => (value === null ? 'N/A' : value ? 'Yes' : 'No');
+    const blankIfMissing = value => (value === undefined || value === null ? '' : value);
+    sendCsv(res, 'life_sessions_export.csv', columns, sessions.map(({ counts: countsText, procedure_steps: stepsText, ...row }) => {
+        const counts = safeJson(countsText);
+        const session = { ...row, counts, procedure_steps: safeJson(stepsText) };
+        const items = procedureItems(session);
+        const handsOnly = counts.hands_only === 1;
+        return {
+            ...row,
+            session_type: counts.self_practice === 1 ? 'Self-practice' : 'Supervised',
+            correct: blankIfMissing(counts.correct),
+            incorrect: blankIfMissing(counts.incorrect),
+            unscorable: blankIfMissing(counts.unscorable),
+            victim: ['Adult', 'Child', 'Infant'][counts.victim_type] ?? '',
+            rescuers: blankIfMissing(counts.rescuers),
+            cpr_mode: counts.hands_only === undefined ? '' : handsOnly ? 'Hands-only' : `${counts.compressions_per_cycle || 30}:2`,
+            breath_cycles: handsOnly ? '' : blankIfMissing(counts.breath_cycles),
+            skipped_breaths: handsOnly ? '' : blankIfMissing(counts.skipped_breaths),
+            long_pauses: blankIfMissing(counts.long_pauses),
+            hands_stacked_pct: blankIfMissing(counts.hands_stacked_pct),
+            aed_shocks: blankIfMissing(counts.aed_shocks),
+            procedure_pct: blankIfMissing(counts.procedure_pct),
+            ...Object.fromEntries(PROCEDURE_ITEMS.map(([key]) => [`item_${key}`, yesNo(items[key])])),
+            missed_items: missedItems(session).join('; '),
+            avg_fps: blankIfMissing(counts.fps),
+            inference_ms: blankIfMissing(counts.latency_ms),
+        };
+    }));
 });
 
 /**
