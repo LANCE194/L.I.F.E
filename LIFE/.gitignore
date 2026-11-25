@@ -1,0 +1,47 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dashboard/dist/
+dashboard/build/
+
+# Database (local data, never commit trainee records)
+database/*.db
+database/*.db-*
+database/backups/
+
+# Secrets generated on first start
+server/.jwt_secret
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Media files (photos/video of participants)
+media/*
+!media/.gitkeep
+
+# Test/coverage
+coverage/
+.nyc_output/
+
+# Temporary files
+*.tmp
+*.temp
+temp/
+
+# Note: dashboard/public/mediapipe/ (model + WASM) IS committed on purpose,
+# so the app runs fully offline after a clone.

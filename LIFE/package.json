@@ -1,0 +1,17 @@
+{
+  "name": "life",
+  "version": "1.0.0",
+  "private": true,
+  "description": "L.I.F.E. - Localized Intelligent First-aid Evaluator (launcher and project scripts)",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node start_life.js",
+    "dev": "node scripts/dev.mjs",
+    "shortcut": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/create-shortcut.ps1",
+    "test": "npm --prefix server test && npm --prefix dashboard test && node --test scripts/evaluate.test.mjs",
+    "evaluate": "node scripts/evaluate.mjs"
+  }
+}

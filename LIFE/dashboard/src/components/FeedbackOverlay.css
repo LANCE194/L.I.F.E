@@ -1,0 +1,301 @@
+/* Feedback Overlay Styles */
+
+.feedback-panel {
+  background: var(--surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  height: fit-content;
+}
+
+.feedback-panel h4 {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Status Header */
+.status-header {
+  display: flex;
+  justify-content: center;
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: var(--radius);
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.status-waiting {
+  background: var(--background);
+  color: var(--text-muted);
+}
+
+.status-in-progress {
+  background: rgba(31, 95, 153, 0.1);
+  color: var(--info);
+  animation: pulse 2s infinite;
+}
+
+.status-completed {
+  background: rgba(30, 138, 76, 0.1);
+  color: var(--success);
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* Metric Items */
+.feedback-metric {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.feedback-metric-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.feedback-label {
+  font-size: 13px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.feedback-value {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.feedback-value.large {
+  font-size: 36px;
+  line-height: 1;
+}
+
+.feedback-value.success { color: var(--success); }
+.feedback-value.warning { color: var(--warning); }
+.feedback-value.danger { color: var(--accent); }
+.feedback-value.info { color: var(--info); }
+
+/* Timer Metric */
+.timer-metric {
+  padding: 12px;
+  background: rgba(31, 95, 153, 0.05);
+  border-radius: var(--radius);
+  border: 1px solid rgba(31, 95, 153, 0.1);
+}
+
+.timer-value {
+  font-variant-numeric: tabular-nums;
+  font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+}
+
+/* Progress Bar */
+.progress-bar {
+  height: 8px;
+  background: var(--background);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.progress-fill.success { background: var(--success); }
+.progress-fill.warning { background: var(--warning); }
+.progress-fill.danger { background: var(--accent); }
+.progress-fill.info { background: var(--info); }
+
+/* Accuracy Metric */
+.accuracy-metric {
+  padding: 12px;
+  background: var(--background);
+  border-radius: var(--radius);
+}
+
+/* BPM Metric */
+.bpm-metric {
+  padding: 12px;
+  border-radius: var(--radius);
+}
+
+.bpm-metric .feedback-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.bpm-status {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 12px;
+}
+
+.bpm-status.in-range {
+  background: rgba(30, 138, 76, 0.1);
+  color: var(--success);
+}
+
+.bpm-status.slow {
+  background: rgba(201, 138, 18, 0.1);
+  color: var(--gold-dark);
+}
+
+.bpm-status.fast {
+  background: rgba(168, 22, 56, 0.1);
+  color: var(--accent);
+}
+
+/* Elbow Metric */
+.elbow-metric {
+  padding: 12px;
+  border-radius: var(--radius);
+}
+
+/* Count Metric */
+.count-metric {
+  padding: 12px;
+  border-radius: var(--radius);
+}
+
+.compression-breakdown {
+  display: flex;
+  gap: 16px;
+}
+
+.breakdown-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+  padding: 12px;
+  border-radius: var(--radius);
+}
+
+.breakdown-item.correct {
+  background: rgba(30, 138, 76, 0.1);
+}
+
+.breakdown-item.incorrect {
+  background: rgba(168, 22, 56, 0.1);
+}
+
+.breakdown-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+}
+
+.breakdown-value {
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.breakdown-item.correct .breakdown-value { color: var(--success); }
+.breakdown-item.incorrect .breakdown-value { color: var(--accent); }
+
+/* Warning Banners */
+.warning-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 16px;
+  border-radius: var(--radius);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.elbow-warning {
+  background: rgba(168, 22, 56, 0.1);
+  border: 1px solid rgba(168, 22, 56, 0.2);
+  color: var(--accent);
+}
+
+.bpm-warning {
+  background: rgba(201, 138, 18, 0.1);
+  border: 1px solid rgba(201, 138, 18, 0.2);
+  color: var(--gold-dark);
+}
+
+.warning-banner svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* Guidelines */
+.guidelines {
+  margin-top: 8px;
+  padding: 16px;
+  background: var(--background);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+}
+
+.guidelines h4 {
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+.guidelines ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.guidelines li {
+  font-size: 13px;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.guidelines li::before {
+  content: '•';
+  color: var(--primary);
+  font-weight: bold;
+}
+
+.guidelines strong {
+  color: var(--primary);
+}
+/* v2 additions */
+.bpm-status.ok { background: rgba(30, 138, 76, 0.1); color: var(--success); }
+.bpm-status.none { background: rgba(127, 140, 141, 0.12); color: var(--text-muted); }
+.feedback-value.bpm-ok, .text-success { color: var(--success); }
+.feedback-value.bpm-slow, .text-warning { color: var(--gold-dark); }
+.feedback-value.bpm-fast, .text-danger { color: var(--accent); }
+.feedback-value.bpm-none { color: var(--text-muted); }
+.breakdown-item.unscorable { background: rgba(127, 140, 141, 0.12); }
+.breakdown-item.unscorable .breakdown-value { color: var(--text-muted); }
+.compression-breakdown .breakdown-item { flex: 1; }
+.warning-banner {
+  display: flex; gap: 10px; align-items: flex-start; padding: 12px; border-radius: var(--radius);
+  background: rgba(201, 138, 18, 0.12); color: #9a6106; font-size: 13px;
+}
+.warning-banner svg { flex-shrink: 0; margin-top: 2px; }

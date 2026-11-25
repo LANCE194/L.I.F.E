@@ -1,0 +1,30 @@
+.my-progress { max-width: 1100px; }
+
+.progress-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.progress-tile {
+  display: grid;
+  gap: 2px;
+  padding: 14px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--gold);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.progress-tile-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); }
+.progress-tile-value { font-size: 26px; font-weight: 800; color: var(--primary); line-height: 1.2; }
+.progress-tile-value.success { color: var(--success); }
+.progress-tile-value.warning { color: var(--gold-dark); }
+.progress-tile-value.danger { color: var(--accent); }
+.progress-tile-hint { font-size: 12px; color: var(--text-muted); }
+
+.latest-card { margin-bottom: 16px; }
+.latest-card .card-body { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; font-size: 14px; }
+.latest-tip { width: 100%; color: var(--info); font-weight: 600; }
