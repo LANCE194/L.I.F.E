@@ -28,15 +28,19 @@ import { seedAdmin } from './seed_admin.js';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const PORT = Number(process.env.PORT) || 3001;
+// Cloud hosting (Render sets RENDER=true): accept traffic from Render's proxy and trust its
+// X-Forwarded-For header so each visitor's real address is used for the sign-in lockout.
+export const CLOUD = Boolean(process.env.RENDER) || process.env.LIFE_CLOUD === '1';
 // Local-only by default. Set HOST=0.0.0.0 to allow other devices on the network (not recommended
 // on shared school Wi-Fi, because trainee records would be reachable).
-const HOST = process.env.HOST || '127.0.0.1';
+const HOST = process.env.HOST || (CLOUD ? '0.0.0.0' : '127.0.0.1');
 const DEV_ORIGINS = new Set(['http://localhost:5173', 'http://127.0.0.1:5173']);
 
 export function createApp() {
     const app = express();
     app.disable('x-powered-by');
-    app.set('trust proxy', false);
+    // Behind exactly one proxy in the cloud; never trust forwarded headers when running locally.
+    app.set('trust proxy', CLOUD ? 1 : false);
 
     app.use(helmet({
         contentSecurityPolicy: {

@@ -1,0 +1,36 @@
+# Render Blueprint for L.I.F.E. (https://render.com/docs/blueprint-spec)
+#
+# Default: FREE plan for demos. Render's free plan has no persistent disk, so the SQLite
+# database (trainees, accounts, sessions) is erased whenever the service restarts, redeploys
+# or sleeps (after ~15 minutes without visitors).
+#
+# To KEEP data (paid): change `plan: free` to `plan: starter`, and uncomment the `disk:` block
+# and the LIFE_DB_PATH variable below.
+
+services:
+  - type: web
+    name: life-cpr
+    runtime: node
+    plan: free
+    region: singapore            # closest Render region to the Philippines
+    buildCommand: npm ci --prefix server && npm ci --include=dev --prefix dashboard && npm run build --prefix dashboard
+    startCommand: node server/index.js
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      # Signs sign-in tokens; Render generates a random value once.
+      - key: JWT_SECRET
+        generateValue: true
+      # Password for the first "admin" account (at least 12 characters). Render asks for it
+      # when the Blueprint is created; it must be changed at first sign-in.
+      - key: LIFE_ADMIN_PASSWORD
+        sync: false
+      # Paid plan with a disk: store the database on the disk.
+      # - key: LIFE_DB_PATH
+      #   value: /var/data/life.db
+    # disk:
+    #   name: life-data
+    #   mountPath: /var/data
+    #   sizeGB: 1
