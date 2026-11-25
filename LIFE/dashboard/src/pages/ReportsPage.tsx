@@ -1,6 +1,7 @@
 /**
  * L.I.F.E. Reports & Export
- * CSV exports (sessions, trainees, admin test data) and the Certificate of Practice Completion.
+ * PDF reports (sessions, trainees, admin test data) with CSV as an option, and the Certificate of
+ * Practice Completion as a PDF.
  *
  * Certificates are server-rendered HTML with every value escaped. As a second layer, the
  * preview runs in a fully sandboxed iframe (no scripts, opaque origin), and the printed and
@@ -8,7 +9,7 @@
  */
 
 import { useEffect, useRef, useState } from 'react';
-import { api, downloadBlob } from '../api/client';
+import { api, downloadBlob, type ExportFormat } from '../api/client';
 import { useAuth } from '../hooks/useAuth';
 import { Banner, Modal, PageHeader, Spinner } from '../components/ui';
 import { DownloadIcon, PrintIcon, WarningIcon } from '../components/icons';
@@ -57,7 +58,7 @@ function safeFilePart(value: string): string {
 
 export function ReportsPage() {
   const { isAdmin } = useAuth();
-  const [busy, setBusy] = useState<ExportType | 'certificate' | null>(null);
+  const [busy, setBusy] = useState<`${ExportType}-${ExportFormat}` | 'certificate' | 'certificate-pdf' | null>(null);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [exportFilters, setExportFilters] = useState({ trainee_id: '', start_date: '', end_date: '', session_id: '' });
@@ -90,8 +91,8 @@ export function ReportsPage() {
     exportFilters.start_date && exportFilters.end_date && exportFilters.start_date > exportFilters.end_date
   );
 
-  const handleExport = async (type: ExportType) => {
-    setBusy(type);
+  const handleExport = async (type: ExportType, format: ExportFormat) => {
+    setBusy(`${type}-${format}`);
     setError('');
     setSuccess('');
     try {
@@ -101,13 +102,13 @@ export function ReportsPage() {
           trainee_id: exportFilters.trainee_id ? Number(exportFilters.trainee_id) : undefined,
           start_date: localDayStartIso(exportFilters.start_date),
           end_date: localDayEndIso(exportFilters.end_date),
-        });
+        }, format);
       } else if (type === 'trainees') {
-        blob = await api.exportTrainees();
+        blob = await api.exportTrainees(format);
       } else {
-        blob = await api.exportTestData(exportFilters.session_id ? Number(exportFilters.session_id) : undefined);
+        blob = await api.exportTestData(exportFilters.session_id ? Number(exportFilters.session_id) : undefined, format);
       }
-      const filename = `life_${type.replace('-', '_')}_${todayLocal()}.csv`;
+      const filename = `life_${type.replace('-', '_')}_${todayLocal()}.${format}`;
       await downloadBlob(blob, filename);
       setSuccess(`${EXPORT_LABELS[type]} exported as ${filename}.`);
     } catch (err) {
@@ -140,7 +141,7 @@ export function ReportsPage() {
   };
 
   const certificateFilename = (session: SessionOption) =>
-    `certificate_${safeFilePart(session.trainee_name)}_${session.session_id}.html`;
+    `certificate_${safeFilePart(session.trainee_name)}_${session.session_id}.pdf`;
 
   const handlePrintCertificate = () => {
     if (!certificate) return;
@@ -161,14 +162,28 @@ export function ReportsPage() {
 
   const handleDownloadCertificate = async () => {
     if (!certificate) return;
-    const blob = new Blob([withScriptBlockingCsp(certificate.html)], { type: 'text/html;charset=utf-8' });
-    await downloadBlob(blob, certificateFilename(certificate.session));
+    setBusy('certificate-pdf');
+    setError('');
+    try {
+      const blob = await api.getCertificatePdf(certificate.session.session_id);
+      await downloadBlob(blob, certificateFilename(certificate.session));
+    } catch (err) {
+      setError(errorMessage(err, 'Failed to download the certificate'));
+    } finally {
+      setBusy(null);
+    }
   };
 
-  const exportButton = (type: ExportType, label: string, variant = 'btn-primary', disabled = false) => (
-    <button type="button" className={`btn ${variant}`} onClick={() => void handleExport(type)} disabled={busy !== null || disabled}>
-      {busy === type ? <><Spinner /> Exporting...</> : <><DownloadIcon /> {label}</>}
-    </button>
+  // PDF is the main download; CSV stays available for spreadsheets and the evaluation script.
+  const exportButtons = (type: ExportType, label: string, disabled = false) => (
+    <div className="export-buttons">
+      <button type="button" className="btn btn-primary" onClick={() => void handleExport(type, 'pdf')} disabled={busy !== null || disabled}>
+        {busy === `${type}-pdf` ? <><Spinner /> Preparing PDF...</> : <><DownloadIcon /> Download {label} (PDF)</>}
+      </button>
+      <button type="button" className="btn btn-secondary btn-sm" onClick={() => void handleExport(type, 'csv')} disabled={busy !== null || disabled} title="Spreadsheet format (Excel, Google Sheets)">
+        {busy === `${type}-csv` ? <><Spinner /> Exporting...</> : 'CSV'}
+      </button>
+    </div>
   );
 
   return (
@@ -180,7 +195,7 @@ export function ReportsPage() {
 
       <div className="card">
         <div className="card-header">
-          <h2 className="card-title">CSV exports</h2>
+          <h2 className="card-title">Report downloads</h2>
         </div>
         <div className="card-body">
           <div className="export-section">
@@ -225,7 +240,7 @@ export function ReportsPage() {
               </div>
             </div>
             {dateRangeInvalid && <Banner kind="warning">The "From" date is after the "To" date.</Banner>}
-            {exportButton('sessions', 'Export sessions CSV', 'btn-primary', dateRangeInvalid)}
+            {exportButtons('sessions', 'sessions', dateRangeInvalid)}
           </div>
 
           <div className="export-divider" />
@@ -233,7 +248,7 @@ export function ReportsPage() {
           <div className="export-section">
             <h3>Trainees</h3>
             <p className="export-desc">All trainee profiles, including consent status.</p>
-            {exportButton('trainees', 'Export trainees CSV')}
+            {exportButtons('trainees', 'trainee list')}
           </div>
 
           {isAdmin && (
@@ -260,7 +275,8 @@ export function ReportsPage() {
                     </select>
                   </div>
                 </div>
-                {exportButton('test-data', 'Export test data CSV', 'btn-secondary')}
+                {exportButtons('test-data', 'test data')}
+                <p className="export-desc" style={{ marginTop: 6 }}>Use <strong>CSV</strong> with the evaluation script (scripts/evaluate.mjs) for Chapter 4.</p>
               </div>
             </>
           )}
@@ -343,8 +359,8 @@ export function ReportsPage() {
           size="lg"
           actions={
             <>
-              <button type="button" className="btn btn-secondary" onClick={() => void handleDownloadCertificate()}>
-                <DownloadIcon /> Download HTML
+              <button type="button" className="btn btn-secondary" onClick={() => void handleDownloadCertificate()} disabled={busy === 'certificate-pdf'}>
+                {busy === 'certificate-pdf' ? <><Spinner /> Preparing PDF...</> : <><DownloadIcon /> Download PDF</>}
               </button>
               <button type="button" className="btn btn-primary" onClick={handlePrintCertificate}>
                 <PrintIcon /> Print / Save as PDF

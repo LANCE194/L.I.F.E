@@ -45,7 +45,7 @@ The server only accepts connections from this computer (`127.0.0.1`). To let ano
    - Sessions where the camera failed or nobody was in view are not saved.
    - Every session is stored in the browser first and then uploaded, so nothing is lost if the server is stopped or the sign-in expires. A badge in the top bar shows anything not yet uploaded; uploads retry automatically from any page.
 3. **Dashboard:** today's figures, a 30-day trend and a live monitor of the session in progress.
-4. **Leaderboard, History, Reports:** rankings, past sessions with charts, CSV exports and a printable *Certificate of Practice Completion* (this confirms a practice session only; it is not CPR certification).
+4. **Leaderboard, History, Reports:** rankings, past sessions with charts, **PDF reports** (sessions, trainee list, test data; CSV also available) and a *Certificate of Practice Completion* downloadable as a **PDF** (this confirms a practice session only; it is not CPR certification).
 5. **Settings** (admin): calibration values, metronome speed, database backup and user accounts.
 6. **CPR Guide:** the adult CPR sequence (2025 American Heart Association guidelines) that the Live Session checklist follows, what the camera measures versus what the trainer observes, and notes for children and infants.
 
@@ -96,7 +96,7 @@ npm test                 # server API tests, vision unit tests, evaluation-scrip
 ### Measuring accuracy against an observer
 
 1. Run practice sessions while an observer (or a video recording) notes, for each compression, whether the elbows were locked, and the reference rate (for example from a metronome).
-2. **Reports → Export test data CSV** (admin), optionally for one session.
+2. **Reports → Test data → CSV** (admin), optionally for one session. (The PDF version is for reading and printing; the script needs the CSV.)
 3. Create a label sheet with one row per detected compression:
    ```bash
    node scripts/evaluate.mjs --template life_test_data_2026-11-25.csv --session 12 > labels.csv

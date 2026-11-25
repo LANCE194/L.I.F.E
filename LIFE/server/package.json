@@ -18,7 +18,8 @@
     "csv-stringify": "^6.4.4",
     "express": "^4.18.3",
     "helmet": "^7.1.0",
-    "jsonwebtoken": "^9.0.2"
+    "jsonwebtoken": "^9.0.2",
+    "pdfkit": "^0.15.2"
   },
   "engines": {
     "node": ">=20.0.0"

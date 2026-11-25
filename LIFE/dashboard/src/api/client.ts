@@ -71,6 +71,18 @@ export type {
 
 const API_BASE = '/api';
 
+export type ExportFormat = 'pdf' | 'csv';
+
+/** format=pdf adds the viewer's time-zone offset so dates in the PDF match local time. */
+function exportQuery(format: ExportFormat): URLSearchParams {
+  const query = new URLSearchParams();
+  if (format === 'pdf') {
+    query.set('format', 'pdf');
+    query.set('tz_offset_min', String(new Date().getTimezoneOffset()));
+  }
+  return query;
+}
+
 /** Error carrying the HTTP status and optional server error code. status 0 = network failure. */
 export class ApiError extends Error {
   status: number;
@@ -368,8 +380,8 @@ class ApiClient {
     trainee_id?: number;
     start_date?: string;
     end_date?: string;
-  }): Promise<Blob> {
-    const query = new URLSearchParams();
+  }, format: ExportFormat = 'pdf'): Promise<Blob> {
+    const query = exportQuery(format);
     if (params?.trainee_id) query.set('trainee_id', String(params.trainee_id));
     if (params?.start_date) query.set('start_date', params.start_date);
     if (params?.end_date) query.set('end_date', params.end_date);
@@ -377,15 +389,20 @@ class ApiClient {
     return this.download(`/export/sessions?${query.toString()}`);
   }
 
-  async exportTrainees(): Promise<Blob> {
-    return this.download('/export/trainees');
+  async exportTrainees(format: ExportFormat = 'pdf'): Promise<Blob> {
+    return this.download(`/export/trainees?${exportQuery(format).toString()}`);
   }
 
-  async exportTestData(sessionId?: number): Promise<Blob> {
-    const query = new URLSearchParams();
+  async exportTestData(sessionId?: number, format: ExportFormat = 'pdf'): Promise<Blob> {
+    const query = exportQuery(format);
     if (sessionId) query.set('session_id', String(sessionId));
 
     return this.download(`/export/test-data?${query.toString()}`);
+  }
+
+  /** Certificate of Practice Completion as a PDF file. */
+  async getCertificatePdf(sessionId: number): Promise<Blob> {
+    return this.download(`/export/certificate/${sessionId}?${exportQuery('pdf').toString()}`);
   }
 
   async getCertificate(sessionId: number): Promise<string> {

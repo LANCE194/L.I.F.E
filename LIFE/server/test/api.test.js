@@ -562,3 +562,54 @@ test('sign-in ignores username capitals; lockout still counts every variant toge
     assert.equal((await api('POST', '/api/auth/login', { body: { username: 'CASE.TESTER', password: temp } })).status, 429);
     resetLoginLockouts();
 });
+
+test('Reports & Export: PDF downloads (sessions, trainees, test data, certificate)', async () => {
+    const download = async (url, token) => {
+        const response = await fetch(`${baseUrl}${url}`, { headers: { Authorization: `Bearer ${token}` } });
+        const bytes = Buffer.from(await response.arrayBuffer());
+        return { status: response.status, type: response.headers.get('content-type'), disposition: response.headers.get('content-disposition'), bytes };
+    };
+    const isPdf = file => file.bytes.subarray(0, 5).toString() === '%PDF-' && file.bytes.length > 1000;
+
+    // A trainee with characters the built-in PDF fonts cannot show must not break the report.
+    const created = await api('POST', '/api/trainees', { token: adminToken, body: { full_name: 'Zoë Ñuñez 李', organization: 'PDF Club', consent_given: true } });
+    const saved = await api('POST', '/api/sessions', {
+        token: trainerToken,
+        body: {
+            client_session_id: `pdf-${Math.random()}`, trainee_id: created.json.trainee.trainee_id, duration_sec: 120, total_compressions: 210,
+            avg_bpm: 111.4, elbow_lock_pct: 92.5, accuracy_pct: 86.7, counts: { correct: 182, incorrect: 28, total: 210, procedure_pct: 88.9 },
+            details: [{ ts: 1000, bpm: 110, elbow_angle: 168, elbow_locked: true }, { ts: 1545, bpm: 111, elbow_angle: null, elbow_locked: false }],
+        },
+    });
+    assert.equal(saved.status, 201);
+    const sessionId = saved.json.session.session_id;
+    const tz = 'tz_offset_min=-480';
+
+    for (const [url, token, name] of [
+        [`/api/export/sessions?format=pdf&${tz}`, trainerToken, 'life_sessions_'],
+        [`/api/export/sessions?format=pdf&trainee_id=${created.json.trainee.trainee_id}&${tz}`, trainerToken, 'life_sessions_'],
+        [`/api/export/trainees?format=pdf&${tz}`, trainerToken, 'life_trainees_'],
+        [`/api/export/test-data?format=pdf&session_id=${sessionId}&${tz}`, adminToken, 'life_test_data_'],
+        [`/api/export/certificate/${sessionId}?format=pdf&${tz}`, trainerToken, 'certificate_'],
+    ]) {
+        const file = await download(url, token);
+        assert.equal(file.status, 200, url);
+        assert.equal(file.type, 'application/pdf', url);
+        assert.ok(isPdf(file), `${url} returns a PDF`);
+        assert.match(file.disposition, new RegExp(`filename="${name}[^"]*\\.pdf"`), url);
+    }
+
+    // CSV is still available for spreadsheets and the evaluation script.
+    const csv = await download(`/api/export/test-data?session_id=${sessionId}`, adminToken);
+    assert.match(csv.type, /text\/csv/);
+
+    // Test data stays admin-only, and trainee accounts cannot export at all.
+    assert.equal((await download('/api/export/test-data?format=pdf', trainerToken)).status, 403);
+    const account = await api('POST', `/api/trainees/${created.json.trainee.trainee_id}/account`, { token: adminToken });
+    const traineeLogin = await api('POST', '/api/auth/login', { body: { username: account.json.account.username, password: account.json.account.temporary_password } });
+    const traineeToken = (await api('POST', '/api/auth/change-password', {
+        token: traineeLogin.json.token, body: { currentPassword: account.json.account.temporary_password, newPassword: 'Zoe-pass-2026' },
+    })).json.token;
+    assert.equal((await download('/api/export/sessions?format=pdf', traineeToken)).status, 403);
+    assert.equal((await download(`/api/export/certificate/${sessionId}?format=pdf`, traineeToken)).status, 403);
+});

@@ -88,7 +88,7 @@
 <ol>
   <li>To develop a computer-vision module in TypeScript using MediaPipe Tasks Vision (Pose Landmarker and Hand Landmarker) that runs in the browser, detects upper-body and hand landmarks, and computes elbow angle, compression cadence and hand position in real time.</li>
   <li>To implement real-time feedback on the live camera view, including elbow-lock status, current cadence (BPM), a single prioritized coaching cue (for example, "Push faster", "Lock your elbows"), an optional metronome and optional spoken cues, together with step-by-step guidance through the 2025 AHA adult CPR sequence (breath prompts at the correct compression-to-breath ratio, a guided AED pause and the 2-minute compressor switch).</li>
-  <li>To build a local web dashboard (React and TypeScript, served by Node.js and Express with an SQLite database) that stores trainee profiles and consent, sessions, per-compression data and the trainer-confirmed CPR sequence; provides a live session monitor, leaderboard, history, CSV exports and a Certificate of Practice Completion; gives administrators, trainers and trainees role-appropriate access, including trainee sign-in accounts for reviewing their own progress and self-practice; and operates entirely offline.</li>
+  <li>To build a local web dashboard (React and TypeScript, served by Node.js and Express with an SQLite database) that stores trainee profiles and consent, sessions, per-compression data and the trainer-confirmed CPR sequence; provides a live session monitor, leaderboard, history, PDF reports with CSV exports, and a Certificate of Practice Completion; gives administrators, trainers and trainees role-appropriate access, including trainee sign-in accounts for reviewing their own progress and self-practice; and operates entirely offline.</li>
   <li>To design a low-cost DIY chest prop that can serve as a substitute for a commercial manikin during practice.</li>
   <li>To evaluate the system's detection accuracy (confusion matrix, precision, recall, F1-score and BPM error), trainees' adherence to the CPR procedure, and the system's quality using the ISO/IEC 25010 software quality model.</li>
 </ol>
@@ -111,7 +111,7 @@
   <li>Hand and finger tracking to check that the trainee's hands are stacked, one on top of the other.</li>
   <li>Practice on a DIY chest prop (high-density foam, stacked cardboard, or a rolled towel inside a shirt) marked with a target X.</li>
   <li>Optional sign-in accounts for trainees, created by an administrator, through which each trainee views their own progress and runs self-practice sessions.</li>
-  <li>Logging of trainee profiles and consent, session results, per-compression data, leaderboard ranking, CSV exports for analysis, and a printable Certificate of Practice Completion.</li>
+  <li>Logging of trainee profiles and consent, session results, per-compression data, leaderboard ranking, PDF reports and CSV exports for analysis, and a Certificate of Practice Completion downloadable as a PDF.</li>
 </ul>
 <p><strong>Delimitations.</strong></p>
 <ul>
@@ -218,7 +218,7 @@
     <li>Real-time feedback: elbow status, BPM, coaching cue, metronome</li>
     <li>Session accuracy, result, procedure score and summary chart</li>
     <li>Trainee history, personal progress page and leaderboard</li>
-    <li>CSV exports, certificate and accuracy evaluation</li>
+    <li>PDF and CSV reports, certificate and accuracy evaluation</li>
   </ul></div>
 </div>
 <p class="ipo-feedback">Figure 1. Conceptual framework. A feedback loop returns the output to the trainee, who adjusts posture and rhythm in the next compressions.</p>
