@@ -118,6 +118,10 @@ Each saved session also records the average camera frame rate and pose-inference
 - Only metrics are stored (times, BPM, elbow angles, lock state, procedure checklist). No images or video are saved.
 - Passwords are hashed with bcrypt. Sign-in uses a JWT signed with a random secret generated on first start (`server/.jwt_secret`, not committed). Changing a password or deactivating a user signs them out everywhere.
 
+## Online copy on Render (optional)
+
+The repository includes a Render Blueprint (`render.yaml`). See [docs/deploy-render.md](docs/deploy-render.md) for the steps, the free-plan data limits and how to keep data on a paid plan. Online, the first admin's password comes from the `LIFE_ADMIN_PASSWORD` setting (the local default is never used).
+
 ## Development
 
 ```bash
