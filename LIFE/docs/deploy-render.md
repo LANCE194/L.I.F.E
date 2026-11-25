@@ -48,3 +48,24 @@ the data).
 - Sign-in tokens use `JWT_SECRET`, which Render generates once; changing it signs everyone out.
 - Online, trainee data is subject to the Data Privacy Act of 2012 (RA 10173). Use the free plan
   only with test data, and obtain consent before storing real trainee records online.
+
+## Can't sign in as admin?
+
+Open the service's **Logs** on Render and look at the lines printed when the server started.
+
+1. **"NOTE: a new, empty database was created"**: on the free plan the database is erased after
+   every sleep (about 15 minutes without visitors), restart or redeploy. Any password you chose
+   after signing in is gone; sign in again with your `LIFE_ADMIN_PASSWORD` value and choose a new
+   one. To keep data, use a paid instance with a disk.
+2. **"One-time password: ..."**: `LIFE_ADMIN_PASSWORD` was missing or shorter than 12 characters
+   when the server started; sign in with the printed password.
+3. **"Too many failed attempts"** on the sign-in page: wait 5 minutes (or restart the service).
+4. **Still stuck**: under **Environment**, set `LIFE_ADMIN_PASSWORD` (12+ characters) and add
+   `LIFE_RESET_ADMIN` = `1`, save, and redeploy. The admin password is reset to that value at
+   startup. After signing in, delete `LIFE_RESET_ADMIN` again.
+
+The username is `admin` (capitals don't matter). Spaces around the `LIFE_ADMIN_PASSWORD` value
+are ignored.
+
+Services created from a **Public Git Repository** URL do not redeploy automatically when you
+push; use **Manual Deploy → Deploy latest commit** to get new versions.

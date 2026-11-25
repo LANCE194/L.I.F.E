@@ -114,11 +114,15 @@ function migrateUsersForTraineeAccounts() {
 /**
  * Open the database and apply the schema. Safe to call more than once.
  */
+/** True when initializeDatabase() created a brand-new database file (no earlier data). */
+export let databaseIsNew = false;
+
 export function initializeDatabase() {
     if (db) return db;
 
     const dbPath = resolveDbPath();
     fs.mkdirSync(path.dirname(dbPath), { recursive: true });
+    databaseIsNew = !fs.existsSync(dbPath);
 
     db = new Database(dbPath);
     db.pragma('journal_mode = WAL');

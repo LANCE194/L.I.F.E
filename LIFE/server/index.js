@@ -8,7 +8,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import path from 'path';
 import { fileURLToPath, pathToFileURL } from 'url';
-import { initializeDatabase, closeDatabase, resolveDbPath } from './db.js';
+import { initializeDatabase, closeDatabase, resolveDbPath, databaseIsNew } from './db.js';
 import { startAutoBackups } from './lib/autoBackup.js';
 import { getJwtSecret } from './lib/secret.js';
 
@@ -139,6 +139,11 @@ export function createApp() {
 function startServer() {
     try {
         initializeDatabase();
+        if (CLOUD && databaseIsNew) {
+            console.log('NOTE: a new, empty database was created. On hosting without a persistent disk (e.g. the');
+            console.log('      Render free plan) this happens after every restart, redeploy or sleep: earlier trainees,');
+            console.log('      accounts, sessions and changed passwords are gone, and the admin password is reset.');
+        }
         getJwtSecret();
         seedAdmin();
         startAutoBackups(resolveDbPath());

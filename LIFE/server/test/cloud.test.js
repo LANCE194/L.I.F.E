@@ -60,3 +60,24 @@ test('behind the proxy, one visitor\'s failed sign-ins do not lock out others', 
     assert.equal((await login('admin', 'Cloud-Admin-Pass-2026', '203.0.113.9')).status, 200);
     resetLoginLockouts();
 });
+
+test('LIFE_RESET_ADMIN=1 resets the admin password (spaces around the value are ignored)', async () => {
+    resetLoginLockouts();
+    process.env.LIFE_RESET_ADMIN = '1';
+    process.env.LIFE_ADMIN_PASSWORD = '  New-Cloud-Pass-99  ';
+    seedAdmin();
+    assert.equal((await login('admin', 'Cloud-Admin-Pass-2026', '203.0.113.20')).status, 401);
+    const ok = await login('Admin', 'New-Cloud-Pass-99', '203.0.113.20');
+    assert.equal(ok.status, 200);
+    assert.equal((await ok.json()).user.must_change_password, true);
+});
+
+test('a too-short LIFE_ADMIN_PASSWORD never crashes startup and is not used', async () => {
+    resetLoginLockouts();
+    process.env.LIFE_RESET_ADMIN = '1';
+    process.env.LIFE_ADMIN_PASSWORD = 'short';
+    assert.doesNotThrow(() => seedAdmin()); // a random one-time password is printed instead
+    assert.equal((await login('admin', 'short', '203.0.113.30')).status, 401);
+    assert.equal((await login('admin', 'New-Cloud-Pass-99', '203.0.113.30')).status, 401);
+    delete process.env.LIFE_RESET_ADMIN;
+});
