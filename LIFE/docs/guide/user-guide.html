@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>How to Use Project L.I.F.E. - Easy Guide</title>
+<style>
+  @page { size: A4; margin: 14mm 14mm 16mm 14mm; @bottom-center { content: "Project L.I.F.E. Easy Guide  \2014  page " counter(page); font: 9pt Arial, sans-serif; color: #5b6880; } }
+  @page :first { @bottom-center { content: none; } }
+  html { font-family: Arial, Helvetica, sans-serif; font-size: 12pt; color: #0f2240; }
+  body { margin: 0; line-height: 1.45; }
+  h1, h2, h3 { color: #0a2e56; margin: 0; }
+  .page-break { break-before: page; }
+
+  /* Cover */
+  .cover { height: 262mm; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+  .cover img { width: 62mm; height: 62mm; margin-bottom: 8mm; }
+  .cover h1 { font-size: 30pt; }
+  .cover h1 span { color: #a81638; }
+  .cover .sub { font-size: 15pt; color: #8a6420; margin: 3mm 0 10mm; }
+  .cover .url { font-size: 15pt; font-weight: 700; color: #0a2e56; background: #f5f6fa; border: 2px solid #e3b657; border-radius: 8px; padding: 4mm 8mm; margin-bottom: 8mm; }
+  .cover .login { display: inline-grid; grid-template-columns: auto auto; gap: 2mm 6mm; text-align: left; font-size: 14pt; background: #0a2e56; color: #fff; border-radius: 8px; padding: 5mm 9mm; }
+  .cover .login b { color: #e3b657; }
+  .cover .login code { font-family: Consolas, monospace; font-size: 15pt; }
+  .cover .need { margin-top: 10mm; font-size: 12pt; color: #3b4a63; }
+
+  /* Steps */
+  .part { background: linear-gradient(90deg, #021640, #0a2e56); color: #fff; border-radius: 8px; padding: 4mm 6mm; margin: 0 0 6mm; border-left: 6px solid #e3b657; }
+  .part h2 { color: #fff; font-size: 17pt; }
+  .part p { margin: 1mm 0 0; color: #f2df9f; font-size: 11pt; }
+  .step h3 { break-after: avoid; }
+  .step { display: grid; grid-template-columns: 14mm 1fr; gap: 4mm; margin-bottom: 6mm; break-inside: avoid; }
+  .num { width: 12mm; height: 12mm; border-radius: 50%; background: #a81638; color: #fff; font-size: 17pt; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+  .step h3 { font-size: 15pt; margin: 1.5mm 0 2mm; }
+  .step p { margin: 0 0 2mm; }
+  .step ol, .step ul { margin: 0 0 2mm; padding-left: 6mm; }
+  .step li { margin-bottom: 1.2mm; }
+  .shot { display: block; max-width: 100%; border: 1px solid #dde2ea; border-radius: 6px; box-shadow: 0 1px 4px rgba(2,22,64,0.12); margin: 2mm 0 1mm; }
+  .shot.small { max-width: 62%; }
+  .shot.mid { max-width: 78%; }
+  .caption { font-size: 9.5pt; color: #5b6880; margin: 0 0 2mm; }
+  .key { background: #fff3c4; border-radius: 4px; padding: 0 2mm; font-weight: 700; font-family: Consolas, monospace; }
+  .btn { display: inline-block; background: #0a2e56; color: #fff; border-radius: 4px; padding: 0 2mm; font-weight: 700; font-size: 10.5pt; }
+  .tip, .warn { border-radius: 6px; padding: 3mm 4mm; margin: 2mm 0; font-size: 11pt; break-inside: avoid; }
+  .tip { background: #ecf7f0; border-left: 5px solid #1e8a4c; }
+  .warn { background: #fdf0f3; border-left: 5px solid #a81638; }
+  .tip b, .warn b { display: block; margin-bottom: 1mm; }
+  .side { display: grid; grid-template-columns: 1fr 1fr; gap: 5mm; align-items: start; }
+  .camera-wrap { position: relative; display: inline-block; max-width: 100%; }
+  .camera-wrap .cover-cam { position: absolute; left: 0.9%; top: 13.6%; width: 58.3%; height: 59.8%; background: rgba(2,22,64,0.92); color: #f2df9f; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 12pt; font-weight: 700; border-radius: 5px; padding: 2mm; }
+
+  /* Messages */
+  .msgs { display: grid; grid-template-columns: auto 1fr; gap: 2mm 4mm; align-items: center; margin: 2mm 0; }
+  .msg { display: inline-block; border-radius: 6px; padding: 1.5mm 3mm; font-weight: 700; color: #fff; font-size: 11.5pt; white-space: nowrap; }
+  .m-good { background: #1e8a4c; } .m-bad { background: #a81638; } .m-warn { background: #c98a12; } .m-info { background: #1f5f99; }
+
+  table { width: 100%; border-collapse: collapse; margin: 2mm 0 4mm; font-size: 11pt; break-inside: avoid; }
+  th { background: #0a2e56; color: #fff; text-align: left; padding: 2mm 3mm; }
+  td { border-bottom: 1px solid #dde2ea; padding: 2.2mm 3mm; vertical-align: top; }
+  td:first-child { font-weight: 700; width: 38%; }
+
+  /* Quick card */
+  .card { border: 3px solid #0a2e56; border-radius: 10px; padding: 6mm 7mm; }
+  .card h2 { font-size: 18pt; margin-bottom: 1mm; }
+  .card .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3mm 8mm; margin-top: 4mm; }
+  .card .item { display: grid; grid-template-columns: 9mm 1fr; gap: 2mm; align-items: start; }
+  .card .n { width: 8mm; height: 8mm; border-radius: 50%; background: #e3b657; color: #021640; font-weight: 800; display: flex; align-items: center; justify-content: center; }
+</style>
+</head>
+<body>
+
+<!-- ===================== COVER ===================== -->
+<section class="cover">
+  <img src="../../dashboard/public/brand/logo-256.png" alt="Project L.I.F.E. emblem">
+  <h1>How to Use L.I.F.E<span>.</span></h1>
+  <div class="sub">Easy step-by-step guide for trainers and trainees</div>
+  <div class="url">https://l-i-f-e.onrender.com</div>
+  <div class="login">
+    <b>Username</b><code>admin</code>
+    <b>Password</b><code>LifeCPR@2026</code>
+  </div>
+  <div class="need">
+    <strong>You need:</strong> a laptop with a camera &nbsp;·&nbsp; Chrome or Edge &nbsp;·&nbsp; a chest prop on the floor<br>
+    (folded foam, stacked cardboard, or a rolled towel)
+  </div>
+</section>
+
+<!-- ===================== PART A ===================== -->
+<section class="page-break">
+  <div class="part"><h2>Part A &mdash; For the trainer</h2><p>Sign in, add a trainee, set up the camera and run a 2-minute CPR practice.</p></div>
+
+  <div class="warn"><b>&#9888; Read first (online website)</b>
+    The free website <strong>forgets everything after about 15 minutes with no visitors</strong>: trainees, their usernames and results.
+    Do the whole practice <strong>in one sitting</strong>. The admin sign-in always works.
+    To keep records, use the laptop version (the <strong>L.I.F.E.</strong> shortcut on the Desktop), which never forgets.
+  </div>
+
+  <div class="step">
+    <div class="num">1</div>
+    <div>
+      <h3>Open the website</h3>
+      <p>Open <strong>Chrome</strong> or <strong>Edge</strong> and go to <span class="key">https://l-i-f-e.onrender.com</span></p>
+      <div class="tip"><b>&#10004; Slow to open?</b>Wait about <strong>1 minute</strong>. The free website was sleeping and is waking up. Don&rsquo;t keep refreshing.</div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="num">2</div>
+    <div>
+      <h3>Sign in</h3>
+      <div class="side">
+        <img class="shot" src="img/01-sign-in.png" alt="Sign-in page">
+        <div>
+          <p>Type:</p>
+          <ul>
+            <li><strong>Username:</strong> <span class="key">admin</span></li>
+            <li><strong>Password:</strong> <span class="key">LifeCPR@2026</span></li>
+          </ul>
+          <p>Click <span class="btn">Sign In</span>.</p>
+          <p>You will see the <strong>Dashboard</strong> (the home screen).</p>
+          <div class="tip"><b>&#10004; Tip</b>Capital letters in the username don&rsquo;t matter. After 5 wrong tries, wait 5 minutes.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="step">
+    <div class="num">3</div>
+    <div>
+      <h3>Add a trainee</h3>
+      <ol>
+        <li>On the left menu, click <strong>Trainees</strong>, then <span class="btn">+ Add Trainee</span>.</li>
+        <li>Type the trainee&rsquo;s <strong>full name</strong> (and organization, if any).</li>
+        <li><strong>Tick the consent box.</strong> Without it, results can&rsquo;t be saved.</li>
+        <li>Leave <strong>&ldquo;Create a sign-in account&rdquo;</strong> ticked, so the trainee can see their own results.</li>
+        <li>Click <span class="btn">Add trainee</span>.</li>
+      </ol>
+      <img class="shot mid" src="img/03a-add-trainee.png" alt="Add trainee form">
+      <p class="caption">The Add Trainee form: name, organization and the consent box.</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="num">4</div>
+    <div>
+      <h3>Give the trainee their sign-in slip</h3>
+      <div class="side">
+        <img class="shot" src="img/03b-sign-in-slip.png" alt="Sign-in account created">
+        <div>
+          <p>A box shows the trainee&rsquo;s <strong>username</strong> and <strong>temporary password</strong>.</p>
+          <p>Click <span class="btn">Print slip</span> or write them down, then click <span class="btn">Done</span>.</p>
+          <div class="warn"><b>&#9888; Shown only once</b>If you lose it, click the <strong>reset</strong> button (circular arrows) on the trainee&rsquo;s row to get a new password.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="step">
+    <div class="num">5</div>
+    <div>
+      <h3>Set up the camera</h3>
+      <div class="side">
+        <div>
+          <img class="shot" src="img/04-camera-position.png" alt="Correct position seen from the side">
+          <p class="caption">Seen from the side: arms straight (green), shoulders over the hands.</p>
+        </div>
+        <div>
+          <ul>
+            <li>Put the chest prop on the <strong>floor</strong>.</li>
+            <li>Place the laptop <strong>beside</strong> the trainee (not in front), about <strong>2 metres</strong> away, at chest height.</li>
+            <li>The trainee&rsquo;s <strong>shoulder, elbow and wrist</strong> must be on screen.</li>
+            <li>Use a <strong>bright room</strong>, with no bright window behind the trainee.</li>
+            <li>Only one person in view.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="num">6</div>
+    <div>
+      <h3>Open the Live Session and check the camera</h3>
+      <ol>
+        <li>Click <strong>Live Session</strong> on the left menu.</li>
+        <li>Choose the <strong>trainee</strong> at the top.</li>
+        <li>Click <strong>Allow</strong> when the browser asks to use the camera.</li>
+        <li>Wait until all 4 checks under <strong>&ldquo;Before you start&rdquo;</strong> are <strong style="color:#1e8a4c">green &#10004;</strong>.</li>
+      </ol>
+      <div class="camera-wrap">
+        <img class="shot" src="img/05a-live-top.png" alt="Live Session page">
+        <div class="cover-cam">Your camera picture<br>appears here</div>
+      </div>
+      <div class="tip"><b>&#10004; Checks not turning green?</b>Step back so the whole arm is on screen, and turn sideways to the camera.</div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="step">
+    <div class="num">7</div>
+    <div>
+      <h3>Tick the CPR steps in order, then start</h3>
+      <div class="side">
+        <img class="shot" src="img/05b-steps-call-911.png" alt="CPR steps panel">
+        <div>
+          <p>In the <strong>&ldquo;Adult CPR, step by step&rdquo;</strong> panel, tick each box <strong>in order</strong> as the trainee does it. The next box unlocks after the one before.</p>
+          <ol>
+            <li>Scene is safe</li>
+            <li>Tapped the shoulder and shouted &ldquo;Are you OK?&rdquo;, no response</li>
+            <li>Not breathing, or only gasping</li>
+            <li>911 called and someone sent for an AED</li>
+          </ol>
+          <p>Then click <span class="btn">&#9654; Start compressions</span>. A <strong>3-2-1</strong> countdown starts the 2-minute timer.</p>
+          <div class="tip"><b>&#10004; Default setting</b>Adult, 1 rescuer, <strong>30:2</strong> (30 pushes, then 2 breaths). Change it in step 4 of the panel if needed.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="num">8</div>
+    <div>
+      <h3>Do CPR for 2 minutes</h3>
+      <ul>
+        <li>Push <strong>hard and fast</strong> in the middle of the chest.</li>
+        <li>Keep your <strong>arms straight</strong>. On screen, the arm turns <strong style="color:#1e8a4c">green</strong> when correct and <strong style="color:#a81638">red</strong> when bent.</li>
+        <li>Read the big message on the screen and follow it:</li>
+      </ul>
+      <div class="msgs">
+        <span class="msg m-good">Good &mdash; keep going</span><span>You are doing it right.</span>
+        <span class="msg m-bad">Push faster</span><span>Too slow. Aim for 100&ndash;120 pushes per minute.</span>
+        <span class="msg m-bad">Slow down</span><span>Too fast.</span>
+        <span class="msg m-bad">Lock your elbows</span><span>Straighten your arms.</span>
+        <span class="msg m-info">30 done: give 2 breaths</span><span>Give 2 breaths, then continue pushing.</span>
+        <span class="msg m-bad">Stop &mdash; give 2 breaths now</span><span>You kept pushing after 30. Give the 2 breaths.</span>
+        <span class="msg m-bad">Resume compressions now</span><span>The pause was too long (over 10 seconds).</span>
+      </div>
+      <div class="tip"><b>&#10004; Help with the rhythm</b>Turn on <strong>Metronome</strong> (a beat at 110 per minute) or <strong>Voice cues</strong> at the top of the page.</div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="step">
+    <div class="num">9</div>
+    <div>
+      <h3>See the result</h3>
+      <p>When the 2 minutes are up, the result appears. You can open it again later from <strong>History</strong>.</p>
+      <img class="shot" src="img/06-results.png" alt="Session result">
+      <ul>
+        <li><strong>Accuracy:</strong> <span style="color:#1e8a4c;font-weight:700">Pass</span> if <strong>80% or more</strong>.</li>
+        <li><strong>Correct / Incorrect:</strong> pushes with straight arms at the right speed.</li>
+        <li><strong>Procedure followed:</strong> how many CPR steps were done in the right order.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="num">10</div>
+    <div>
+      <h3>Download reports and certificates (PDF)</h3>
+      <p>Click <strong>Reports &amp; Export</strong> on the left menu.</p>
+      <img class="shot mid" src="img/07-reports.png" alt="Reports and Export page">
+      <ul>
+        <li><span class="btn">Download sessions (PDF)</span>: all results.</li>
+        <li><span class="btn">Download trainee list (PDF)</span>: all trainees.</li>
+        <li><strong>Certificate:</strong> scroll down, choose the session, click <strong>Generate certificate</strong>, then <strong>Download PDF</strong> or <strong>Print</strong>.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== PART B ===================== -->
+<section class="page-break">
+  <div class="part"><h2>Part B &mdash; For the trainee</h2><p>See your own results and practise by yourself.</p></div>
+
+  <div class="step">
+    <div class="num">1</div>
+    <div>
+      <h3>Sign in with your slip</h3>
+      <ol>
+        <li>Open <span class="key">https://l-i-f-e.onrender.com</span></li>
+        <li>Type the <strong>username</strong> and <strong>temporary password</strong> from your slip.</li>
+        <li>Choose your <strong>own new password</strong> (at least 8 characters) and click <span class="btn">Save and continue</span>.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="num">2</div>
+    <div>
+      <h3>See your progress</h3>
+      <p>Your page shows your number of sessions, your best and average accuracy, a tip for next time, and all your results.</p>
+      <img class="shot" src="img/08-my-progress.png" alt="My Progress page">
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="num">3</div>
+    <div>
+      <h3>Practise by yourself</h3>
+      <p>Click <strong>Practice</strong> on the left menu. It works like the trainer&rsquo;s Live Session (steps 5&ndash;9 in Part A), using your own name.
+      Practice results appear in <strong>My Progress</strong>, but they don&rsquo;t count on the leaderboard.</p>
+      <p>Click <strong>CPR Guide</strong> to review the CPR steps any time.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== PART C ===================== -->
+<section class="page-break">
+  <div class="part"><h2>Part C &mdash; Problems and quick fixes</h2><p>Most problems are fixed in a few seconds.</p></div>
+  <table>
+    <tr><th>Problem</th><th>What to do</th></tr>
+    <tr><td>The website is slow to open</td><td>Wait about 1 minute. It was sleeping.</td></tr>
+    <tr><td>&ldquo;Invalid username or password&rdquo; (admin)</td><td>Use <span class="key">admin</span> and <span class="key">LifeCPR@2026</span>.</td></tr>
+    <tr><td>A trainee can&rsquo;t sign in</td><td>On the free website, trainees are forgotten after about 15 minutes with no visitors. Add the trainee again and give them a new slip.</td></tr>
+    <tr><td>&ldquo;Too many failed attempts&rdquo;</td><td>Wait 5 minutes, then try again.</td></tr>
+    <tr><td>The camera doesn&rsquo;t start</td><td>Click the camera icon in the address bar and choose <strong>Allow</strong>. Close other apps that use the camera (Zoom, Messenger).</td></tr>
+    <tr><td>&ldquo;Start compressions&rdquo; is grey</td><td>Wait until all 4 checks are green, and tick the 4 CPR steps in order.</td></tr>
+    <tr><td>&ldquo;No person detected&rdquo;</td><td>Step back, turn on more lights, and turn sideways to the camera.</td></tr>
+    <tr><td>Pushes are not counted</td><td>Move the laptop a little closer (about 2 metres) and keep the arm in view.</td></tr>
+    <tr><td>The result can&rsquo;t be saved</td><td>The trainee&rsquo;s consent is missing: go to <strong>Trainees</strong>, click <strong>Edit</strong>, tick consent.</td></tr>
+  </table>
+
+  <div class="warn"><b>&#9888; Remember</b>
+    L.I.F.E. is a <strong>practice tool</strong>, not a CPR certificate. The camera checks the speed, straight arms and stacked hands.
+    The trainer still watches how deep the pushes are (at least 5 cm), full chest recoil, the hand position on the chest, and the breaths.
+  </div>
+  <div class="tip"><b>&#10004; In a real emergency</b>Call <strong>911</strong>. Push hard and fast in the middle of the chest, 100&ndash;120 per minute, until help arrives.</div>
+</section>
+
+<!-- ===================== QUICK CARD ===================== -->
+<section class="page-break">
+  <div class="card">
+    <h2>Quick card: one CPR practice</h2>
+    <p style="margin:0;color:#5b6880">Print this page and keep it next to the laptop.</p>
+    <div class="grid">
+      <div class="item"><div class="n">1</div><div><strong>Open</strong> l-i-f-e.onrender.com<br>(wait 1 minute if slow)</div></div>
+      <div class="item"><div class="n">2</div><div><strong>Sign in:</strong> admin / LifeCPR@2026</div></div>
+      <div class="item"><div class="n">3</div><div><strong>Trainees</strong> &rarr; Add Trainee &rarr; name &rarr; <strong>tick consent</strong> &rarr; Add trainee &rarr; print slip</div></div>
+      <div class="item"><div class="n">4</div><div><strong>Laptop beside</strong> the trainee, about 2 m away, bright room</div></div>
+      <div class="item"><div class="n">5</div><div><strong>Live Session</strong> &rarr; choose trainee &rarr; <strong>Allow</strong> camera</div></div>
+      <div class="item"><div class="n">6</div><div>Wait for <strong>4 green checks</strong></div></div>
+      <div class="item"><div class="n">7</div><div>Tick the <strong>4 CPR steps</strong> in order</div></div>
+      <div class="item"><div class="n">8</div><div><strong>Start compressions</strong> &rarr; 2 minutes, arms straight, follow the messages</div></div>
+      <div class="item"><div class="n">9</div><div><strong>Result:</strong> Pass if 80% or more</div></div>
+      <div class="item"><div class="n">10</div><div><strong>Reports &amp; Export</strong> &rarr; PDF results and certificate</div></div>
+    </div>
+    <div class="warn" style="margin-top:6mm"><b>&#9888; Free website</b>Everything is forgotten after about 15 minutes with no visitors. Finish in one sitting.</div>
+  </div>
+</section>
+
+</body>
+</html>
