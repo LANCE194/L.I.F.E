@@ -53,3 +53,24 @@ test('v2 users table is rebuilt with the trainee role, keeping existing accounts
     closeDatabase();
     fs.rmSync(dir, { recursive: true, force: true });
 });
+
+test('v4: databases on the old peak-prominence default move to the calibrated value; custom values stay', async () => {
+    const { createRequire } = await import('module');
+    const Db = createRequire(import.meta.url)('better-sqlite3');
+    const { fileURLToPath } = await import('url');
+    const helper = fileURLToPath(new URL('./migration-v4-helper.mjs', import.meta.url));
+    const { execFileSync } = await import('child_process');
+    for (const [stored, expected] of [['0.02', '0.012'], ['0.025', '0.025']]) {
+        const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'life-v4-'));
+        const dbPath = path.join(dir, 'v3.db');
+        const db = new Db(dbPath);
+        db.exec(fs.readFileSync(new URL('../../database/schema.sql', import.meta.url), 'utf-8'));
+        db.prepare("INSERT OR REPLACE INTO settings (key, value) VALUES ('schema_version', '3')").run();
+        db.prepare("UPDATE settings SET value = ? WHERE key = 'peak_prominence'").run(stored);
+        db.close();
+        // Run the upgrade in a separate process (db.js keeps one open database per process).
+        const out = execFileSync(process.execPath, [helper, dbPath], { encoding: 'utf-8' }).trim();
+        assert.deepEqual(JSON.parse(out), { peak_prominence: expected, schema_version: '4' });
+        fs.rmSync(dir, { recursive: true, force: true });
+    }
+});

@@ -76,7 +76,7 @@ Edited on the Settings page (admin only). The server rejects values outside thes
 | `smoothing_window` | 5 | 1–20 | Frames averaged for the angle |
 | `visibility_threshold` | 0.5 | 0.1–1 | Minimum landmark visibility |
 | `min_peak_distance_ms` | 400 | 200–1000 | Minimum time between compressions |
-| `peak_prominence` | 0.02 | 0.002–0.2 | Minimum wrist movement (fraction of frame height) |
+| `peak_prominence` | 0.012 | 0.002–0.2 | Minimum wrist movement (fraction of frame height); calibrated for a webcam 1.5–2.5 m away |
 | `bpm_window_intervals` | 4 | 2–10 | Intervals used for the live BPM |
 | `bpm_min` / `bpm_max` | 100 / 120 | 60–120 / 100–160 | Target rate |
 | `session_duration_sec` | 120 | 30–600 | Session length |

@@ -69,7 +69,7 @@ INSERT OR IGNORE INTO settings (key, value) VALUES
     ('angle_threshold', '160'),
     ('smoothing_window', '5'),
     ('min_peak_distance_ms', '400'),
-    ('peak_prominence', '0.02'),
+    ('peak_prominence', '0.012'),
     ('bpm_min', '100'),
     ('bpm_max', '120'),
     ('session_duration_sec', '120'),

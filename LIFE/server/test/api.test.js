@@ -249,12 +249,23 @@ test('date range filters include the whole end day', async () => {
 });
 
 test('sessions-today uses the client time zone', async () => {
-    // A session at 23:30 UTC is "tomorrow" in the Philippines (UTC+8).
-    prepare("UPDATE sessions SET date_time = datetime('now', 'start of day', '+23 hours', '+30 minutes')").run();
-    const utc = await api('GET', '/api/stats/dashboard?tz_offset_min=0', { token: trainerToken });
-    const manila = await api('GET', '/api/stats/dashboard?tz_offset_min=-480', { token: trainerToken });
-    assert.equal(utc.json.stats.sessions_today, 1);
-    assert.equal(manila.json.stats.sessions_today, 0);
+    // A session 30 minutes from a UTC midnight falls on different calendar days depending on
+    // the viewer's time zone. Times are chosen relative to now so the test passes at any hour.
+    const utcHour = new Date().getUTCHours();
+    let expectations;
+    if (utcHour < 22) {
+        // Yesterday 23:30 UTC: "yesterday" in UTC, but 00:30 "today" one hour east (UTC+1).
+        prepare("UPDATE sessions SET date_time = datetime('now', 'start of day', '-30 minutes')").run();
+        expectations = [['0', 0], ['-60', 1]];
+    } else {
+        // Today 00:30 UTC: "today" in UTC, but 23:30 "yesterday" one hour west (UTC-1).
+        prepare("UPDATE sessions SET date_time = datetime('now', 'start of day', '+30 minutes')").run();
+        expectations = [['0', 1], ['60', 0]];
+    }
+    for (const [offset, expected] of expectations) {
+        const res = await api('GET', `/api/stats/dashboard?tz_offset_min=${offset}`, { token: trainerToken });
+        assert.equal(res.json.stats.sessions_today, expected, `tz_offset_min=${offset}`);
+    }
 });
 
 test('certificate escapes HTML and CSV export neutralizes formulas', async () => {

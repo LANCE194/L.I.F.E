@@ -34,7 +34,7 @@ export const SETTING_GROUPS: { title: string; description: string; fields: Field
     description: 'Compression detection and the target rate',
     fields: [
       { key: 'min_peak_distance_ms', label: 'Min time between compressions (ms)', min: 200, max: 1000, step: 10, integer: true, defaultValue: 400, help: 'Peaks closer together than this are merged.' },
-      { key: 'peak_prominence', label: 'Peak prominence', min: 0.002, max: 0.2, step: 0.001, defaultValue: 0.02, help: 'Minimum wrist movement (fraction of frame height) that counts as a compression.' },
+      { key: 'peak_prominence', label: 'Peak prominence', min: 0.002, max: 0.2, step: 0.001, defaultValue: 0.012, help: 'Minimum wrist movement (fraction of frame height) that counts as a compression. Calibrated for a laptop webcam 1.5–2.5 m away.' },
       { key: 'bpm_window_intervals', label: 'BPM from last N compressions', min: 2, max: 10, step: 1, integer: true, defaultValue: 4, help: 'How many recent intervals the live BPM uses. Lower reacts faster; higher is steadier.' },
       { key: 'bpm_min', label: 'Target rate: min BPM', min: 60, max: 120, step: 1, integer: true, defaultValue: 100, help: 'Lower bound of the "In range" cadence.' },
       { key: 'bpm_max', label: 'Target rate: max BPM', min: 100, max: 160, step: 1, integer: true, defaultValue: 120, help: 'Upper bound of the "In range" cadence.' },

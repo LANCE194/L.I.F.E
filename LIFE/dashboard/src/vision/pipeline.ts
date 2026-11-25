@@ -21,6 +21,8 @@ export interface PipelineConfig {
   bpmMin: number;
   bpmMax: number;
   bpmWindowIntervals: number;
+  /** Optional override of the cadence jitter-smoothing half-window (ms). */
+  smoothingHalfWindowMs?: number;
 }
 
 export const DEFAULT_PIPELINE_CONFIG: PipelineConfig = {
@@ -28,7 +30,7 @@ export const DEFAULT_PIPELINE_CONFIG: PipelineConfig = {
   smoothingWindow: 5,
   visibilityThreshold: 0.5,
   minPeakDistanceMs: 400,
-  peakProminence: 0.02,
+  peakProminence: 0.012,
   bpmMin: 100,
   bpmMax: 120,
   bpmWindowIntervals: 4,
@@ -129,6 +131,7 @@ export class SessionPipeline {
       bpmMin: c.bpmMin,
       bpmMax: c.bpmMax,
       bpmWindowIntervals: c.bpmWindowIntervals,
+      ...(c.smoothingHalfWindowMs !== undefined ? { smoothingHalfWindowMs: c.smoothingHalfWindowMs } : {}),
     });
     this.scorer.setConfig({ bpmMin: c.bpmMin, bpmMax: c.bpmMax });
   }

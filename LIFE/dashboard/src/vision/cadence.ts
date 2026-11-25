@@ -14,6 +14,9 @@
  *    the BPM down for the next several seconds.
  */
 
+/** Default half-width of the jitter-smoothing window (ms); see calibration.test.ts. */
+export const SMOOTHING_HALF_WINDOW_MS = 70;
+
 export interface CadenceConfig {
   bufferDurationMs: number;
   minPeakDistanceMs: number;
@@ -21,6 +24,7 @@ export interface CadenceConfig {
   prominenceWindowMs: number;
   bpmWindowIntervals: number;
   pauseGapMs: number;
+  smoothingHalfWindowMs: number;
   bpmMin: number;
   bpmMax: number;
 }
@@ -91,10 +95,11 @@ export class CadenceDetector {
     this.config = {
       bufferDurationMs: config.bufferDurationMs ?? 6000,
       minPeakDistanceMs: config.minPeakDistanceMs ?? 400,
-      peakProminence: config.peakProminence ?? 0.02,
+      peakProminence: config.peakProminence ?? 0.012,
       prominenceWindowMs: config.prominenceWindowMs ?? 300,
       bpmWindowIntervals: config.bpmWindowIntervals ?? 4,
       pauseGapMs: config.pauseGapMs ?? 1500,
+      smoothingHalfWindowMs: config.smoothingHalfWindowMs ?? SMOOTHING_HALF_WINDOW_MS,
       bpmMin: config.bpmMin ?? 100,
       bpmMax: config.bpmMax ?? 120,
     };
@@ -165,15 +170,22 @@ export class CadenceDetector {
     return { timestamp, intervalMs, bpm: this.currentBpm() };
   }
 
-  /** 3-sample centered moving average to suppress landmark jitter. */
+  /**
+   * Centered moving average over +-SMOOTHING_HALF_WINDOW_MS to suppress landmark jitter.
+   * Time-based so every frame rate from 15 to 30 fps averages at least 3 samples (calibrated
+   * in calibration.test.ts: wider windows flatten real compressions, narrower ones let jitter
+   * through at low frame rates).
+   */
   private smoothed(): Sample[] {
     const out: Sample[] = new Array(this.buffer.length);
+    let start = 0;
+    let end = 0;
+    let sum = 0;
     for (let i = 0; i < this.buffer.length; i += 1) {
-      const start = Math.max(0, i - 1);
-      const end = Math.min(this.buffer.length - 1, i + 1);
-      let sum = 0;
-      for (let j = start; j <= end; j += 1) sum += this.buffer[j].y;
-      out[i] = { t: this.buffer[i].t, y: sum / (end - start + 1) };
+      const t = this.buffer[i].t;
+      while (end < this.buffer.length && this.buffer[end].t <= t + this.config.smoothingHalfWindowMs) sum += this.buffer[end++].y;
+      while (this.buffer[start].t < t - this.config.smoothingHalfWindowMs) sum -= this.buffer[start++].y;
+      out[i] = { t, y: sum / (end - start) };
     }
     return out;
   }

@@ -64,7 +64,13 @@ function runMigrations() {
     db.exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_sessions_client_session_id ON sessions(client_session_id)');
     migrateUsersForTraineeAccounts();
     db.exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_users_trainee ON users(trainee_id) WHERE trainee_id IS NOT NULL');
-    db.prepare("INSERT OR REPLACE INTO settings (key, value) VALUES ('schema_version', '3')").run();
+    // Schema v4: calibrated default peak prominence 0.02 -> 0.012 (see dashboard calibration
+    // tests). Only databases still on the old default are changed; custom values are kept.
+    const version = Number(db.prepare("SELECT value FROM settings WHERE key = 'schema_version'").get()?.value || 0);
+    if (version < 4) {
+        db.prepare("UPDATE settings SET value = '0.012' WHERE key = 'peak_prominence' AND CAST(value AS REAL) = 0.02").run();
+    }
+    db.prepare("INSERT OR REPLACE INTO settings (key, value) VALUES ('schema_version', '4')").run();
 }
 
 /**
