@@ -93,8 +93,16 @@ export function createApp() {
     app.use('/api/me', meRoutes);
     app.use('/api/health', healthRoutes);
 
+    // Opening API addresses in a browser: explain instead of a bare "Not found".
+    app.get('/api', (req, res) => {
+        res.json({ service: 'L.I.F.E. API', status: 'ok', hint: 'This is the data interface. Open the site address without /api to use L.I.F.E.' });
+    });
+    app.get('/api/auth/login', (req, res) => {
+        res.status(405).json({ error: 'Sign in on the L.I.F.E. sign-in page; this address only accepts the form submission.' });
+    });
+
     app.use('/api', (req, res) => {
-        res.status(404).json({ error: 'Not found' });
+        res.status(404).json({ error: 'Not found', hint: 'Open the site address without /api to use L.I.F.E.' });
     });
 
     // Built React app. Hashed assets can be cached; index.html must always be revalidated.

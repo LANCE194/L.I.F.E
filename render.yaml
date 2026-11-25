@@ -24,10 +24,9 @@ services:
       # Signs sign-in tokens; Render generates a random value once.
       - key: JWT_SECRET
         generateValue: true
-      # Password for the first "admin" account (at least 12 characters). Render asks for it
-      # when the Blueprint is created; it must be changed at first sign-in.
-      - key: LIFE_ADMIN_PASSWORD
-        sync: false
+      # Admin sign-in works out of the box: username "admin", password "LifeCPR@2026".
+      # Optional: to use your own admin password instead (at least 12 characters), add an
+      # environment variable LIFE_ADMIN_PASSWORD in the Render dashboard.
       # Paid plan with a disk: store the database on the disk.
       # - key: LIFE_DB_PATH
       #   value: /var/data/life.db

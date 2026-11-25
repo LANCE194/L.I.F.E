@@ -10,8 +10,21 @@ import { pathToFileURL } from 'url';
 import { initializeDatabase, prepare, closeDatabase } from './db.js';
 
 export const INITIAL_ADMIN = { username: 'admin', password: 'admin123' };
+/** Built-in admin for the online demo (used when LIFE_ADMIN_PASSWORD is not set). */
+export const ONLINE_ADMIN = { username: 'admin', password: 'LifeCPR@2026' };
 
 const isCloud = () => Boolean(process.env.RENDER) || process.env.LIFE_CLOUD === '1';
+
+/**
+ * Online storage without a persistent disk (e.g. the Render free plan) loses the database on
+ * every restart. Override with LIFE_STORAGE=ephemeral|persistent; by default, online storage is
+ * persistent only when LIFE_DB_PATH points the database at a disk.
+ */
+export function isEphemeralCloud() {
+    if (!isCloud()) return false;
+    if (process.env.LIFE_STORAGE) return process.env.LIFE_STORAGE === 'ephemeral';
+    return !process.env.LIFE_DB_PATH;
+}
 
 /**
  * Password for a newly created first admin.
@@ -26,15 +39,43 @@ function initialAdminPassword() {
     if (configured) {
         console.error('LIFE_ADMIN_PASSWORD is shorter than 12 characters, so it was not used.');
     }
-    if (isCloud() || configured) return { password: crypto.randomBytes(12).toString('base64url'), source: 'random' };
+    if (isCloud()) return { password: ONLINE_ADMIN.password, source: 'online-default' };
+    if (configured) return { password: crypto.randomBytes(12).toString('base64url'), source: 'random' };
     return { password: INITIAL_ADMIN.password, source: 'default' };
 }
 
+/** Online without a disk the password must keep working after every wipe, so no forced change. */
+const mustChangeAfterSeed = () => (isEphemeralCloud() ? 0 : 1);
+
 function announce(source, password) {
-    if (source === 'env') console.log('  Password: the value of LIFE_ADMIN_PASSWORD.');
-    else if (source === 'random') console.log(`  One-time password: ${password}  (set LIFE_ADMIN_PASSWORD, at least 12 characters, to choose your own)`);
+    if (source === 'env') console.log('  Username: admin   Password: the value of LIFE_ADMIN_PASSWORD.');
+    else if (source === 'online-default') console.log(`  Username: admin   Password: ${ONLINE_ADMIN.password}  (built-in; set LIFE_ADMIN_PASSWORD to use your own)`);
+    else if (source === 'random') console.log(`  One-time password: ${password}`);
     else console.log('  Sign in with the initial password from the README.');
-    console.log('  You will be asked to choose a new password immediately.');
+    if (mustChangeAfterSeed()) console.log('  You will be asked to choose a new password at first sign-in.');
+    else console.log('  No persistent disk: this admin password is restored at every start (data is not kept).');
+}
+
+/** Online without a disk: make sure "admin" signs in with the configured password at every start. */
+function syncEphemeralAdmin() {
+    const { password, source } = initialAdminPassword();
+    const hash = bcrypt.hashSync(password, 10);
+    const admin = prepare('SELECT user_id, password_hash FROM users WHERE lower(username) = ?').get(ONLINE_ADMIN.username);
+    if (admin) {
+        if (!bcrypt.compareSync(password, admin.password_hash)) {
+            prepare(`UPDATE users SET password_hash = ?, role = 'admin', trainee_id = NULL, is_active = 1, must_change_password = 0,
+                     token_version = token_version + 1 WHERE user_id = ?`).run(hash, admin.user_id);
+        } else {
+            prepare("UPDATE users SET role = 'admin', trainee_id = NULL, is_active = 1, must_change_password = 0 WHERE user_id = ?")
+                .run(admin.user_id);
+        }
+    } else {
+        prepare("INSERT INTO users (username, password_hash, role, must_change_password) VALUES (?, ?, 'admin', 0)")
+            .run(ONLINE_ADMIN.username, hash);
+    }
+    console.log('Online admin account ready.');
+    announce(source, password);
+    return prepare('SELECT user_id FROM users WHERE lower(username) = ?').get(ONLINE_ADMIN.username).user_id;
 }
 
 /**
@@ -48,11 +89,11 @@ function resetAdminIfRequested() {
     const hash = bcrypt.hashSync(password, 10);
     const admin = prepare('SELECT user_id FROM users WHERE lower(username) = ?').get(INITIAL_ADMIN.username);
     if (admin) {
-        prepare(`UPDATE users SET password_hash = ?, role = 'admin', trainee_id = NULL, is_active = 1, must_change_password = 1,
-                 token_version = token_version + 1 WHERE user_id = ?`).run(hash, admin.user_id);
+        prepare(`UPDATE users SET password_hash = ?, role = 'admin', trainee_id = NULL, is_active = 1, must_change_password = ?,
+                 token_version = token_version + 1 WHERE user_id = ?`).run(hash, mustChangeAfterSeed(), admin.user_id);
     } else {
-        prepare("INSERT INTO users (username, password_hash, role, must_change_password) VALUES (?, ?, 'admin', 1)")
-            .run(INITIAL_ADMIN.username, hash);
+        prepare("INSERT INTO users (username, password_hash, role, must_change_password) VALUES (?, ?, 'admin', ?)")
+            .run(INITIAL_ADMIN.username, hash, mustChangeAfterSeed());
     }
     console.log('LIFE_RESET_ADMIN=1: the "admin" account was reset. Remove LIFE_RESET_ADMIN after signing in.');
     announce(source, password);
@@ -64,14 +105,15 @@ export function seedAdmin() {
     if (resetAdminIfRequested()) {
         return { user_id: prepare("SELECT user_id FROM users WHERE lower(username) = 'admin'").get().user_id, created: false };
     }
+    if (isEphemeralCloud()) return { user_id: syncEphemeralAdmin(), created: false };
 
     const existingAdmin = prepare("SELECT user_id FROM users WHERE role = 'admin' LIMIT 1").get();
     if (!existingAdmin) {
         const { password, source } = initialAdminPassword();
         const result = prepare(`
             INSERT INTO users (username, password_hash, role, must_change_password)
-            VALUES (?, ?, 'admin', 1)
-        `).run(INITIAL_ADMIN.username, bcrypt.hashSync(password, 10));
+            VALUES (?, ?, 'admin', ?)
+        `).run(INITIAL_ADMIN.username, bcrypt.hashSync(password, 10), mustChangeAfterSeed());
 
         console.log('Initial admin account created (username "admin").');
         announce(source, password);
@@ -87,8 +129,8 @@ export function seedAdmin() {
             const { password, source } = initialAdminPassword();
             prepare('UPDATE users SET password_hash = ?, must_change_password = 1, token_version = token_version + 1 WHERE user_id = ?')
                 .run(bcrypt.hashSync(password, 10), defaultAccount.user_id);
-            console.log('The admin account used the default password; it has been replaced.');
-            if (source === 'random') console.log(`  One-time password: ${password}`);
+            console.log('The admin account used the local default password; it has been replaced.');
+            announce(source, password);
         } else if (!defaultAccount.must_change_password) {
             prepare('UPDATE users SET must_change_password = 1 WHERE user_id = ?').run(defaultAccount.user_id);
             console.log('The admin account still uses the default password; a change will be required at next login.');

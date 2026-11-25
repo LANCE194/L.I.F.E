@@ -19,53 +19,57 @@ to build and run the app in the `LIFE` folder.
 To keep data: in `render.yaml` change `plan: free` to `plan: starter`, uncomment the `disk:`
 block and the `LIFE_DB_PATH` variable, commit and push.
 
+## Admin sign-in
+
+| | Username | Password |
+|---|---|---|
+| Online (built in) | `admin` | `LifeCPR@2026` |
+| Your own (optional) | `admin` | the value of the `LIFE_ADMIN_PASSWORD` environment variable (12+ characters) |
+
+On the free plan (no disk) the admin password is restored at every start, so the built-in
+password always works and no password change is forced. With a paid plan and a disk, the admin
+must choose a new password at first sign-in, and it is kept.
+
+Because this repository is public, anyone who reads it can see the built-in password. Use the
+free plan only with test data, or set your own `LIFE_ADMIN_PASSWORD`.
+
 ## Steps
 
 1. Push the latest code to GitHub (`git push`).
-2. Sign in at https://dashboard.render.com (you can sign in with GitHub).
-3. Click **New +** → **Blueprint**.
-4. Connect your GitHub account if asked, then choose the **L.I.F.E** repository.
-5. Render reads `render.yaml` and shows one web service, **life-cpr**. When asked for
-   **LIFE_ADMIN_PASSWORD**, enter a strong password (at least 12 characters). This is the
-   first admin's password; keep it private.
-6. Click **Apply**. The first build takes a few minutes (installing packages and building the
-   dashboard). Follow it under **Logs**; it is finished when the log shows `Listening on 0.0.0.0`.
-7. Open the address Render shows (for example `https://life-cpr.onrender.com`).
-8. Sign in as **admin** with the password from step 5. You will be asked to choose a new one.
-9. Add trainees, trainers and sign-in accounts as on the local version.
+2. Sign in at https://dashboard.render.com.
+3. Click **+ New** → **Web Service** → **Public Git Repository**, paste
+   `https://github.com/LANCE194/L.I.F.E` and click **Connect**. (Or **+ New** → **Blueprint** if
+   your GitHub account is connected; it reads `render.yaml`.)
+4. Settings: Language **Node**, Branch `main`, Region **Singapore**, Root Directory `LIFE`,
+   Build Command `npm ci --prefix server && npm ci --include=dev --prefix dashboard && npm run build --prefix dashboard`,
+   Start Command `node server/index.js`, Instance Type **Free**, Health Check Path `/api/health`.
+5. Environment variables: `NODE_VERSION` = `22`, and `JWT_SECRET` = any random 40+ characters
+   (or **Generate**).
+6. Click **Deploy Web Service** and wait for `Listening on 0.0.0.0` in **Logs**.
+7. Open the address Render shows and sign in with **admin** / **LifeCPR@2026**.
 
-Every later `git push` to `main` redeploys automatically (on the free plan, that also erases
-the data).
+To get a newer version later: **Manual Deploy → Deploy latest commit** (services created from a
+public repository URL do not redeploy automatically).
 
 ## Notes
 
 - The site uses HTTPS, which browsers require for camera access.
-- If you forget the admin password on the free plan, use **Manual Deploy → Restart service**:
-  the database is recreated with the password from `LIFE_ADMIN_PASSWORD`. On the paid plan, changing
-  `LIFE_ADMIN_PASSWORD` does not affect an existing account; another admin can reset it under
-  Settings → User accounts.
-- If no `LIFE_ADMIN_PASSWORD` is set, a random first-admin password is printed once in **Logs**.
+- The admin password in use is printed in **Logs** at every start (the built-in one, or a note
+  that `LIFE_ADMIN_PASSWORD` is used).
 - Sign-in tokens use `JWT_SECRET`, which Render generates once; changing it signs everyone out.
 - Online, trainee data is subject to the Data Privacy Act of 2012 (RA 10173). Use the free plan
   only with test data, and obtain consent before storing real trainee records online.
 
 ## Can't sign in as admin?
 
-Open the service's **Logs** on Render and look at the lines printed when the server started.
+1. Use username `admin` and password `LifeCPR@2026` (or your `LIFE_ADMIN_PASSWORD` if you set
+   one; it replaces the built-in password). Check **Logs** for the line starting `Username: admin`.
+2. If you set `LIFE_ADMIN_PASSWORD` earlier and don't remember it, delete it under
+   **Environment** and redeploy; the built-in password then applies.
+3. **"Too many failed attempts"**: wait 5 minutes, or restart the service.
+4. Make sure you are on the latest version: **Manual Deploy → Deploy latest commit**.
+5. With a paid plan and a disk, if the admin password is lost: set `LIFE_ADMIN_PASSWORD` and
+   `LIFE_RESET_ADMIN` = `1`, redeploy, sign in, then delete `LIFE_RESET_ADMIN`.
 
-1. **"NOTE: a new, empty database was created"**: on the free plan the database is erased after
-   every sleep (about 15 minutes without visitors), restart or redeploy. Any password you chose
-   after signing in is gone; sign in again with your `LIFE_ADMIN_PASSWORD` value and choose a new
-   one. To keep data, use a paid instance with a disk.
-2. **"One-time password: ..."**: `LIFE_ADMIN_PASSWORD` was missing or shorter than 12 characters
-   when the server started; sign in with the printed password.
-3. **"Too many failed attempts"** on the sign-in page: wait 5 minutes (or restart the service).
-4. **Still stuck**: under **Environment**, set `LIFE_ADMIN_PASSWORD` (12+ characters) and add
-   `LIFE_RESET_ADMIN` = `1`, save, and redeploy. The admin password is reset to that value at
-   startup. After signing in, delete `LIFE_RESET_ADMIN` again.
-
-The username is `admin` (capitals don't matter). Spaces around the `LIFE_ADMIN_PASSWORD` value
-are ignored.
-
-Services created from a **Public Git Repository** URL do not redeploy automatically when you
-push; use **Manual Deploy → Deploy latest commit** to get new versions.
+Opening addresses that start with `/api` in the browser shows short technical messages; use the
+site address without `/api`.
