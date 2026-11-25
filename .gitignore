@@ -1,0 +1,5 @@
+# Reports downloaded from L.I.F.E. (may contain trainee data): never commit
+life_*_20*.csv
+life_*_20*.pdf
+certificate_*.pdf
+certificate_*.html
