@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><title>Project L.I.F.E. - Video Pitch Script</title>
+<style>
+@page { size: A4; margin: 16mm 15mm 16mm 15mm; @bottom-center { content: "Project L.I.F.E. video pitch script \2014  page " counter(page); font: 9pt Arial, sans-serif; color: #5b6880; } }
+html { font-family: Arial, Helvetica, sans-serif; font-size: 10.5pt; color: #0f2240; }
+body { margin: 0; line-height: 1.45; }
+header { display: flex; align-items: center; gap: 14px; border-bottom: 3px solid #e3b657; padding-bottom: 10px; margin-bottom: 12px; }
+header img { width: 64px; height: 64px; }
+h1 { font-size: 18pt; margin: 0; color: #0a2e56; }
+h1 span { color: #a81638; }
+.sub { color: #8a6420; font-size: 10pt; letter-spacing: .3px; }
+.meta { display: flex; gap: 10px; margin: 0 0 12px; flex-wrap: wrap; }
+.chip { background: #f5f6fa; border: 1px solid #dde2ea; border-left: 4px solid #0a2e56; border-radius: 4px; padding: 5px 10px; font-size: 9.5pt; }
+.chip strong { color: #0a2e56; }
+table { width: 100%; border-collapse: collapse; }
+th { background: #0a2e56; color: #fff; text-align: left; font-size: 9.5pt; padding: 6px 8px; }
+td { border-bottom: 1px solid #dde2ea; padding: 8px; vertical-align: top; }
+tr { break-inside: avoid; page-break-inside: avoid; }
+td.time { width: 13%; font-weight: 700; color: #a81638; white-space: nowrap; }
+td.time small { color: #5b6880; font-weight: 400; }
+td.visual { width: 27%; font-size: 9pt; color: #3b4a63; background: #fbf8ef; }
+.section { font-size: 8.5pt; font-weight: 700; letter-spacing: .6px; text-transform: uppercase; color: #8a6420; margin-bottom: 3px; }
+.speech { margin: 0; font-size: 11.5pt; line-height: 1.5; }
+.placeholder { background: #fff3c4; padding: 0 3px; border-radius: 3px; font-weight: 700; }
+.tagline { text-align: center; font-style: italic; color: #0a2e56; margin: 12px 0 14px; font-size: 11pt; }
+.boxes { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; break-inside: avoid; }
+.box { border: 1px solid #dde2ea; border-radius: 6px; padding: 10px 12px; font-size: 9.3pt; }
+.box h2 { font-size: 10.5pt; margin: 0 0 6px; color: #0a2e56; }
+.box ul { margin: 0; padding-left: 16px; }
+.box li { margin-bottom: 3px; }
+.box.changes { border-top: 4px solid #a81638; }
+.box.tips { border-top: 4px solid #1e8a4c; }
+</style></head><body>
+<header>
+  <img src="../../dashboard/public/brand/logo-128.png" alt="">
+  <div>
+    <h1>Project L.I.F.E<span>.</span> &mdash; Video Pitch Script</h1>
+    <div class="sub">Localized Intelligent First-aid Evaluator</div>
+  </div>
+</header>
+<div class="meta">
+  <div class="chip"><strong>Maximum:</strong> 2:00</div>
+  <div class="chip"><strong>Length:</strong> 275 words</div>
+  <div class="chip"><strong>Estimated time:</strong> about 1:54 at 145 words per minute</div>
+</div>
+<table>
+  <thead><tr><th>Time</th><th>What to say</th><th>On screen (suggested)</th></tr></thead>
+  <tbody>
+<tr>
+  <td class="time">0:00&ndash;0:18<br><small>43 words</small></td>
+  <td><div class="section">Hook</div><p class="speech">What if the difference between saving a life and losing one begins with learning CPR the right way? But not every school can afford CPR training equipment with feedback. Without practice and immediate feedback, how can learners know they are doing it right?</p></td>
+  <td class="visual">Close-up of hands compressing the DIY chest prop. On-screen text: <em>100&ndash;120 compressions per minute</em>.</td>
+</tr>
+<tr>
+  <td class="time">0:18&ndash;0:25<br><small>17 words</small></td>
+  <td><div class="section">Introduction</div><p class="speech">Good day! I am <span class="placeholder">[Your Full Name]</span>, Principal Investigator of Project L.I.F.E., the Localized Intelligent First-aid Evaluator.</p></td>
+  <td class="visual">Presenter on camera. Lower third: name, &ldquo;Principal Investigator, Project L.I.F.E.&rdquo; and the emblem.</td>
+</tr>
+<tr>
+  <td class="time">0:25&ndash;0:35<br><small>25 words</small></td>
+  <td><div class="section">Why We Started</div><p class="speech">Life-saving education should not depend on a school&#x27;s budget. So we asked: can the technology schools already have make CPR training more accessible and affordable?</p></td>
+  <td class="visual">Classroom or school laptop; a commercial feedback manikin with a price tag beside an ordinary laptop.</td>
+</tr>
+<tr>
+  <td class="time">0:35&ndash;1:24<br><small>119 words</small></td>
+  <td><div class="section">Innovation and Trial and Error</div><p class="speech">Our system turns an ordinary laptop webcam into a CPR evaluator. MediaPipe pose and hand tracking, running right in the web browser, checks locked elbows and stacked hands and measures the compression rate against the recommended 100 to 120 per minute, with live coaching like &quot;Push faster&quot; or &quot;Lock your elbows.&quot; It also guides trainees step by step through the 2025 American Heart Association sequence: checking the scene, calling 911, giving 2 breaths after every 30 compressions, and using an AED. Everything runs offline on one laptop, with a low-cost DIY chest prop and a local dashboard that tracks progress. No video ever leaves the computer. Through repeated testing, we calibrated thresholds and adjusted for lighting and camera position.</p></td>
+  <td class="visual">Screen recording of the <strong>Live Session</strong>: green locked-arm overlay, gold finger tracking, the coaching cue (&ldquo;Push faster&rdquo;), the step-by-step CPR panel showing &ldquo;Give 2 breaths&rdquo; and the AED step; then the Dashboard and a trainee&rsquo;s My Progress page; the DIY prop; a quick shot of calibration in Settings.</td>
+</tr>
+<tr>
+  <td class="time">1:24&ndash;1:39<br><small>35 words</small></td>
+  <td><div class="section">What We Want To Clarify</div><p class="speech">Can an affordable webcam system reliably evaluate CPR posture and rate? We are validating it against a trained first-aid instructor. It is a training aid, not a certification, and compression depth is our next step.</p></td>
+  <td class="visual">Instructor observing a trainee beside the laptop. On-screen text: <em>Training aid, not a certification</em>.</td>
+</tr>
+<tr>
+  <td class="time">1:39&ndash;1:54<br><small>36 words</small></td>
+  <td><div class="section">Closing</div><p class="speech">When a life is on the line, the ability to respond should never be a privilege reserved for those who can afford expensive equipment. Project L.I.F.E.: making life-saving skills more accessible, one innovation at a time.</p></td>
+  <td class="visual">Slow zoom on the Project L.I.F.E. emblem with the tagline.</td>
+</tr>
+  </tbody>
+</table>
+<p class="tagline">Project L.I.F.E. &mdash; Making life-saving skills more accessible, one innovation at a time.</p>
+<div class="boxes">
+  <div class="box changes">
+    <h2>Changed to match the project</h2>
+    <ul>
+      <li><strong>Removed &ldquo;Python&rdquo;</strong>: the vision runs in the web browser (MediaPipe Tasks Vision, JavaScript/TypeScript).</li>
+      <li><strong>Removed &ldquo;PHP and MySQL&rdquo;</strong>: the dashboard runs on a local Node.js server with an SQLite database.</li>
+      <li><strong>Added</strong> hand tracking (stacked hands), live coaching cues, and the step-by-step 2025 AHA sequence (scene, 911, 30:2 breaths, AED).</li>
+      <li><strong>Added</strong> &ldquo;runs offline&rdquo; and &ldquo;no video ever leaves the computer&rdquo;.</li>
+      <li><strong>Kept honest</strong>: validation is described as in progress (no accuracy figures claimed yet); depth is not measured; it is a training aid, not certification.</li>
+      <li><strong>Trimmed</strong> to 275 words so it fits within 2:00.</li>
+    </ul>
+  </div>
+  <div class="box tips">
+    <h2>Delivery tips</h2>
+    <ul>
+      <li>Replace <span class="placeholder">[Your Full Name]</span> before recording.</li>
+      <li>Speak at a steady, normal pace (about 145 words per minute). Rehearse with a timer; aim to finish by 1:55.</li>
+      <li>Pause briefly after the opening question and before the closing line.</li>
+      <li>After spelling out &ldquo;L.I.F.E.&rdquo; once, say &ldquo;Project LIFE&rdquo;.</li>
+      <li>Record the Live Session screen in good light with the arm side-on to the camera so the green overlay and finger tracking show clearly.</li>
+      <li>Use only footage of people who agreed to be filmed.</li>
+    </ul>
+  </div>
+</div>
+</body></html>
