@@ -11,6 +11,7 @@ services:
   - type: web
     name: life-cpr
     runtime: node
+    rootDir: LIFE                # the app lives in the LIFE folder of this repository
     plan: free
     region: singapore            # closest Render region to the Philippines
     buildCommand: npm ci --prefix server && npm ci --include=dev --prefix dashboard && npm run build --prefix dashboard
