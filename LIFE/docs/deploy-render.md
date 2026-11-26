@@ -9,15 +9,56 @@ to build and run the app in the `LIFE` folder.
 
 ## Free plan vs. keeping data
 
-| | Free (default in `render.yaml`) | Paid (Starter + disk) |
-|---|---|---|
-| Cost | US$0 | about US$7/month + about US$0.25/GB/month |
-| Data (trainees, accounts, sessions) | **Erased** on every restart, redeploy or sleep | Kept on a persistent disk |
-| Sleeps when idle | After ~15 minutes; the next visit takes about a minute to wake | No |
-| Good for | Demonstrations | Real trainees |
+| | Free, no Turso | Free + Turso (recommended) | Paid (Starter + disk) |
+|---|---|---|---|
+| Cost | US$0 | US$0 (Turso free plan) | about US$7/month + about US$0.25/GB/month |
+| Data (trainees, accounts, sessions, passwords) | **Erased** on every restart, redeploy or sleep | **Kept** until deleted in the app | Kept on a persistent disk |
+| Sleeps when idle | After ~15 minutes; the next visit takes about a minute to wake | Same | No |
+| Good for | Quick demonstrations | Real use at no cost | Real use |
 
-To keep data: in `render.yaml` change `plan: free` to `plan: starter`, uncomment the `disk:`
-block and the `LIFE_DB_PATH` variable, commit and push.
+To keep data for free: follow **Keeping data for free with Turso** below.
+To keep data on a paid plan instead: in `render.yaml` change `plan: free` to `plan: starter`,
+uncomment the `disk:` block and the `LIFE_DB_PATH` variable, commit and push.
+
+## Keeping data for free with Turso
+
+[Turso](https://turso.tech) is a free cloud database that works like SQLite. With it, L.I.F.E.
+keeps a copy of its database in Turso: within about 2 seconds of every change (new trainee,
+session, password, setting, deletion) and once more when Render stops or puts the service to
+sleep. When the service starts again on an empty disk, the copy is restored before anyone can
+sign in. Logging out, refreshing the page, a restart, a redeploy or sleep no longer remove
+anything; data goes away only when someone deletes it in the app.
+
+1. Sign up at https://turso.tech (free; a GitHub or Google account works).
+2. Create a database (**Databases → Create Database**). Name it e.g. `life`, and pick the
+   location closest to Singapore that is offered.
+3. Open the database and copy its **URL**. It looks like `libsql://life-yourname.turso.io`.
+4. Click **Create Token** (read and write access, no expiry) and copy the token.
+5. In Render open the service → **Environment** and add:
+   - `TURSO_DATABASE_URL` = the URL from step 3
+   - `TURSO_AUTH_TOKEN` = the token from step 4
+6. **Save, rebuild and deploy**. In **Logs** you should see
+   `Cloud storage: Turso has no saved data yet; starting a new database.` on the first start,
+   then `Cloud storage: data saved to Turso`. After later restarts the log says
+   `Cloud storage: saved data restored from Turso`.
+7. Sign in with **admin** / **LifeCPR@2026** (or your `LIFE_ADMIN_PASSWORD`). Because data is
+   now kept, you are asked to choose a new admin password, and it stays.
+
+Check it at any time: open `https://<your-site>/api/health`. `"storage": {"mode": "turso", ...}`
+shows when the data was last saved and whether any change is still waiting to be uploaded.
+
+Notes:
+
+- Data that existed before Turso was added is not copied (on the free plan it was already lost
+  at the last restart); start entering data after step 6.
+- Use one Turso database for one running server only. Do not put the same values on the
+  laptop copy; the laptop keeps its data in `database/life.db` anyway.
+- If Turso cannot be reached when the service starts, the service stops with
+  `Could not read the saved data from cloud storage` instead of starting empty, so the saved
+  data is never overwritten. Render retries automatically; check the URL and token if it keeps
+  failing.
+- Turso holds trainee records and password hashes: keep the token secret (only in Render's
+  Environment, never in the repository).
 
 ## Admin sign-in
 
@@ -26,8 +67,8 @@ block and the `LIFE_DB_PATH` variable, commit and push.
 | Online (built in) | `admin` | `LifeCPR@2026` |
 | Your own (optional) | `admin` | the value of the `LIFE_ADMIN_PASSWORD` environment variable (12+ characters) |
 
-On the free plan (no disk) the admin password is restored at every start, so the built-in
-password always works and no password change is forced. With a paid plan and a disk, the admin
+On the free plan without Turso (no disk) the admin password is restored at every start, so the built-in
+password always works and no password change is forced. With Turso, or a paid plan and a disk, the admin
 must choose a new password at first sign-in, and it is kept.
 
 Because this repository is public, anyone who reads it can see the built-in password. Use the

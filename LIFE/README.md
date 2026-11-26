@@ -138,7 +138,7 @@ prints the frequencies, weighted mean, SD and interpretation (paper Table 5) per
 
 ## Online copy on Render (optional)
 
-The repository includes a Render Blueprint (`render.yaml`). See [docs/deploy-render.md](docs/deploy-render.md) for the steps, the free-plan data limits and how to keep data on a paid plan. Online admin sign-in: **admin** / **LifeCPR@2026** (built in; restored at every start on the free plan), or your own `LIFE_ADMIN_PASSWORD`. The local default `admin123` is never used online.
+The repository includes a Render Blueprint (`render.yaml`). See [docs/deploy-render.md](docs/deploy-render.md) for the steps. On Render's free plan the disk is wiped at every restart, redeploy or sleep; to keep trainees, accounts and sessions until you delete them, add a free [Turso](https://turso.tech) database by setting `TURSO_DATABASE_URL` and `TURSO_AUTH_TOKEN` (the server saves a copy after every change and restores it at start). A paid plan with a disk also works. Online admin sign-in: **admin** / **LifeCPR@2026** (built in; restored at every start on the free plan), or your own `LIFE_ADMIN_PASSWORD`. The local default `admin123` is never used online.
 
 ## Development
 
@@ -146,7 +146,7 @@ The repository includes a Render Blueprint (`render.yaml`). See [docs/deploy-ren
 npm run dev    # API with auto-restart + dashboard with hot reload at http://localhost:5173 (one command; Ctrl+C stops both)
 ```
 
-Environment variables (server): `PORT` (3001), `HOST` (127.0.0.1), `LIFE_DB_PATH` (database file, relative to `database/`), `JWT_SECRET` (optional, at least 32 characters), `LIFE_SECRET_PATH`, `LIFE_AUTO_BACKUP` (`0` disables daily backups).
+Environment variables (server): `PORT` (3001), `HOST` (127.0.0.1), `LIFE_DB_PATH` (database file, relative to `database/`), `JWT_SECRET` (optional, at least 32 characters), `LIFE_SECRET_PATH`, `LIFE_AUTO_BACKUP` (`0` disables daily backups), `TURSO_DATABASE_URL` + `TURSO_AUTH_TOKEN` (optional permanent online copy in Turso, see `server/lib/cloudSync.js`).
 
 The MediaPipe pose model and WebAssembly runtime are bundled in `dashboard/public/mediapipe/` and served locally; nothing is downloaded at run time.
 

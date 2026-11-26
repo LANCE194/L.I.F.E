@@ -8,6 +8,7 @@ import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
 import { pathToFileURL } from 'url';
 import { initializeDatabase, prepare, closeDatabase } from './db.js';
+import { isCloudSyncConfigured } from './lib/cloudSync.js';
 
 export const INITIAL_ADMIN = { username: 'admin', password: 'admin123' };
 /** Built-in admin for the online demo (used when LIFE_ADMIN_PASSWORD is not set). */
@@ -18,11 +19,13 @@ const isCloud = () => Boolean(process.env.RENDER) || process.env.LIFE_CLOUD === 
 /**
  * Online storage without a persistent disk (e.g. the Render free plan) loses the database on
  * every restart. Override with LIFE_STORAGE=ephemeral|persistent; by default, online storage is
- * persistent only when LIFE_DB_PATH points the database at a disk.
+ * persistent when the data is kept in Turso (TURSO_DATABASE_URL) or LIFE_DB_PATH points the
+ * database at a disk.
  */
 export function isEphemeralCloud() {
     if (!isCloud()) return false;
     if (process.env.LIFE_STORAGE) return process.env.LIFE_STORAGE === 'ephemeral';
+    if (isCloudSyncConfigured()) return false;
     return !process.env.LIFE_DB_PATH;
 }
 

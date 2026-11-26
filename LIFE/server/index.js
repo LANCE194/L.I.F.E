@@ -8,8 +8,9 @@ import cors from 'cors';
 import helmet from 'helmet';
 import path from 'path';
 import { fileURLToPath, pathToFileURL } from 'url';
-import { initializeDatabase, closeDatabase, resolveDbPath, databaseIsNew } from './db.js';
+import { initializeDatabase, closeDatabase, resolveDbPath, databaseIsNew, getDatabase } from './db.js';
 import { startAutoBackups } from './lib/autoBackup.js';
+import { cloudSyncConfig, createHttpTransport, createSnapshotStore, restoreFromCloud, startCloudSync } from './lib/cloudSync.js';
 import { getJwtSecret } from './lib/secret.js';
 
 import authRoutes from './routes/auth.js';
@@ -144,19 +145,35 @@ export function createApp() {
     return app;
 }
 
-function startServer() {
+async function startServer() {
+    let cloudSync = null;
     try {
+        // Permanent online storage (Turso): bring back the saved data before opening the database.
+        const cloud = cloudSyncConfig();
+        const cloudStore = cloud ? createSnapshotStore(createHttpTransport(cloud)) : null;
+        if (cloudStore) {
+            const restored = await restoreFromCloud(resolveDbPath(), cloudStore);
+            if (restored.status === 'restored') console.log(`Cloud storage: saved data restored from Turso (copy of ${restored.updatedAt}).`);
+            else if (restored.status === 'empty') console.log('Cloud storage: Turso has no saved data yet; starting a new database.');
+            else console.log('Cloud storage: using the database already on this machine.');
+        }
+
         initializeDatabase();
-        if (CLOUD && databaseIsNew) {
+        if (CLOUD && databaseIsNew && !cloudStore) {
             console.log('NOTE: a new, empty database was created. On hosting without a persistent disk (e.g. the');
             console.log('      Render free plan) this happens after every restart, redeploy or sleep: earlier trainees,');
             console.log('      accounts, sessions and changed passwords are gone, and the admin password is reset.');
+            console.log('      To keep data for free, set TURSO_DATABASE_URL and TURSO_AUTH_TOKEN (docs/deploy-render.md).');
         }
         getJwtSecret();
         seedAdmin();
         startAutoBackups(resolveDbPath());
+        if (cloudStore) {
+            cloudSync = startCloudSync(getDatabase, cloudStore);
+            await cloudSync.flush().catch(() => {}); // retried automatically in the background
+        }
     } catch (err) {
-        console.error('Failed to start server:', err);
+        console.error('Failed to start server:', err.message || err);
         process.exit(1);
     }
 
@@ -180,9 +197,21 @@ function startServer() {
         process.exit(1);
     });
 
-    const shutdown = () => {
+    let stopping = false;
+    const shutdown = async () => {
+        if (stopping) return;
+        stopping = true;
         console.log('\nShutting down...');
         server.close();
+        if (cloudSync) {
+            // Save the last changes before the machine goes away (Render allows about 30 s).
+            cloudSync.stop();
+            const saved = await Promise.race([
+                cloudSync.flush().then(() => true, () => false),
+                new Promise(resolve => setTimeout(() => resolve(false), 20_000)),
+            ]);
+            console.log(saved ? 'Cloud storage: final changes saved.' : 'Cloud storage: final save did not finish.');
+        }
         closeDatabase();
         process.exit(0);
     };
@@ -191,5 +220,5 @@ function startServer() {
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
-    startServer();
+    void startServer();
 }

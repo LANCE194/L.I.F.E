@@ -1,11 +1,15 @@
 # Render Blueprint for L.I.F.E. (https://render.com/docs/blueprint-spec)
 #
-# Default: FREE plan for demos. Render's free plan has no persistent disk, so the SQLite
+# Default: FREE plan. Render's free plan has no persistent disk, so on its own the SQLite
 # database (trainees, accounts, sessions) is erased whenever the service restarts, redeploys
 # or sleeps (after ~15 minutes without visitors).
 #
-# To KEEP data (paid): change `plan: free` to `plan: starter`, and uncomment the `disk:` block
-# and the LIFE_DB_PATH variable below.
+# To KEEP data for FREE: fill in TURSO_DATABASE_URL and TURSO_AUTH_TOKEN (a free Turso
+# database; steps in LIFE/docs/deploy-render.md). The server then saves a copy of the database
+# to Turso after every change and restores it at every start, so data stays until deleted.
+#
+# To KEEP data (paid) instead: change `plan: free` to `plan: starter`, and uncomment the
+# `disk:` block and the LIFE_DB_PATH variable below.
 
 services:
   - type: web
@@ -27,6 +31,13 @@ services:
       # Admin sign-in works out of the box: username "admin", password "LifeCPR@2026".
       # Optional: to use your own admin password instead (at least 12 characters), add an
       # environment variable LIFE_ADMIN_PASSWORD in the Render dashboard.
+      # Free permanent storage (Turso). Render asks for these values when the Blueprint is
+      # created; otherwise add them under Environment. Leave both empty to keep data only
+      # until the next restart.
+      - key: TURSO_DATABASE_URL
+        sync: false
+      - key: TURSO_AUTH_TOKEN
+        sync: false
       # Paid plan with a disk: store the database on the disk.
       # - key: LIFE_DB_PATH
       #   value: /var/data/life.db
