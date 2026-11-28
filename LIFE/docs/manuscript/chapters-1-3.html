@@ -41,14 +41,67 @@
   .ipo li, td li { text-align: left; }
   .ipo .arrow { display: flex; align-items: center; justify-content: center; font-size: 16pt; color: #0a2e56; }
   .ipo-feedback { text-align: center; font-size: 10.5pt; font-style: italic; margin-top: -4pt; }
-  .arch { margin: 8pt 0 12pt; font-size: 10.5pt; line-height: 1.35; break-inside: avoid; }
-  .arch .layer { border: 1pt solid #0a2e56; border-radius: 4pt; padding: 6pt 10pt; margin-bottom: 4pt; }
-  .arch .layer strong { color: #0a2e56; }
-  .arch .down { text-align: center; color: #0a2e56; margin: 0 0 4pt; }
   .refs p { padding-left: 24pt; text-indent: -24pt; text-align: left; }
+  /* Chapter 3 diagrams (inline SVG, print-safe colours) */
+  figure.fig { margin: 10pt 0 14pt; break-inside: avoid; page-break-inside: avoid; }
+  figure.fig svg { display: block; width: 100%; height: auto; }
+  figure.fig figcaption { text-align: center; font-style: italic; font-size: 10.5pt; margin-top: 5pt; line-height: 1.35; }
+  svg.dg { font-family: "Times New Roman", Times, serif; font-size: 12px; }
+  svg.dg text { fill: #111; }
+  svg.dg .c { text-anchor: middle; }
+  svg.dg .e { text-anchor: end; }
+  svg.dg .t { font-weight: bold; fill: #0a2e56; }
+  svg.dg .s { font-size: 11px; fill: #222; }
+  svg.dg .m { font-size: 11.5px; }
+  svg.dg .i { font-style: italic; }
+  svg.dg .k { font-size: 10.5px; font-weight: bold; fill: #a81638; }
+  svg.dg .g { fill: #2f7a4b; }
+  svg.dg .w { fill: #fff; font-weight: bold; }
+  svg.dg .f { font-size: 13px; font-style: italic; }
+  svg.dg .b { fill: #f3f6fb; stroke: #0a2e56; stroke-width: 1.1; }
+  svg.dg .zone { fill: #fff; stroke: #0a2e56; stroke-width: 1.3; }
+  svg.dg .r { fill: none; stroke: #0a2e56; stroke-width: 1; stroke-dasharray: 5 3; }
+  svg.dg .hl { fill: #fbf6e8; stroke: #b8862a; stroke-width: 1.1; }
+  svg.dg .bad { fill: #fbecef; stroke: #a81638; stroke-width: 1.1; }
+  svg.dg .ok { fill: #eaf5ee; stroke: #2f7a4b; stroke-width: 1.1; }
+  svg.dg .nt { fill: #f2f2f2; stroke: #666; stroke-width: 1.1; }
+  svg.dg .eh { fill: #0a2e56; stroke: #0a2e56; stroke-width: 1.1; }
+  svg.dg .a { fill: none; stroke: #0a2e56; stroke-width: 1.2; marker-end: url(#ah); }
+  svg.dg .a2 { fill: none; stroke: #0a2e56; stroke-width: 1.1; marker-start: url(#ah); marker-end: url(#ah); }
+  svg.dg .ad { fill: none; stroke: #0a2e56; stroke-width: 1.1; stroke-dasharray: 5 3; marker-end: url(#ah); }
+  svg.dg .ln { fill: none; stroke: #0a2e56; stroke-width: 1.1; }
+  svg.dg .dot { fill: none; stroke: #0a2e56; stroke-width: 0.9; stroke-dasharray: 2 2; }
+  svg.dg .life { fill: none; stroke: #8895a8; stroke-width: 1; stroke-dasharray: 4 3; }
+  svg.dg .ax { fill: none; stroke: #333; stroke-width: 1; }
+  svg.dg .pause { fill: #fbf6e8; stroke: none; }
+  svg.dg .raw circle { fill: #9aa6b6; }
+  svg.dg .sig { fill: none; stroke: #0a2e56; stroke-width: 1.6; stroke-linejoin: round; }
+  svg.dg .pk { fill: #a81638; stroke: #fff; stroke-width: 0.8; }
+  svg.dg .actor { fill: none; stroke: #0a2e56; stroke-width: 1.6; stroke-linecap: round; }
+  svg.dg .mat { fill: #f4f4f4; stroke: #bbb; stroke-width: 1; }
+  svg.dg .body { fill: #d9e1ee; stroke: #0a2e56; stroke-width: 1.1; }
+  svg.dg .limb { fill: none; stroke: #0a2e56; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+  svg.dg .floor { fill: none; stroke: #555; stroke-width: 2; }
+  svg.dg .dev { fill: #cfd8e6; stroke: #0a2e56; stroke-width: 1.1; }
+  svg.dg .devd { fill: none; stroke: #0a2e56; stroke-width: 1.1; stroke-dasharray: 3 2; }
+  svg.dg .sight { fill: none; stroke: #b8862a; stroke-width: 1.1; stroke-dasharray: 4 3; }
+  svg.dg .xm { fill: none; stroke: #a81638; stroke-width: 2; }
+  svg.dg .jt { fill: #a81638; }
+  svg.dg .armok { fill: none; stroke: #2f7a4b; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+  svg.dg .armbad { fill: none; stroke: #a81638; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+  svg.dg .halo { paint-order: stroke; stroke: #fff; stroke-width: 4px; stroke-linejoin: round; }
+  svg.dg .arc { fill: none; stroke: #333; stroke-width: 1.1; }
 </style>
 </head>
 <body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#0a2e56"/>
+    </marker>
+  </defs>
+</svg>
 
 <section class="title-page">
   <img src="../../dashboard/public/brand/logo-256.png" alt="Project L.I.F.E. emblem">
@@ -143,7 +196,7 @@
   <li><strong>Scorable compression.</strong> A detected compression for which both the elbow angle and the cadence could be measured. Compressions where the elbow was out of view are reported separately as unscorable.</li>
   <li><strong>Self-practice session.</strong> A session a trainee starts on their own sign-in account. It is saved to the trainee's progress and to the session history, shown to the trainer, and counted on the leaderboard and in the dashboard statistics; it is flagged so that it can be separated from trainer-supervised sessions.</li>
   <li><strong>SQLite.</strong> A self-contained relational database engine that stores everything in a single file and does not need a separate database server.</li>
-  <li><strong>Supervised session.</strong> A session run by a trainer or administrator. Only supervised sessions count toward rankings and dashboard statistics.</li>
+  <li><strong>Supervised session.</strong> A session run by a trainer or administrator. Supervised sessions are the data set analyzed in Chapter 4, and the leaderboard and dashboard statistics can be narrowed to them.</li>
   <li><strong>WebAssembly.</strong> A portable binary format that lets compiled code, such as the pose model's runtime, run at close to native speed inside a web browser.</li>
 </ul>
 </section>
@@ -255,20 +308,203 @@
   <li><strong>Testing.</strong> Run automated unit and API tests, end-to-end browser tests, accuracy tests against a reference, and performance tests.</li>
   <li><strong>Evaluation and refinement.</strong> Gather feedback from users, calibrate the thresholds through the Settings page, and improve the interface.</li>
 </ol>
+<p>These steps are repeated in short iterations, as shown in Figure 2. Each iteration produces a working prototype that is tested before the next iteration begins.</p>
+<figure class="fig">
+<svg class="dg" viewBox="0 0 600 170" role="img" aria-label="Agile development cycle">
+  <rect class="b" x="8" y="14" width="104" height="62" rx="4"/>
+  <text x="60" y="34" class="c t">1. Requirements</text>
+  <text x="60" y="51" class="c s">AHA guidelines,</text>
+  <text x="60" y="65" class="c s">trainer input</text>
+  <rect class="b" x="129" y="14" width="104" height="62" rx="4"/>
+  <text x="181" y="34" class="c t">2. Design</text>
+  <text x="181" y="51" class="c s">system, database,</text>
+  <text x="181" y="65" class="c s">algorithms, screens</text>
+  <rect class="b" x="250" y="14" width="104" height="62" rx="4"/>
+  <text x="302" y="34" class="c t">3. Development</text>
+  <text x="302" y="51" class="c s">vision, API and</text>
+  <text x="302" y="65" class="c s">dashboard (Git)</text>
+  <rect class="b" x="371" y="14" width="104" height="62" rx="4"/>
+  <text x="423" y="34" class="c t">4. Testing</text>
+  <text x="423" y="51" class="c s">unit, API, browser,</text>
+  <text x="423" y="65" class="c s">accuracy, speed</text>
+  <rect class="b" x="492" y="14" width="104" height="62" rx="4"/>
+  <text x="544" y="34" class="c t">5. Evaluation</text>
+  <text x="544" y="51" class="c s">user feedback,</text>
+  <text x="544" y="65" class="c s">calibration</text>
+  <path class="a" d="M112,45 H127"/>
+  <path class="a" d="M233,45 H248"/>
+  <path class="a" d="M354,45 H369"/>
+  <path class="a" d="M475,45 H490"/>
+  <path class="a" d="M544,76 V112 H181 V78"/>
+  <text x="362" y="130" class="c s">Next iteration: refine the prototype and run all the automated tests again</text>
+  <text x="300" y="158" class="c s i">The cycle repeats until the system meets the requirements gathered in step 1.</text>
+</svg>
+<figcaption>Figure 2. Iterative (Agile) development cycle</figcaption>
+</figure>
 
 <h2>3.3 System Architecture</h2>
-<p>Everything runs on one laptop. The browser and the server talk to each other only through the computer's internal network interface, so the system works without internet access and, by default, cannot be reached from other devices. Figure 2 shows the three layers.</p>
-<div class="arch">
-  <div class="layer"><strong>1. Capture and analysis layer (browser, TypeScript).</strong> The browser's media API reads the webcam stream. MediaPipe Pose Landmarker (WebAssembly, using the GPU with a CPU fallback) picks out 33 body landmarks in every frame, and the Hand Landmarker adds 21 landmarks per hand about eight times a second. A vision pipeline, kept outside the user-interface framework so it runs faster, locks onto the arm being evaluated, computes the smoothed elbow angle, detects compressions from the wrist's movement, scores each compression and chooses a coaching cue.</div>
-  <div class="down">&#9660;</div>
-  <div class="layer"><strong>2. Feedback layer (React dashboard).</strong> The Live Session page shows the camera view with a skeleton drawn over the evaluated arm (green when it is locked, red when it is bent), the elbow angle, the current BPM, and the trainee's fingers (gold when the hands are stacked). It also shows a large coaching cue in color, the readiness checks, an optional Web Audio metronome and optional spoken cues, the session timer and the step-by-step CPR panel. When the session ends, a summary appears with a timeline of the compressions and the procedure checklist.</div>
-  <div class="down">&#9660;</div>
-  <div class="layer"><strong>3. Data and dashboard layer (Node.js, Express, SQLite).</strong> Each finished session is saved in the browser first (IndexedDB) and then sent to the local REST API, which checks it and writes it to an SQLite database in a single transaction (better-sqlite3, write-ahead logging). Any session that could not be sent is uploaded automatically once the server is available again. The dashboard shows statistics, a live monitor that refreshes every 2.5 seconds, the leaderboard, session history, trainee progress, exports and settings.</div>
-</div>
-<p style="text-align:center; font-style:italic; font-size:10.5pt;">Figure 2. System architecture</p>
+<p>Everything runs on one laptop. The browser and the server talk to each other only through the computer's internal network interface, so the system works without internet access and, by default, cannot be reached from other devices. Figure 3 shows the main parts of the system and how they connect, and the three layers are described below.</p>
+<figure class="fig">
+<svg class="dg" viewBox="0 0 600 432" role="img" aria-label="System architecture">
+  <rect class="r" x="4" y="4" width="592" height="424" rx="6"/>
+  <text x="14" y="22" class="t">Training laptop: everything runs locally, no internet connection needed</text>
+  <!-- Browser -->
+  <rect class="zone" x="14" y="32" width="362" height="330" rx="5"/>
+  <text x="24" y="50" class="t">Web browser (Chrome or Edge): React + TypeScript</text>
+  <rect class="hl" x="24" y="62" width="104" height="44" rx="4"/>
+  <text x="76" y="80" class="c t">Webcam</text>
+  <text x="76" y="96" class="c s">720p at 30 FPS</text>
+  <rect class="b" x="148" y="60" width="218" height="22" rx="3"/>
+  <text x="257" y="75" class="c s">Pose Landmarker: 33 landmarks per frame</text>
+  <rect class="b" x="148" y="88" width="218" height="22" rx="3"/>
+  <text x="257" y="103" class="c s">Hand Landmarker: 21 per hand, about 8&#215;/s</text>
+  <path class="a" d="M128,78 L146,72"/>
+  <path class="a" d="M128,90 L146,98"/>
+  <text x="24" y="125" class="s">MediaPipe Tasks Vision (WebAssembly,</text>
+  <text x="24" y="138" class="s">GPU with CPU fallback), bundled offline</text>
+  <path class="a" d="M300,110 V144"/>
+  <rect class="b" x="24" y="146" width="342" height="56" rx="4"/>
+  <text x="195" y="163" class="c t">Vision pipeline (runs outside React for speed)</text>
+  <text x="195" y="179" class="c s">arm lock &#8594; smoothed elbow angle &#8594; compression peaks &#8594; BPM</text>
+  <text x="195" y="193" class="c s">&#8594; score of each compression &#8594; one coaching cue</text>
+  <path class="a" d="M120,202 V214"/>
+  <rect class="b" x="24" y="216" width="214" height="64" rx="4"/>
+  <text x="131" y="233" class="c t">Live Session page (feedback)</text>
+  <text x="131" y="248" class="c s">skeleton overlay, elbow angle, BPM,</text>
+  <text x="131" y="261" class="c s">coaching cue, metronome, voice,</text>
+  <text x="131" y="274" class="c s">CPR step panel, end-of-session summary</text>
+  <path class="a" d="M238,248 H250"/>
+  <rect class="hl" x="252" y="216" width="114" height="64" rx="4"/>
+  <text x="309" y="233" class="c t">IndexedDB outbox</text>
+  <text x="309" y="248" class="c s">every session is</text>
+  <text x="309" y="261" class="c s">kept here until the</text>
+  <text x="309" y="274" class="c s">server confirms it</text>
+  <rect class="b" x="24" y="292" width="342" height="40" rx="4"/>
+  <text x="195" y="308" class="c s">Dashboard &#183; Live monitor &#183; Trainees &#183; Leaderboard &#183; History</text>
+  <text x="195" y="323" class="c s">Reports &amp; Export &#183; Settings &amp; Backup &#183; My Progress &#183; CPR Guide</text>
+  <text x="24" y="352" class="s i">Camera video never leaves the browser; only measurements are sent on.</text>
+  <!-- Link -->
+  <path class="a2" d="M378,200 H412"/>
+  <text x="395" y="184" class="c s">HTTP</text>
+  <text x="395" y="195" class="c s">JSON</text>
+  <!-- Server -->
+  <rect class="zone" x="414" y="32" width="172" height="236" rx="5"/>
+  <text x="500" y="50" class="c t">Local server</text>
+  <text x="500" y="64" class="c s">Node.js + Express, 127.0.0.1:3001</text>
+  <rect class="b" x="424" y="74" width="152" height="50" rx="4"/>
+  <text x="500" y="91" class="c t">Security layer</text>
+  <text x="500" y="105" class="c s">Helmet CSP, JWT sign-in,</text>
+  <text x="500" y="118" class="c s">role checks, lockout</text>
+  <rect class="b" x="424" y="132" width="152" height="70" rx="4"/>
+  <text x="500" y="149" class="c t">REST API</text>
+  <text x="500" y="164" class="c s">auth &#183; trainees &#183; sessions</text>
+  <text x="500" y="178" class="c s">live &#183; leaderboard &#183; stats</text>
+  <text x="500" y="192" class="c s">export &#183; settings &#183; users &#183; me</text>
+  <rect class="b" x="424" y="210" width="152" height="48" rx="4"/>
+  <text x="500" y="228" class="c s">PDF and CSV reports,</text>
+  <text x="500" y="242" class="c s">certificates, backups</text>
+  <!-- Database -->
+  <path class="a2" d="M500,270 V290"/>
+  <path class="b" d="M432,302 v40 a68,9 0 0,0 136,0 v-40"/>
+  <ellipse class="b" cx="500" cy="302" rx="68" ry="9"/>
+  <text x="500" y="327" class="c t">SQLite: life.db (WAL)</text>
+  <text x="500" y="342" class="c s">daily backups, 14 kept</text>
+  <!-- Users and optional copy -->
+  <path class="a" d="M195,380 V365"/>
+  <text x="24" y="394" class="t">Users</text>
+  <text x="24" y="410" class="s">Administrator &#183; Trainer &#183; Trainee: each sees only what the role allows</text>
+  <rect class="r" x="414" y="372" width="172" height="46" rx="4"/>
+  <text x="500" y="390" class="c s">Optional online copy (Render +</text>
+  <text x="500" y="404" class="c s">Turso): demonstrations only</text>
+</svg>
+<figcaption>Figure 3. System architecture</figcaption>
+</figure>
+<p><strong>1. Capture and analysis layer (browser, TypeScript).</strong> The browser's media API reads the webcam stream. MediaPipe Pose Landmarker (WebAssembly, using the GPU with a CPU fallback) picks out 33 body landmarks in every frame, and the Hand Landmarker adds 21 landmarks per hand about eight times a second. A vision pipeline, kept outside the user-interface framework so it runs faster, locks onto the arm being evaluated, computes the smoothed elbow angle, detects compressions from the wrist's movement, scores each compression and chooses a coaching cue.</p>
+<p><strong>2. Feedback layer (React dashboard).</strong> The Live Session page shows the camera view with a skeleton drawn over the evaluated arm (green when it is locked, red when it is bent), the elbow angle, the current BPM, and the trainee's fingers (gold when the hands are stacked). It also shows a large coaching cue in color, the readiness checks, an optional Web Audio metronome and optional spoken cues, the session timer and the step-by-step CPR panel. When the session ends, a summary appears with a timeline of the compressions and the procedure checklist.</p>
+<p><strong>3. Data and dashboard layer (Node.js, Express, SQLite).</strong> Each finished session is saved in the browser first (IndexedDB) and then sent to the local REST API, which checks it and writes it to an SQLite database in a single transaction (better-sqlite3, write-ahead logging). Any session that could not be sent is uploaded automatically once the server is available again. The dashboard shows statistics, a live monitor that refreshes every 2.5 seconds, the leaderboard, session history, trainee progress, exports and settings.</p>
+<p>Figure 4 shows how a finished session is saved. The session stays in the browser until the server confirms that it has been written to the database, so stopping the server or an expired sign-in does not lose any data, and sending the same session twice never creates a duplicate.</p>
+<figure class="fig">
+<svg class="dg" viewBox="0 0 600 318" role="img" aria-label="Saving a session">
+  <rect class="b" x="20" y="8" width="120" height="30" rx="4"/>
+  <text x="80" y="27" class="c t">Live Session page</text>
+  <rect class="hl" x="170" y="8" width="120" height="30" rx="4"/>
+  <text x="230" y="27" class="c t">IndexedDB outbox</text>
+  <rect class="b" x="330" y="8" width="120" height="30" rx="4"/>
+  <text x="390" y="27" class="c t">Express API</text>
+  <rect class="b" x="470" y="8" width="120" height="30" rx="4"/>
+  <text x="530" y="27" class="c t">SQLite database</text>
+  <path class="life" d="M80,38 V246 M230,38 V246 M390,38 V246 M530,38 V246"/>
+  <path class="a" d="M80,66 H228"/>
+  <text x="155" y="60" class="c s">1. store session + client ID</text>
+  <path class="a" d="M80,98 H388"/>
+  <text x="235" y="92" class="c s halo">2. POST /api/sessions (signed-in token)</text>
+  <path class="a" d="M390,112 H418 V132 H393"/>
+  <text x="424" y="120" class="s">3. role, consent,</text>
+  <text x="424" y="133" class="s">range checks</text>
+  <path class="a" d="M390,166 H528"/>
+  <text x="460" y="149" class="c s">4. one transaction:</text>
+  <text x="460" y="160" class="c s">session + compressions</text>
+  <path class="ad" d="M530,186 H392"/>
+  <text x="460" y="181" class="c s">saved</text>
+  <path class="ad" d="M390,210 H82"/>
+  <text x="235" y="204" class="c s halo">5. 201 Created (200 if it was already saved)</text>
+  <path class="a" d="M80,236 H228"/>
+  <text x="155" y="230" class="c s">6. remove from outbox</text>
+  <rect class="r" x="12" y="254" width="580" height="58" rx="3"/>
+  <text x="22" y="271" class="t">If the server is stopped or the sign-in has expired, steps 2 to 6 wait:</text>
+  <text x="22" y="287" class="s">the session stays in the outbox (a badge in the top bar shows it) and is uploaded automatically</text>
+  <text x="22" y="302" class="s">when the server can be reached again; sending the same client ID twice never creates a duplicate.</text>
+</svg>
+<figcaption>Figure 4. Saving a finished session</figcaption>
+</figure>
 <p>Access is controlled through user accounts with three roles. Trainers manage trainees and run sessions. Administrators can do the same and also manage settings, staff accounts, test-data exports and the deletion of sessions. When an administrator adds a trainee, the system can create a sign-in account for that trainee. The username is generated from the trainee's name, and a random temporary password is shown once to the administrator, who hands it to the trainee.</p>
 <p>A trainee account can see that trainee's own progress (sessions, leaderboard rank, accuracy trend and procedure results), the leaderboard and the CPR guide, and it can start practice sessions. In that case the Live Session opens locked to the trainee's own profile, and the server accepts sessions only for that trainee and marks them as self-practice. Each self-practice session is recorded for both sides: it appears on the trainer's live monitor while it runs, and once saved it shows up in the trainee's progress, in the trainer's session history and recent-activity list, and on the leaderboard. The leaderboard and the dashboard statistics (sessions today, totals, average accuracy and rate, pass rate, the 30-day accuracy trend and the top-five ranking) count all sessions by default and can be switched to trainer-supervised or self-practice sessions only. On the leaderboard, a trainee sees their own row marked and other trainees by first name and initial only. Trainees can download their own data (a complete personal record, a PDF progress report, a CSV of their sessions and a certificate for each session), and the administrator can download a full backup of the database or an export of all records. All other staff functions are closed to trainee accounts, and deactivating a trainee disables the account.</p>
-<p>Passwords are hashed with bcrypt, and usernames are matched without regard to letter case. Sign-in uses signed tokens that can be revoked, repeated failed sign-ins lead to a temporary lockout, and any initial or temporary password must be changed at first sign-in.</p>
+<p>Passwords are hashed with bcrypt, and usernames are matched without regard to letter case. Sign-in uses signed tokens that can be revoked, repeated failed sign-ins lead to a temporary lockout, and any initial or temporary password must be changed at first sign-in. Figure 5 summarizes what each role can do.</p>
+<figure class="fig">
+<svg class="dg" viewBox="0 0 600 354" role="img" aria-label="Roles and access">
+  <!-- Administrator -->
+  <g class="actor"><circle cx="48" cy="28" r="9"/><path d="M48,37 V64 M34,46 H62 M48,64 L37,82 M48,64 L59,82"/></g>
+  <text x="48" y="98" class="c t">Administrator</text>
+  <path class="ln" d="M74,56 H100"/>
+  <rect class="b" x="100" y="6" width="492" height="100" rx="4"/>
+  <text x="114" y="30" class="m t i">All trainer functions, plus:</text>
+  <text x="114" y="49" class="m">&#8226; Create trainee sign-in accounts</text>
+  <text x="114" y="68" class="m">&#8226; Reset trainee passwords</text>
+  <text x="114" y="87" class="m">&#8226; Manage staff accounts</text>
+  <text x="354" y="30" class="m">&#8226; Change calibration settings</text>
+  <text x="354" y="49" class="m">&#8226; Export test data; delete sessions</text>
+  <text x="354" y="68" class="m">&#8226; Download database backups</text>
+  <text x="354" y="87" class="m">&#8226; Export all records (JSON)</text>
+  <!-- Trainer -->
+  <g class="actor"><circle cx="48" cy="142" r="9"/><path d="M48,151 V178 M34,160 H62 M48,178 L37,196 M48,178 L59,196"/></g>
+  <text x="48" y="212" class="c t">Trainer</text>
+  <path class="ln" d="M74,170 H100"/>
+  <rect class="b" x="100" y="120" width="492" height="100" rx="4"/>
+  <text x="114" y="144" class="m">&#8226; Add and edit trainees</text>
+  <text x="114" y="163" class="m">&#8226; Record consent</text>
+  <text x="114" y="182" class="m">&#8226; Run supervised Live Sessions</text>
+  <text x="114" y="201" class="m">&#8226; Watch the live session monitor</text>
+  <text x="354" y="144" class="m">&#8226; Dashboard, leaderboard, history</text>
+  <text x="354" y="163" class="m">&#8226; Session and trainee reports (PDF, CSV)</text>
+  <text x="354" y="182" class="m">&#8226; Practice certificates</text>
+  <text x="354" y="201" class="m">&#8226; CPR Guide</text>
+  <!-- Trainee -->
+  <g class="actor"><circle cx="48" cy="256" r="9"/><path d="M48,265 V292 M34,274 H62 M48,292 L37,310 M48,292 L59,310"/></g>
+  <text x="48" y="326" class="c t">Trainee</text>
+  <path class="ln" d="M74,284 H100"/>
+  <rect class="hl" x="100" y="234" width="492" height="100" rx="4"/>
+  <text x="114" y="258" class="m">&#8226; Own progress, rank and accuracy trend</text>
+  <text x="114" y="277" class="m">&#8226; Self-practice on own profile only</text>
+  <text x="114" y="296" class="m">&#8226; Leaderboard, others shown as &#8220;Ana R.&#8221;</text>
+  <text x="114" y="315" class="m">&#8226; CPR Guide</text>
+  <text x="354" y="258" class="m">&#8226; Download own data (JSON, PDF, CSV)</text>
+  <text x="354" y="277" class="m">&#8226; Certificate for each own session</text>
+  <text x="354" y="296" class="m">&#8226; Must replace the temporary password</text>
+  <text x="354" y="315" class="m">&#8226; No access to staff pages</text>
+  <text x="300" y="348" class="c s i">The server checks the signed-in role on every request; deactivating an account signs it out everywhere.</text>
+</svg>
+<figcaption>Figure 5. User roles and what each role can access</figcaption>
+</figure>
 
 <h2>3.4 Hardware and Software Requirements</h2>
 <table>
@@ -284,14 +520,138 @@
 </table>
 
 <h2>3.5 Physical Prototype Setup (L.I.F.E. Training Station)</h2>
-<p>The DIY chest prop sits on a stable surface or a floor mat. The laptop is placed 1.5 to 2.5 meters away at chest height, so the webcam sees the trainee's shoulder, elbow and wrist from the side or from a 45-degree angle. The lighting should be even, with no bright window behind the trainee, and a plain background helps the model find the landmarks. Before each session, the Live Session page checks that the model has loaded, the camera is on, the trainee is in view, and the shoulder, elbow and wrist have been visible for one second. Only then can the session start. The setup is photographed for the poster and recorded for the video pitch.</p>
+<p>The DIY chest prop sits on a stable surface or a floor mat. The laptop is placed 1.5 to 2.5 meters away at chest height, so the webcam sees the trainee's shoulder, elbow and wrist from the side or from a 45-degree angle. The lighting should be even, with no bright window behind the trainee, and a plain background helps the model find the landmarks. Before each session, the Live Session page checks that the model has loaded, the camera is on, the trainee is in view, and the shoulder, elbow and wrist have been visible for one second. Only then can the session start. The setup is photographed for the poster and recorded for the video pitch. Figure 6 shows the layout of the training station.</p>
+<figure class="fig">
+<svg class="dg" viewBox="0 0 600 280" role="img" aria-label="Training station layout">
+  <text x="150" y="16" class="c t">(a) Top view</text>
+  <text x="450" y="16" class="c t">(b) Side view</text>
+  <path class="life" d="M300,26 V272"/>
+  <!-- Top view -->
+  <rect class="mat" x="120" y="92" width="110" height="130" rx="4"/>
+  <text x="175" y="84" class="c s">DIY chest prop (target X)</text>
+  <rect class="hl" x="150" y="100" width="50" height="40" rx="5"/>
+  <path class="xm" d="M168,113 L182,127 M182,113 L168,127"/>
+  <path class="limb" d="M154,168 L169,134 M196,168 L181,134"/>
+  <ellipse class="body" cx="175" cy="172" rx="28" ry="11"/>
+  <circle class="body" cx="175" cy="193" r="9"/>
+  <text x="175" y="215" class="c s">trainee, kneeling</text>
+  <rect class="dev" x="24" y="110" width="24" height="24" rx="2"/>
+  <circle class="jt" cx="48" cy="122" r="2.5"/>
+  <text x="8" y="150" class="s">laptop</text>
+  <text x="8" y="162" class="s">webcam</text>
+  <path class="sight" d="M48,122 L155,150 M48,122 L156,170"/>
+  <path class="a2" d="M48,70 H150"/>
+  <text x="99" y="64" class="c s">1.5&#8211;2.5 m</text>
+  <rect class="devd" x="60" y="232" width="24" height="24" rx="2"/>
+  <path class="sight" d="M84,236 L158,182"/>
+  <text x="8" y="272" class="s">or at about 45&#176; to the front</text>
+  <!-- Side view -->
+  <text x="318" y="40" class="s">Even light and a plain background;</text>
+  <text x="318" y="53" class="s">no bright window behind the trainee</text>
+  <text x="318" y="106" class="s">webcam at chest height</text>
+  <path class="floor" d="M318,228 H592"/>
+  <path class="ln" d="M330,150 H382 M336,150 V228 M376,150 V228"/>
+  <path class="limb" d="M340,149 H372 M372,149 L380,120"/>
+  <circle class="jt" cx="379" cy="123" r="2.5"/>
+  <path class="sight" d="M379,123 L496,142 M379,123 L506,208"/>
+  <rect class="hl" x="490" y="208" width="52" height="20" rx="3"/>
+  <text x="548" y="222" class="s">prop</text>
+  <path class="limb" d="M418,226 H452 L452,182 L496,142 L501,175 L506,208"/>
+  <circle class="body" cx="503" cy="133" r="9.5"/>
+  <circle class="jt" cx="496" cy="142" r="3.5"/>
+  <circle class="jt" cx="501" cy="175" r="3.5"/>
+  <circle class="jt" cx="506" cy="208" r="3.5"/>
+  <text x="488" y="140" class="k e">A</text>
+  <text x="492" y="179" class="k e">B</text>
+  <text x="497" y="206" class="k e">C</text>
+  <text x="528" y="150" class="s">A shoulder</text>
+  <text x="528" y="164" class="s">B elbow</text>
+  <text x="528" y="178" class="s">C wrist</text>
+  <path class="a2" d="M379,248 H500"/>
+  <text x="440" y="264" class="c s">1.5&#8211;2.5 m</text>
+</svg>
+<figcaption>Figure 6. Layout of the L.I.F.E. training station</figcaption>
+</figure>
 
 <h2>3.6 Algorithm and Computation</h2>
+<p>Figure 7 shows the steps the system runs for every camera frame. Sections 3.6.1 to 3.6.4 describe each step in detail.</p>
+<figure class="fig">
+<svg class="dg" viewBox="0 0 600 190" role="img" aria-label="Per-frame processing steps">
+  <rect class="hl" x="8" y="14" width="128" height="50" rx="4"/>
+  <text x="72" y="34" class="c t">1. Camera frame</text>
+  <text x="72" y="52" class="c s">15&#8211;30 frames per second</text>
+  <rect class="b" x="158" y="14" width="128" height="50" rx="4"/>
+  <text x="222" y="34" class="c t">2. Landmarks</text>
+  <text x="222" y="52" class="c s">33 pose, 21 per hand</text>
+  <rect class="b" x="308" y="14" width="128" height="50" rx="4"/>
+  <text x="372" y="34" class="c t">3. Arm lock</text>
+  <text x="372" y="52" class="c s">better-visible arm</text>
+  <rect class="b" x="458" y="14" width="128" height="50" rx="4"/>
+  <text x="522" y="34" class="c t">4. Elbow angle</text>
+  <text x="522" y="52" class="c s">smoothed; &#8805; 160&#176; locked</text>
+  <rect class="b" x="458" y="100" width="128" height="50" rx="4"/>
+  <text x="522" y="120" class="c t">5. Compressions</text>
+  <text x="522" y="138" class="c s">wrist peaks &#8594; BPM</text>
+  <rect class="b" x="308" y="100" width="128" height="50" rx="4"/>
+  <text x="372" y="120" class="c t">6. Scoring</text>
+  <text x="372" y="138" class="c s">correct / unscorable</text>
+  <rect class="b" x="158" y="100" width="128" height="50" rx="4"/>
+  <text x="222" y="120" class="c t">7. Feedback</text>
+  <text x="222" y="138" class="c s">cue + CPR step panel</text>
+  <rect class="ok" x="8" y="100" width="128" height="50" rx="4"/>
+  <text x="72" y="120" class="c t">8. Session end</text>
+  <text x="72" y="138" class="c s">summary saved</text>
+  <path class="a" d="M136,39 H156"/>
+  <path class="a" d="M286,39 H306"/>
+  <path class="a" d="M436,39 H456"/>
+  <path class="a" d="M522,64 V98"/>
+  <path class="a" d="M458,125 H438"/>
+  <path class="a" d="M308,125 H288"/>
+  <path class="a" d="M158,125 H138"/>
+  <path class="ad" d="M222,64 V82 H372 V98"/>
+  <text x="232" y="78" class="s i">hands stacked? (reported separately)</text>
+  <text x="300" y="178" class="c s i">Steps 1 to 7 repeat for every camera frame inside the browser; step 8 runs once, when the session ends.</text>
+</svg>
+<figcaption>Figure 7. Processing steps for each camera frame (Sections 3.6.1&#8211;3.6.4)</figcaption>
+</figure>
 
 <h3>3.6.1 Arm Selection and Elbow Angle (Locked Elbows)</h3>
 <p>Before the session begins, the system watches how visible each arm is. When the session starts, it locks onto whichever arm the camera sees better and stays with that arm for the whole session. It switches only if that arm disappears for more than one second while the other arm is visible, so the two arms are never mixed in a single measurement. For each frame, the system takes the shoulder (A), elbow (B) and wrist (C) landmarks of the locked arm and computes the angle at the elbow from the vectors BA and BC:</p>
 <p class="formula">&theta; = arccos( (BA &middot; BC) / (|BA| &times; |BC|) ), converted to degrees</p>
-<p>Landmarks below the visibility threshold (0.5 by default) are ignored, and a moving average over the most recent frames (5 by default) smooths out noise. The elbow counts as locked when the smoothed angle is at or above a calibrated threshold (160 degrees by default). If the arm cannot be seen, the elbow is reported as not visible rather than as locked. After a gap longer than 300 milliseconds the smoothing window is cleared, so old angles are not carried over.</p>
+<p>Landmarks below the visibility threshold (0.5 by default) are ignored, and a moving average over the most recent frames (5 by default) smooths out noise. The elbow counts as locked when the smoothed angle is at or above a calibrated threshold (160 degrees by default). If the arm cannot be seen, the elbow is reported as not visible rather than as locked. After a gap longer than 300 milliseconds the smoothing window is cleared, so old angles are not carried over. Figure 8 shows how a locked arm and a bent arm are classified.</p>
+<figure class="fig">
+<svg class="dg" viewBox="0 0 600 222" role="img" aria-label="Elbow angle measurement">
+  <!-- Locked -->
+  <path class="armok" d="M100,40 L115,110 L122,180"/>
+  <path class="arc" d="M110.4,88.5 A22,22 0 0,0 117.2,131.9"/>
+  <text x="84" y="116" class="f">&#952;</text>
+  <circle class="jt" cx="100" cy="40" r="4"/>
+  <circle class="jt" cx="115" cy="110" r="4"/>
+  <circle class="jt" cx="122" cy="180" r="4"/>
+  <text x="110" y="44" class="s"><tspan class="k">A</tspan> shoulder</text>
+  <text x="126" y="114" class="s"><tspan class="k">B</tspan> elbow</text>
+  <text x="133" y="184" class="s"><tspan class="k">C</tspan> wrist</text>
+  <text x="115" y="210" class="c t g">Locked: &#952; &#8776; 174&#176; (&#8805; 160&#176;)</text>
+  <!-- Formula -->
+  <text x="300" y="70" class="c f">&#952; = arccos( (BA &#183; BC) / (|BA| &#215; |BC|) )</text>
+  <text x="300" y="96" class="c s">vectors from elbow B to A and to C</text>
+  <text x="300" y="114" class="c s">smoothed over the last 5 frames</text>
+  <text x="300" y="132" class="c s">landmarks with visibility &lt; 0.5 ignored</text>
+  <text x="300" y="150" class="c s">threshold 160&#176;, adjustable in Settings</text>
+  <!-- Bent -->
+  <path class="armbad" d="M440,40 L480,105 L455,175"/>
+  <path class="arc" d="M468.5,86.3 A22,22 0 0,0 472.6,125.7"/>
+  <text x="444" y="112" class="f">&#952;</text>
+  <circle class="jt" cx="440" cy="40" r="4"/>
+  <circle class="jt" cx="480" cy="105" r="4"/>
+  <circle class="jt" cx="455" cy="175" r="4"/>
+  <text x="450" y="38" class="s"><tspan class="k">A</tspan> shoulder</text>
+  <text x="491" y="109" class="s"><tspan class="k">B</tspan> elbow</text>
+  <text x="466" y="180" class="s"><tspan class="k">C</tspan> wrist</text>
+  <text x="470" y="210" class="c t" style="fill:#a81638">Bent: &#952; &#8776; 129&#176; (&lt; 160&#176;)</text>
+</svg>
+<figcaption>Figure 8. Elbow angle from the shoulder (A), elbow (B) and wrist (C) landmarks</figcaption>
+</figure>
 
 <h3>3.6.2 Compression Cadence</h3>
 <p>During compressions, the up-and-down position of the wrist landmark traces a roughly regular wave over time. The system processes it in four steps:</p>
@@ -302,19 +662,199 @@
   <li>It computes the cadence from the median of the latest N intervals (4 by default):</li>
 </ol>
 <p class="formula">BPM = 60,000 / median(latest N intervals in milliseconds)</p>
-<p>Taking the median of the most recent intervals keeps the cadence focused on what the trainee is doing right now, and a single missed or extra detection does not throw it off. A gap longer than 1.5 seconds (for example, while giving rescue breaths) starts a new run, so the first compressions after a pause are not marked as too slow; the coach then reminds the trainee to resume and to keep pauses short. A cadence from 100 to 120 BPM, inclusive, is in range; anything outside that is too slow or too fast.</p>
+<p>Taking the median of the most recent intervals keeps the cadence focused on what the trainee is doing right now, and a single missed or extra detection does not throw it off. A gap longer than 1.5 seconds (for example, while giving rescue breaths) starts a new run, so the first compressions after a pause are not marked as too slow; the coach then reminds the trainee to resume and to keep pauses short. A cadence from 100 to 120 BPM, inclusive, is in range; anything outside that is too slow or too fast. Figure 9 shows these steps on an illustrative wrist signal at about 110 compressions per minute, with a pause for rescue breaths.</p>
+<figure class="fig">
+<svg class="dg" viewBox="0 0 600 250" role="img" aria-label="Compression detection from the wrist signal">
+  <text x="178" y="42" class="c s i">Run 1: five compressions</text>
+  <text x="505" y="42" class="c s i">Run 2: three compressions</text>
+  <rect class="pause" x="300" y="48" width="124" height="134"/>
+  <text x="362" y="128" class="c s">pause &gt; 1.5 s</text>
+  <text x="362" y="142" class="c s">(2 breaths)</text>
+  <text x="362" y="156" class="c s">&#8594; new run</text>
+<g class="raw"><circle cx="55.0" cy="180.6" r="1.1"/><circle cx="57.9" cy="183.0" r="1.1"/><circle cx="60.9" cy="170.5" r="1.1"/><circle cx="63.8" cy="167.0" r="1.1"/><circle cx="66.8" cy="143.0" r="1.1"/><circle cx="69.7" cy="125.7" r="1.1"/><circle cx="72.7" cy="110.7" r="1.1"/><circle cx="75.6" cy="87.6" r="1.1"/><circle cx="78.6" cy="83.6" r="1.1"/><circle cx="81.5" cy="74.0" r="1.1"/><circle cx="84.4" cy="83.2" r="1.1"/><circle cx="87.4" cy="93.8" r="1.1"/><circle cx="90.3" cy="105.3" r="1.1"/><circle cx="93.3" cy="118.9" r="1.1"/><circle cx="96.2" cy="149.1" r="1.1"/><circle cx="99.2" cy="164.8" r="1.1"/><circle cx="102.1" cy="170.9" r="1.1"/><circle cx="105.1" cy="171.3" r="1.1"/><circle cx="108.0" cy="174.3" r="1.1"/><circle cx="110.9" cy="167.1" r="1.1"/><circle cx="113.9" cy="143.0" r="1.1"/><circle cx="116.8" cy="137.5" r="1.1"/><circle cx="119.8" cy="105.5" r="1.1"/><circle cx="122.7" cy="96.1" r="1.1"/><circle cx="125.7" cy="85.1" r="1.1"/><circle cx="128.6" cy="79.1" r="1.1"/><circle cx="131.6" cy="77.4" r="1.1"/><circle cx="134.5" cy="78.6" r="1.1"/><circle cx="137.4" cy="102.6" r="1.1"/><circle cx="140.4" cy="115.5" r="1.1"/><circle cx="143.3" cy="134.7" r="1.1"/><circle cx="146.3" cy="157.0" r="1.1"/><circle cx="149.2" cy="168.5" r="1.1"/><circle cx="152.2" cy="183.4" r="1.1"/><circle cx="155.1" cy="183.6" r="1.1"/><circle cx="158.1" cy="174.1" r="1.1"/><circle cx="161.0" cy="153.3" r="1.1"/><circle cx="163.9" cy="138.8" r="1.1"/><circle cx="166.9" cy="120.4" r="1.1"/><circle cx="169.8" cy="97.6" r="1.1"/><circle cx="172.8" cy="84.5" r="1.1"/><circle cx="175.7" cy="77.8" r="1.1"/><circle cx="178.7" cy="69.0" r="1.1"/><circle cx="181.6" cy="76.5" r="1.1"/><circle cx="184.6" cy="96.0" r="1.1"/><circle cx="187.5" cy="108.8" r="1.1"/><circle cx="190.4" cy="129.4" r="1.1"/><circle cx="193.4" cy="143.6" r="1.1"/><circle cx="196.3" cy="161.6" r="1.1"/><circle cx="199.3" cy="178.2" r="1.1"/><circle cx="202.2" cy="170.9" r="1.1"/><circle cx="205.2" cy="178.8" r="1.1"/><circle cx="208.1" cy="162.6" r="1.1"/><circle cx="211.0" cy="140.7" r="1.1"/><circle cx="214.0" cy="129.9" r="1.1"/><circle cx="216.9" cy="105.3" r="1.1"/><circle cx="219.9" cy="95.2" r="1.1"/><circle cx="222.8" cy="74.7" r="1.1"/><circle cx="225.8" cy="69.1" r="1.1"/><circle cx="228.7" cy="75.4" r="1.1"/><circle cx="231.7" cy="81.5" r="1.1"/><circle cx="234.6" cy="106.0" r="1.1"/><circle cx="237.5" cy="119.9" r="1.1"/><circle cx="240.5" cy="141.2" r="1.1"/><circle cx="243.4" cy="158.8" r="1.1"/><circle cx="246.4" cy="172.9" r="1.1"/><circle cx="249.3" cy="172.8" r="1.1"/><circle cx="252.3" cy="169.2" r="1.1"/><circle cx="255.2" cy="166.6" r="1.1"/><circle cx="258.2" cy="148.5" r="1.1"/><circle cx="261.1" cy="138.2" r="1.1"/><circle cx="264.0" cy="108.8" r="1.1"/><circle cx="267.0" cy="91.6" r="1.1"/><circle cx="269.9" cy="73.2" r="1.1"/><circle cx="272.9" cy="68.9" r="1.1"/><circle cx="275.8" cy="77.6" r="1.1"/><circle cx="278.8" cy="84.3" r="1.1"/><circle cx="281.7" cy="94.6" r="1.1"/><circle cx="284.7" cy="122.7" r="1.1"/><circle cx="287.6" cy="136.3" r="1.1"/><circle cx="290.5" cy="159.2" r="1.1"/><circle cx="293.5" cy="174.3" r="1.1"/><circle cx="296.4" cy="183.2" r="1.1"/><circle cx="299.4" cy="174.1" r="1.1"/><circle cx="302.3" cy="183.4" r="1.1"/><circle cx="305.3" cy="181.7" r="1.1"/><circle cx="308.2" cy="179.6" r="1.1"/><circle cx="311.2" cy="172.5" r="1.1"/><circle cx="314.1" cy="184.2" r="1.1"/><circle cx="317.0" cy="178.7" r="1.1"/><circle cx="320.0" cy="177.3" r="1.1"/><circle cx="322.9" cy="172.4" r="1.1"/><circle cx="325.9" cy="173.3" r="1.1"/><circle cx="328.8" cy="172.6" r="1.1"/><circle cx="331.8" cy="181.3" r="1.1"/><circle cx="334.7" cy="179.2" r="1.1"/><circle cx="337.7" cy="180.1" r="1.1"/><circle cx="340.6" cy="172.4" r="1.1"/><circle cx="343.5" cy="171.3" r="1.1"/><circle cx="346.5" cy="183.1" r="1.1"/><circle cx="349.4" cy="182.8" r="1.1"/><circle cx="352.4" cy="181.9" r="1.1"/><circle cx="355.3" cy="181.9" r="1.1"/><circle cx="358.3" cy="178.2" r="1.1"/><circle cx="361.2" cy="176.7" r="1.1"/><circle cx="364.2" cy="181.5" r="1.1"/><circle cx="367.1" cy="185.3" r="1.1"/><circle cx="370.0" cy="179.2" r="1.1"/><circle cx="373.0" cy="179.9" r="1.1"/><circle cx="375.9" cy="177.0" r="1.1"/><circle cx="378.9" cy="171.3" r="1.1"/><circle cx="381.8" cy="175.2" r="1.1"/><circle cx="384.8" cy="177.8" r="1.1"/><circle cx="387.7" cy="176.3" r="1.1"/><circle cx="390.7" cy="175.4" r="1.1"/><circle cx="393.6" cy="184.6" r="1.1"/><circle cx="396.5" cy="172.1" r="1.1"/><circle cx="399.5" cy="173.9" r="1.1"/><circle cx="402.4" cy="172.5" r="1.1"/><circle cx="405.4" cy="173.6" r="1.1"/><circle cx="408.3" cy="179.6" r="1.1"/><circle cx="411.3" cy="179.5" r="1.1"/><circle cx="414.2" cy="183.8" r="1.1"/><circle cx="417.2" cy="176.0" r="1.1"/><circle cx="420.1" cy="184.4" r="1.1"/><circle cx="423.0" cy="184.4" r="1.1"/><circle cx="426.0" cy="180.5" r="1.1"/><circle cx="428.9" cy="172.5" r="1.1"/><circle cx="431.9" cy="155.0" r="1.1"/><circle cx="434.8" cy="140.4" r="1.1"/><circle cx="437.8" cy="121.1" r="1.1"/><circle cx="440.7" cy="100.5" r="1.1"/><circle cx="443.7" cy="87.3" r="1.1"/><circle cx="446.6" cy="76.0" r="1.1"/><circle cx="449.5" cy="80.9" r="1.1"/><circle cx="452.5" cy="76.0" r="1.1"/><circle cx="455.4" cy="93.7" r="1.1"/><circle cx="458.4" cy="118.9" r="1.1"/><circle cx="461.3" cy="137.4" r="1.1"/><circle cx="464.3" cy="154.9" r="1.1"/><circle cx="467.2" cy="169.5" r="1.1"/><circle cx="470.2" cy="181.8" r="1.1"/><circle cx="473.1" cy="172.5" r="1.1"/><circle cx="476.0" cy="164.1" r="1.1"/><circle cx="479.0" cy="158.9" r="1.1"/><circle cx="481.9" cy="140.9" r="1.1"/><circle cx="484.9" cy="126.8" r="1.1"/><circle cx="487.8" cy="107.3" r="1.1"/><circle cx="490.8" cy="88.0" r="1.1"/><circle cx="493.7" cy="79.2" r="1.1"/><circle cx="496.6" cy="68.3" r="1.1"/><circle cx="499.6" cy="83.0" r="1.1"/><circle cx="502.5" cy="96.9" r="1.1"/><circle cx="505.5" cy="100.4" r="1.1"/><circle cx="508.4" cy="126.3" r="1.1"/><circle cx="511.4" cy="151.5" r="1.1"/><circle cx="514.3" cy="162.3" r="1.1"/><circle cx="517.3" cy="180.9" r="1.1"/><circle cx="520.2" cy="177.6" r="1.1"/><circle cx="523.1" cy="167.3" r="1.1"/><circle cx="526.1" cy="158.2" r="1.1"/><circle cx="529.0" cy="144.4" r="1.1"/><circle cx="532.0" cy="131.3" r="1.1"/><circle cx="534.9" cy="109.9" r="1.1"/><circle cx="537.9" cy="95.6" r="1.1"/><circle cx="540.8" cy="74.5" r="1.1"/><circle cx="543.8" cy="72.7" r="1.1"/><circle cx="546.7" cy="71.4" r="1.1"/><circle cx="549.6" cy="87.6" r="1.1"/><circle cx="552.6" cy="104.6" r="1.1"/><circle cx="555.5" cy="115.1" r="1.1"/><circle cx="558.5" cy="132.6" r="1.1"/><circle cx="561.4" cy="152.4" r="1.1"/><circle cx="564.4" cy="166.3" r="1.1"/><circle cx="567.3" cy="172.8" r="1.1"/><circle cx="570.3" cy="174.5" r="1.1"/><circle cx="573.2" cy="182.0" r="1.1"/><circle cx="576.1" cy="177.7" r="1.1"/><circle cx="579.1" cy="180.1" r="1.1"/><circle cx="582.0" cy="184.9" r="1.1"/><circle cx="585.0" cy="184.9" r="1.1"/></g>
+<path class="sig" d="M55.0,178.0 L57.9,175.3 L60.9,168.8 L63.8,157.8 L66.8,143.4 L69.7,126.8 L72.7,110.1 L75.6,96.3 L78.6,87.8 L81.5,84.4 L84.4,88.0 L87.4,95.0 L90.3,110.0 L93.3,126.4 L96.2,141.8 L99.2,155.0 L102.1,166.1 L105.1,169.7 L108.0,165.3 L110.9,158.6 L113.9,145.5 L116.8,129.8 L119.8,113.4 L122.7,100.7 L125.7,88.7 L128.6,83.3 L131.6,84.6 L134.5,90.7 L137.4,101.8 L140.4,117.7 L143.3,135.7 L146.3,151.8 L149.2,165.5 L152.2,173.3 L155.1,172.6 L158.1,166.6 L161.0,154.1 L163.9,136.9 L166.9,118.9 L169.8,103.8 L172.8,89.9 L175.7,81.1 L178.7,80.8 L181.6,85.6 L184.6,95.9 L187.5,110.8 L190.4,127.9 L193.4,144.3 L196.3,156.7 L199.3,166.6 L202.2,170.4 L205.2,166.2 L208.1,156.6 L211.0,143.5 L214.0,126.7 L216.9,109.2 L219.9,94.8 L222.8,84.0 L225.8,79.2 L228.7,81.4 L231.7,90.4 L234.6,104.8 L237.5,121.5 L240.5,139.8 L243.4,153.1 L246.4,163.0 L249.3,168.1 L252.3,166.0 L255.2,159.1 L258.2,146.3 L261.1,130.8 L264.0,112.1 L267.0,96.2 L269.9,84.0 L272.9,79.1 L275.8,79.7 L278.8,89.6 L281.7,103.1 L284.7,119.4 L287.6,137.4 L290.5,155.2 L293.5,165.4 L296.4,174.8 L299.4,179.3 L302.3,180.4 L305.3,178.3 L308.2,180.3 L311.2,179.4 L314.1,178.5 L317.0,177.0 L320.0,177.2 L322.9,174.9 L325.9,175.4 L328.8,175.8 L331.8,177.3 L334.7,177.1 L337.7,176.8 L340.6,177.2 L343.5,177.9 L346.5,178.3 L349.4,180.2 L352.4,181.6 L355.3,180.3 L358.3,180.1 L361.2,180.7 L364.2,180.2 L367.1,180.5 L370.0,180.6 L373.0,178.6 L375.9,176.5 L378.9,176.3 L381.8,175.5 L384.8,175.2 L387.7,177.8 L390.7,177.2 L393.6,176.4 L396.5,175.7 L399.5,175.3 L402.4,174.3 L405.4,175.8 L408.3,177.8 L411.3,178.5 L414.2,180.7 L417.2,181.6 L420.1,181.8 L423.0,179.6 L426.0,175.3 L428.9,166.5 L431.9,153.9 L434.8,137.9 L437.8,120.9 L440.7,105.1 L443.7,93.2 L446.6,84.2 L449.5,82.8 L452.5,89.1 L455.4,101.4 L458.4,116.2 L461.3,134.9 L464.3,152.5 L467.2,163.2 L470.2,168.5 L473.1,169.3 L476.0,163.6 L479.0,152.6 L481.9,139.6 L484.9,124.4 L487.8,108.5 L490.8,93.9 L493.7,85.2 L496.6,83.1 L499.6,85.6 L502.5,95.0 L505.5,111.6 L508.4,127.5 L511.4,144.3 L514.3,159.7 L517.3,167.9 L520.2,169.3 L523.1,165.7 L526.1,155.8 L529.0,142.2 L532.0,127.9 L534.9,111.1 L537.9,96.8 L540.8,84.8 L543.8,80.3 L546.7,82.1 L549.6,90.3 L552.6,102.3 L555.5,118.5 L558.5,134.2 L561.4,147.8 L564.4,159.7 L567.3,169.6 L570.3,174.7 L573.2,177.4 L576.1,179.9 L579.1,181.9 L582.0,181.9 L585.0,183.3"/>
+<circle cx="81.5" cy="84.4" r="3.2" class="pk"/><circle cx="129.6" cy="83.3" r="3.2" class="pk"/><circle cx="177.8" cy="80.8" r="3.2" class="pk"/><circle cx="225.9" cy="79.2" r="3.2" class="pk"/><circle cx="274.1" cy="79.1" r="3.2" class="pk"/><circle cx="448.1" cy="82.8" r="3.2" class="pk"/><circle cx="496.2" cy="83.1" r="3.2" class="pk"/><circle cx="544.3" cy="80.3" r="3.2" class="pk"/>
+  <path class="ax" d="M55,48 V182 H585"/>
+  <path class="ax" d="M55,182 v4 M143.3,182 v4 M231.7,182 v4 M320,182 v4 M408.3,182 v4 M496.7,182 v4 M585,182 v4"/>
+  <text x="55" y="197" class="c s">0 s</text>
+  <text x="143.3" y="197" class="c s">1 s</text>
+  <text x="231.7" y="197" class="c s">2 s</text>
+  <text x="320" y="197" class="c s">3 s</text>
+  <text x="408.3" y="197" class="c s">4 s</text>
+  <text x="496.7" y="197" class="c s">5 s</text>
+  <text x="585" y="197" class="c s">6 s</text>
+  <text transform="translate(42,115) rotate(-90)" class="c s">wrist moves down &#8594;</text>
+  <path class="a2" d="M131,62 H176"/>
+  <text x="154" y="57" class="c s">interval 545 ms (&#8805; 400 ms)</text>
+  <path class="dot" d="M276,79 H294"/>
+  <path class="a2" d="M294,80 V176"/>
+  <text x="304" y="64" class="s">&#8592; rise &gt; 1.2% of</text>
+  <text x="304" y="77" class="s">frame height</text>
+  <circle cx="64" cy="216" r="2" fill="#9aa6b6"/>
+  <text x="72" y="220" class="s">raw wrist position (30 FPS)</text>
+  <path class="sig" d="M222,216 H246"/>
+  <text x="252" y="220" class="s">smoothed over &#177;70 ms</text>
+  <circle class="pk" cx="412" cy="216" r="3.2"/>
+  <text x="420" y="220" class="s">detected compression (peak)</text>
+  <text x="300" y="242" class="c s i">BPM = 60,000 &#247; median(last 4 intervals) = 60,000 &#247; 545 ms &#8776; 110 compressions per minute</text>
+</svg>
+<figcaption>Figure 9. Compression detection from the wrist signal (illustrative recording)</figcaption>
+</figure>
 
 <p><strong>Calibration of the defaults.</strong> The detection defaults were calibrated on a physical model of a trainee as seen by a typical 720p laptop webcam (vertical field of view of about 42&deg;). In this model the wrists and shoulders move by the compression depth, every landmark position carries random jitter of up to 0.6% of the frame, and the trainee may sway. The model covered camera distances of 1.5 to 3 m, compression depths of 4 to 6 cm, rates of 90 to 130 per minute and frame rates of 15 to 30 FPS. A 2% threshold missed up to 61% of compressions at 2.5 m and more than half at 15 FPS, while thresholds below 1% picked up false compressions from jitter when the trainee was not moving. The combination finally chosen (a 1.2% threshold with &plusmn;70 ms smoothing) detected 94&ndash;100% of compressions at 20&ndash;30 FPS within 1.5&ndash;2.5 m (78&ndash;91% at 15 FPS). Its mean rate error was 0.8&ndash;1.7 compressions per minute, and it produced at most one false compression per 100 seconds while the trainee was still. Elbow angles 10&deg; or more away from the 160&deg; threshold were classified correctly at least 97% of the time, and angles 5&deg; away at least 94% of the time. These figures come from simulation. The accuracy study with real participants (Section 3.8) will provide the real-world values.</p>
 
 <h3>3.6.3 Accuracy Scoring and Coaching</h3>
 <p>Every detected compression is judged on two criteria: (a) the elbow was locked at the moment of the compression, read from the frame closest to the peak time, and (b) the local cadence was within 100 to 120 BPM. The first compression of each run is scored once the next compression supplies its interval. A compression is unscorable if the elbow could not be seen, or if it was a lone compression with no cadence. Unscorable compressions are reported on their own and left out of the denominator. The session accuracy is:</p>
 <p class="formula">Accuracy (%) = (compressions meeting both criteria / scorable compressions) &times; 100</p>
-<p>A session passes when its accuracy reaches the pass mark (80% by default, a placeholder still to be confirmed with a qualified first-aid trainer). A session is not saved if the camera failed, if the trainee was out of view for most of it, or if not a single compression could be scored, so invalid sessions do not skew the results. During the session only one coaching cue is shown at a time. It is picked in order of priority (step into view, make the arm visible, start or resume compressions, lock your elbows, push faster, slow down, good) based on the last three scored compressions, and it changes no more than once every 1.5 seconds so the screen does not flicker.</p>
+<p>A session passes when its accuracy reaches the pass mark (80% by default, a placeholder still to be confirmed with a qualified first-aid trainer). A session is not saved if the camera failed, if the trainee was out of view for most of it, or if not a single compression could be scored, so invalid sessions do not skew the results. During the session only one coaching cue is shown at a time. It is picked in order of priority (step into view, make the arm visible, start or resume compressions, lock your elbows, push faster, slow down, good) based on the last three scored compressions, and it changes no more than once every 1.5 seconds so the screen does not flicker. Figure 10 shows both rules.</p>
+<figure class="fig">
+<svg class="dg" viewBox="0 0 600 372" role="img" aria-label="Scoring and coaching rules">
+  <text x="8" y="16" class="t">(a) Scoring one compression</text>
+  <rect class="hl" x="8" y="52" width="82" height="46" rx="4"/>
+  <text x="49" y="71" class="c s">Detected</text>
+  <text x="49" y="86" class="c s">compression</text>
+  <polygon class="b" points="110,75 150,41 190,75 150,109"/>
+  <text x="150" y="72" class="c s">Elbow</text>
+  <text x="150" y="86" class="c s">visible?</text>
+  <polygon class="b" points="210,75 250,41 290,75 250,109"/>
+  <text x="250" y="72" class="c s">Cadence</text>
+  <text x="250" y="86" class="c s">known?</text>
+  <polygon class="b" points="310,75 350,41 390,75 350,109"/>
+  <text x="350" y="72" class="c s">Elbow</text>
+  <text x="350" y="86" class="c s">locked?</text>
+  <polygon class="b" points="410,75 450,41 490,75 450,109"/>
+  <text x="450" y="72" class="c s">BPM</text>
+  <text x="450" y="86" class="c s">100&#8211;120?</text>
+  <rect class="ok" x="510" y="52" width="82" height="46" rx="4"/>
+  <text x="551" y="80" class="c t g">Correct</text>
+  <path class="a" d="M90,75 H108"/>
+  <path class="a" d="M190,75 H208"/>
+  <path class="a" d="M290,75 H308"/>
+  <path class="a" d="M390,75 H408"/>
+  <path class="a" d="M490,75 H508"/>
+  <text x="199" y="68" class="c s">yes</text>
+  <text x="299" y="68" class="c s">yes</text>
+  <text x="399" y="68" class="c s">yes</text>
+  <text x="499" y="68" class="c s">yes</text>
+  <path class="a" d="M150,109 V138"/>
+  <path class="a" d="M250,109 V138"/>
+  <path class="a" d="M350,109 V138"/>
+  <path class="a" d="M450,109 V138"/>
+  <text x="156" y="128" class="s">no</text>
+  <text x="256" y="128" class="s">no</text>
+  <text x="356" y="128" class="s">no</text>
+  <text x="456" y="128" class="s">no</text>
+  <rect class="nt" x="110" y="140" width="180" height="34" rx="4"/>
+  <text x="200" y="155" class="c t">Unscorable</text>
+  <text x="200" y="168" class="c s">left out of the accuracy</text>
+  <rect class="bad" x="310" y="140" width="180" height="34" rx="4"/>
+  <text x="400" y="162" class="c t" style="fill:#a81638">Incorrect</text>
+  <text x="300" y="198" class="c f">Accuracy (%) = correct &#247; scorable &#215; 100; Pass when accuracy &#8805; pass mark (80%)</text>
+  <text x="300" y="216" class="c s i">&#8220;Cadence known&#8221;: the compression has a neighbour in the same run, so its interval can be measured.</text>
+  <text x="8" y="246" class="t">(b) Coaching cue: the first rule that applies is shown, changing at most once every 1.5 s</text>
+  <rect class="hl" x="8" y="256" width="80" height="48" rx="4"/>
+  <text x="48" y="276" class="c s">1. Step into</text>
+  <text x="48" y="290" class="c s">view</text>
+  <rect class="hl" x="92" y="256" width="80" height="48" rx="4"/>
+  <text x="132" y="276" class="c s">2. Turn so arm</text>
+  <text x="132" y="290" class="c s">is visible</text>
+  <rect class="hl" x="176" y="256" width="80" height="48" rx="4"/>
+  <text x="216" y="276" class="c s">3. Start or</text>
+  <text x="216" y="290" class="c s">resume</text>
+  <rect class="bad" x="260" y="256" width="80" height="48" rx="4"/>
+  <text x="300" y="276" class="c s">4. Lock your</text>
+  <text x="300" y="290" class="c s">elbows</text>
+  <rect class="bad" x="344" y="256" width="80" height="48" rx="4"/>
+  <text x="384" y="276" class="c s">5. Push</text>
+  <text x="384" y="290" class="c s">faster</text>
+  <rect class="bad" x="428" y="256" width="80" height="48" rx="4"/>
+  <text x="468" y="276" class="c s">6. Slow</text>
+  <text x="468" y="290" class="c s">down</text>
+  <rect class="ok" x="512" y="256" width="80" height="48" rx="4"/>
+  <text x="552" y="276" class="c s">7. Good, keep</text>
+  <text x="552" y="290" class="c s">going</text>
+  <text x="48" y="322" class="c s i">no person</text>
+  <text x="132" y="322" class="c s i">arm hidden</text>
+  <text x="216" y="322" class="c s i">pause &gt; 1.5 s</text>
+  <text x="300" y="322" class="c s i">2 of last 3 bent</text>
+  <text x="384" y="322" class="c s i">BPM &lt; 100</text>
+  <text x="468" y="322" class="c s i">BPM &gt; 120</text>
+  <text x="552" y="322" class="c s i">otherwise</text>
+  <path class="a" d="M8,340 H590"/>
+  <text x="300" y="360" class="c s">checked in this order, from the highest priority to the lowest</text>
+</svg>
+<figcaption>Figure 10. Scoring rule for each compression and priority of the coaching cues</figcaption>
+</figure>
 
 <h3>3.6.4 Hand Position and the Step-by-Step CPR Sequence</h3>
 <p>A second MediaPipe model, the Hand Landmarker, finds up to two hands with 21 landmarks each (the wrist and four points on each finger). It runs about eight times a second, which leaves the pose tracking free to time compressions at the full frame rate. The hands count as stacked when the centers of the two palms are within one palm length of each other. From the side, one hand often hides the other, so in that case the system falls back on the two wrist landmarks from the pose model, which must be within 40% of a forearm length of each other. The system records the hand reading closest to each compression and reports the percentage of compressions made with stacked hands. Hand position is reported separately and does not affect the accuracy score.</p>
 <p>Throughout the session, a step-by-step panel follows the 2025 AHA adult sequence. The trainer confirms steps 1 and 2 (scene, response, breathing, calling 911 and an AED) strictly in order. Each item unlocks only after the one before it, unticking an item clears everything after it, and compressions cannot start until all four items are confirmed. The exception is compression-only practice, chosen by the trainer, in which case those steps are recorded as not done. Before starting, the trainer also picks the victim (adult, child or infant) and the number of rescuers, which sets the compressions per cycle from Table 1 (30, or 15 for a child or infant with two rescuers).</p>
-<p>The panel counts the compressions in the current cycle and, at the end of each cycle, tells the trainee to give 2 breaths. It also shows progress toward the number of cycles expected in 2 minutes (about 5 cycles of 30:2, or about 10 of 15:2). When compressions resume after a pause of at least 1.5 seconds, the cycle is counted as complete, and a pause longer than 10 seconds brings up a prompt to resume. When the AED arrives, the trainer goes through turning it on, attaching the pads, standing clear, and the shock or no-shock result, after which the trainee is told to resume CPR immediately. If the trainee keeps compressing past the end of a cycle, the prompt becomes more urgent ("Stop — give 2 breaths now"), and every interruption longer than 10 seconds is counted, including the restart after the AED. The 2-minute session timer marks the moment to check the person and switch compressors.</p>
+<p>The panel counts the compressions in the current cycle and, at the end of each cycle, tells the trainee to give 2 breaths. It also shows progress toward the number of cycles expected in 2 minutes (about 5 cycles of 30:2, or about 10 of 15:2). When compressions resume after a pause of at least 1.5 seconds, the cycle is counted as complete, and a pause longer than 10 seconds brings up a prompt to resume. When the AED arrives, the trainer goes through turning it on, attaching the pads, standing clear, and the shock or no-shock result, after which the trainee is told to resume CPR immediately. If the trainee keeps compressing past the end of a cycle, the prompt becomes more urgent ("Stop — give 2 breaths now"), and every interruption longer than 10 seconds is counted, including the restart after the AED. The 2-minute session timer marks the moment to check the person and switch compressors. Figure 11 shows the whole session flow.</p>
+<figure class="fig">
+<svg class="dg" viewBox="0 0 600 338" role="img" aria-label="Step-by-step CPR session flow">
+  <rect class="nt" x="6" y="14" width="106" height="56" rx="4"/>
+  <text x="59" y="32" class="c t">Setup</text>
+  <text x="59" y="47" class="c s">victim, rescuers,</text>
+  <text x="59" y="61" class="c s">30:2 or hands-only</text>
+  <rect class="b" x="127" y="14" width="106" height="56" rx="4"/>
+  <text x="180" y="32" class="c t">Step 1 (trainer)</text>
+  <text x="180" y="47" class="c s">scene safe &#8594;</text>
+  <text x="180" y="61" class="c s">response, breathing</text>
+  <rect class="b" x="248" y="14" width="106" height="56" rx="4"/>
+  <text x="301" y="32" class="c t">Step 2 (trainer)</text>
+  <text x="301" y="47" class="c s">call 911 and</text>
+  <text x="301" y="61" class="c s">send for an AED</text>
+  <rect class="nt" x="369" y="14" width="106" height="56" rx="4"/>
+  <text x="422" y="32" class="c t">Readiness</text>
+  <text x="422" y="47" class="c s">model, camera, arm</text>
+  <text x="422" y="61" class="c s">visible for 1 s</text>
+  <rect class="nt" x="490" y="14" width="106" height="56" rx="4"/>
+  <text x="543" y="32" class="c t">Start</text>
+  <text x="543" y="47" class="c s">3-2-1 countdown,</text>
+  <text x="543" y="61" class="c s">2-minute timer</text>
+  <path class="a" d="M112,42 H125"/>
+  <path class="a" d="M233,42 H246"/>
+  <path class="a" d="M354,42 H367"/>
+  <path class="a" d="M475,42 H488"/>
+  <text x="240" y="85" class="c s i">ticked strictly in order; unticking clears the later ones</text>
+  <path class="a" d="M543,70 V96 H300 V112"/>
+  <!-- Compression loop -->
+  <rect class="b" x="210" y="114" width="180" height="48" rx="4"/>
+  <text x="300" y="133" class="c t">Step 3: compressions</text>
+  <text x="300" y="150" class="c s">camera counts, scores, coaches</text>
+  <rect class="hl" x="436" y="114" width="156" height="48" rx="4"/>
+  <text x="514" y="133" class="c t">Step 4: give 2 breaths</text>
+  <text x="514" y="150" class="c s">prompt after 30 (or 15)</text>
+  <path class="a" d="M390,138 H434"/>
+  <text x="412" y="131" class="c s">full</text>
+  <path class="a" d="M514,162 V186 H330 V164"/>
+  <text x="422" y="200" class="c s">pause &#8805; 1.5 s, then compressions resume: cycle complete</text>
+  <text x="430" y="216" class="c s" style="fill:#a81638">&#8805; 10 more compressions without a pause: breaths skipped</text>
+  <!-- AED -->
+  <rect class="b" x="8" y="114" width="160" height="58" rx="4"/>
+  <text x="88" y="132" class="c t">Step 5: AED arrives</text>
+  <text x="88" y="147" class="c s">on &#8594; pads &#8594; stand clear</text>
+  <text x="88" y="161" class="c s">&#8594; shock or no shock</text>
+  <path class="a" d="M210,128 H170"/>
+  <text x="189" y="122" class="c s">AED</text>
+  <path class="a" d="M168,156 H208"/>
+  <text x="189" y="170" class="c s">resume</text>
+  <!-- End -->
+  <path class="a" d="M250,162 V236"/>
+  <text x="244" y="206" class="e s i">time up</text>
+  <rect class="b" x="150" y="238" width="300" height="34" rx="4"/>
+  <text x="300" y="259" class="c s"><tspan class="t">Step 6:</tspan> at 2:00, check the person and switch compressors</text>
+  <path class="a" d="M260,272 L170,288"/>
+  <path class="a" d="M340,272 L430,288"/>
+  <rect class="nt" x="40" y="290" width="250" height="40" rx="4"/>
+  <text x="165" y="306" class="c t">Procedure checklist &#8594;</text>
+  <text x="165" y="321" class="c s">procedure score (%), stored separately</text>
+  <rect class="nt" x="310" y="290" width="250" height="40" rx="4"/>
+  <text x="435" y="306" class="c t">Compression accuracy &#8594;</text>
+  <text x="435" y="321" class="c s">Pass or Needs Improvement</text>
+</svg>
+<figcaption>Figure 11. Step-by-step CPR session flow (2025 AHA adult sequence)</figcaption>
+</figure>
 <p>When the session ends, the system checks procedure adherence against a checklist: scene safety, responsiveness, breathing and the emergency call done before compressions; compressions started; hands stacked on at least 70% of compressions (when this was measured); 2 breaths after every cycle; about the expected number of cycles for the time that passed; every pause under 10 seconds; and correct AED use when an AED was used. Items that do not apply are skipped, and the procedure score is the percentage of applicable items the trainee followed. This score is reported and stored separately; the Pass or Needs Improvement result is still based on compression accuracy. Because camera scoring is built for adult technique, choosing a child or infant only changes the ratio and the counts, and the elbow and hand checks do not apply to two-finger or two-thumb compressions on an infant.</p>
 
 <h2>3.7 Database Design</h2>
@@ -329,6 +869,92 @@
   <tr><td>settings</td><td>key, value: calibration and session parameters (thresholds, BPM range, session length, pass mark, metronome speed, camera mode)</td></tr>
   <tr><td>live_status</td><td>trainee_id, status, accuracy_pct, bpm, elbow_lock_pct, compressions, elapsed_sec, updated_at: the session in progress, read by the live monitor</td></tr>
 </table>
+<p>Figure 12 shows how the tables are related. Each trainee can have many sessions, each session has one row per compression, and a trainee has at most one sign-in account. Deleting a trainee also deletes that trainee's sessions, compression rows and account.</p>
+<figure class="fig">
+<svg class="dg" viewBox="0 0 600 366" role="img" aria-label="Entity relationship diagram">
+  <!-- users -->
+  <rect class="eh" x="10" y="10" width="170" height="20"/>
+  <text x="95" y="24" class="c w">users</text>
+  <rect class="b" x="10" y="30" width="170" height="118"/>
+  <text x="18" y="42" class="s">user_id</text><text x="172" y="42" class="k e">PK</text>
+  <text x="18" y="58" class="s">username (unique)</text>
+  <text x="18" y="74" class="s">password_hash (bcrypt)</text>
+  <text x="18" y="90" class="s">role</text>
+  <text x="18" y="106" class="s">trainee_id</text><text x="172" y="106" class="k e">FK</text>
+  <text x="18" y="122" class="s">must_change_password</text>
+  <text x="18" y="138" class="s">token_version</text>
+  <!-- trainees -->
+  <rect class="eh" x="215" y="10" width="170" height="20"/>
+  <text x="300" y="24" class="c w">trainees</text>
+  <rect class="b" x="215" y="30" width="170" height="118"/>
+  <text x="223" y="42" class="s">trainee_id</text><text x="377" y="42" class="k e">PK</text>
+  <text x="223" y="58" class="s">full_name</text>
+  <text x="223" y="74" class="s">organization</text>
+  <text x="223" y="90" class="s">notes</text>
+  <text x="223" y="106" class="s">consent_given</text>
+  <text x="223" y="122" class="s">is_active</text>
+  <text x="223" y="138" class="s">date_registered</text>
+  <!-- live_status -->
+  <rect class="eh" x="420" y="10" width="170" height="20"/>
+  <text x="505" y="24" class="c w">live_status</text>
+  <rect class="b" x="420" y="30" width="170" height="118"/>
+  <text x="428" y="42" class="s">id (always 1)</text><text x="582" y="42" class="k e">PK</text>
+  <text x="428" y="58" class="s">trainee_id</text><text x="582" y="58" class="k e">FK</text>
+  <text x="428" y="74" class="s">status</text>
+  <text x="428" y="90" class="s">accuracy_pct, bpm</text>
+  <text x="428" y="106" class="s">elbow_lock_pct</text>
+  <text x="428" y="122" class="s">compressions, elapsed_sec</text>
+  <text x="428" y="138" class="s">updated_at</text>
+  <!-- settings -->
+  <rect class="eh" x="10" y="190" width="170" height="20"/>
+  <text x="95" y="204" class="c w">settings</text>
+  <rect class="b" x="10" y="210" width="170" height="38"/>
+  <text x="18" y="222" class="s">key</text><text x="172" y="222" class="k e">PK</text>
+  <text x="18" y="238" class="s">value</text>
+  <text x="18" y="266" class="s i">calibration and session</text>
+  <text x="18" y="280" class="s i">parameters (not linked)</text>
+  <!-- sessions -->
+  <rect class="eh" x="215" y="190" width="170" height="20"/>
+  <text x="300" y="204" class="c w">sessions</text>
+  <rect class="b" x="215" y="210" width="170" height="150"/>
+  <text x="223" y="222" class="s">session_id</text><text x="377" y="222" class="k e">PK</text>
+  <text x="223" y="238" class="s">client_session_id</text>
+  <text x="223" y="254" class="s">trainee_id</text><text x="377" y="254" class="k e">FK</text>
+  <text x="223" y="270" class="s">date_time, duration_sec</text>
+  <text x="223" y="286" class="s">avg_bpm, elbow_lock_pct</text>
+  <text x="223" y="302" class="s">accuracy_pct</text>
+  <text x="223" y="318" class="s">counts (JSON)</text>
+  <text x="223" y="334" class="s">procedure_steps (JSON)</text>
+  <text x="223" y="350" class="s">result</text>
+  <!-- session_details -->
+  <rect class="eh" x="420" y="190" width="170" height="20"/>
+  <text x="505" y="204" class="c w">session_details</text>
+  <rect class="b" x="420" y="210" width="170" height="102"/>
+  <text x="428" y="222" class="s">detail_id</text><text x="582" y="222" class="k e">PK</text>
+  <text x="428" y="238" class="s">session_id</text><text x="582" y="238" class="k e">FK</text>
+  <text x="428" y="254" class="s">ts (milliseconds)</text>
+  <text x="428" y="270" class="s">bpm</text>
+  <text x="428" y="286" class="s">elbow_angle</text>
+  <text x="428" y="302" class="s">elbow_locked</text>
+  <!-- relationships -->
+  <path class="ln" d="M180,102 H197 V38 H215"/>
+  <text x="182" y="117" class="s">0..1</text>
+  <text x="207" y="34" class="s">1</text>
+  <path class="ln" d="M385,38 H402 V54 H420"/>
+  <text x="389" y="34" class="s">1</text>
+  <text x="400" y="66" class="s">0..1</text>
+  <path class="ln" d="M300,148 V190"/>
+  <text x="306" y="162" class="s">1</text>
+  <text x="306" y="185" class="s">N</text>
+  <path class="ln" d="M385,218 H402 V234 H420"/>
+  <text x="389" y="214" class="s">1</text>
+  <text x="408" y="248" class="s">N</text>
+  <text x="18" y="318" class="s"><tspan class="k">PK</tspan> primary key</text>
+  <text x="18" y="334" class="s"><tspan class="k">FK</tspan> foreign key</text>
+  <text x="18" y="350" class="s">1&#8211;N: one row to many rows</text>
+</svg>
+<figcaption>Figure 12. Entity relationship diagram of the L.I.F.E. database</figcaption>
+</figure>
 
 <h2>3.8 Data Gathering Procedure and Participants</h2>
 <p>Data is gathered in three parts:</p>
@@ -363,14 +989,53 @@
   <li>Procedure adherence: the mean and standard deviation of the percentage of applicable CPR procedure items followed per session, and how often each item was missed (for example, skipped breaths or pauses over 10 seconds) across sessions and participants.</li>
   <li>Mean, standard deviation and extremes of the average frame rate and pose-inference time per session, recorded automatically, as measures of performance efficiency.</li>
 </ul>
-<p>The project's evaluation script (scripts/evaluate.mjs) computes all of these. It takes the accuracy measures from the test-data export and the observer's label sheet, procedure adherence and performance from the sessions export, and the questionnaire results from a spreadsheet of responses with one row per respondent.</p>
+<p>The project's evaluation script (scripts/evaluate.mjs) computes all of these. It takes the accuracy measures from the test-data export and the observer's label sheet, procedure adherence and performance from the sessions export, and the questionnaire results from a spreadsheet of responses with one row per respondent. Figure 13 shows how the collected data flows into the results reported in Chapter 4.</p>
+<figure class="fig">
+<svg class="dg" viewBox="0 0 600 222" role="img" aria-label="Evaluation data flow">
+  <text x="105" y="14" class="c t">Collected during testing</text>
+  <text x="300" y="14" class="c t">Analysis</text>
+  <text x="495" y="14" class="c t">Reported in Chapter 4</text>
+  <rect class="b" x="10" y="26" width="190" height="28" rx="4"/>
+  <text x="105" y="44" class="c s">Test-data CSV (each compression)</text>
+  <rect class="b" x="10" y="60" width="190" height="28" rx="4"/>
+  <text x="105" y="78" class="c s">Observer labels, reference BPM</text>
+  <rect class="b" x="10" y="104" width="190" height="28" rx="4"/>
+  <text x="105" y="122" class="c s">Sessions CSV (each session)</text>
+  <rect class="b" x="10" y="148" width="190" height="40" rx="4"/>
+  <text x="105" y="164" class="c s">Questionnaire responses</text>
+  <text x="105" y="179" class="c s">24 items, Likert 1&#8211;5</text>
+  <rect class="hl" x="240" y="60" width="120" height="92" rx="4"/>
+  <text x="300" y="96" class="c t">scripts/</text>
+  <text x="300" y="112" class="c t">evaluate.mjs</text>
+  <text x="300" y="132" class="c s i">runs offline</text>
+  <path class="a" d="M200,40 L238,82"/>
+  <path class="a" d="M200,74 L238,92"/>
+  <path class="a" d="M200,118 L238,110"/>
+  <path class="a" d="M200,168 L238,136"/>
+  <rect class="ok" x="400" y="26" width="190" height="62" rx="4"/>
+  <text x="495" y="44" class="c t">Detection accuracy</text>
+  <text x="495" y="60" class="c s">confusion matrix, precision,</text>
+  <text x="495" y="75" class="c s">recall, F1; BPM MAE, RMSE, r</text>
+  <rect class="ok" x="400" y="100" width="190" height="36" rx="4"/>
+  <text x="495" y="115" class="c s">Procedure adherence,</text>
+  <text x="495" y="129" class="c s">frame rate, inference time</text>
+  <rect class="ok" x="400" y="148" width="190" height="40" rx="4"/>
+  <text x="495" y="164" class="c t">ISO/IEC 25010 ratings</text>
+  <text x="495" y="179" class="c s">weighted mean, SD, by group</text>
+  <path class="a" d="M360,90 L398,58"/>
+  <path class="a" d="M360,106 L398,118"/>
+  <path class="a" d="M360,128 L398,166"/>
+  <text x="300" y="212" class="c s i">Self-practice sessions are left out of the analysis unless the script is told to include them.</text>
+</svg>
+<figcaption>Figure 13. From collected data to evaluation results</figcaption>
+</figure>
 
 <h2>3.11 Testing Plan</h2>
 <table>
   <caption>Table 6. Testing plan</caption>
   <tr><th style="width:24%">Test</th><th>Description</th></tr>
   <tr><td>Unit testing</td><td>Automated calibration tests of the detection defaults on a physical camera model (distances, depths, rates, frame rates, jitter, elbow angles), automated tests of the compression-to-breath ratio rules and cycle timing (5 cycles of 30:2 in about 2 minutes), the step order and procedure adherence evaluation, the stacked-hands check, the angle function, elbow smoothing and visibility gaps, cadence detection on synthetic signals at 90, 110 and 130 BPM (with noise, pauses, rate changes and 15 to 60 FPS), scoring rules, arm locking, coaching cues and settings validation</td></tr>
-  <tr><td>Integration and API testing</td><td>Automated tests against a temporary database: sign-in (including case-insensitive usernames) and lockout, role permissions for administrators, trainers and trainees, trainee account creation and password reset, self-practice limited to the trainee's own profile and excluded from rankings and dashboard statistics, session saving and duplicate prevention, settings validation, date filters, export escaping, automatic backups, and the database upgrade from the earlier schema</td></tr>
+  <tr><td>Integration and API testing</td><td>Automated tests against a temporary database: sign-in (including case-insensitive usernames) and lockout, role permissions for administrators, trainers and trainees, trainee account creation and password reset, self-practice limited to the trainee's own profile and flagged by the server, counted in rankings and dashboard statistics by default and left out when they are narrowed to supervised sessions, session saving and duplicate prevention, settings validation, date filters, export escaping, automatic backups, and the database upgrade from the earlier schema</td></tr>
   <tr><td>End-to-end testing</td><td>Browser tests of sign-in, every page, camera start-up and loading of both models under the security policy, the step-by-step panel, adding a trainee with a sign-in account, the trainee's first sign-in, progress page and self-practice, and the phone-width layout</td></tr>
   <tr><td>Accuracy testing</td><td>System against the observer and metronome reference for elbow state and BPM (Section 3.8)</td></tr>
   <tr><td>Robustness testing</td><td>Lighting, distance, camera angle, clothing, background and occlusion</td></tr>
