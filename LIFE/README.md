@@ -39,14 +39,18 @@ The server only accepts connections from this computer (`127.0.0.1`). To let ano
 
 ## Using it
 
-1. **Trainees:** add each trainee and tick the consent box. Sessions cannot be saved until consent is recorded. When an **admin** adds a trainee, a sign-in account is created by default: the username (e.g. `juan.delacruz`) and a temporary password are shown **once** (copy or print a slip for the trainee). Trainees choose their own password at first sign-in and then see only **My Progress** (their sessions, accuracy trend and procedure results), **Practice** (the Live Session for themselves only, with the same camera feedback and step-by-step guide) and the CPR Guide. Self-practice sessions are marked by the server and shown with a **Self-practice** badge in History; they need recorded consent like any session, appear in the trainee's progress and History, and are **not counted** in the Leaderboard or any Dashboard statistic (sessions today, averages, 30-day trend, top 5), which use trainer-supervised sessions only; the Dashboard's Recent Sessions feed still lists them with the badge. For existing trainees use the key button to create a login, and the reset button for a new temporary password. Deactivating a trainee disables their sign-in.
+1. **Trainees:** add each trainee and tick the consent box. Sessions cannot be saved until consent is recorded. When an **admin** adds a trainee, a sign-in account is created by default: the username (e.g. `juan.delacruz`) and a temporary password are shown **once** (copy or print a slip for the trainee). Trainees choose their own password at first sign-in and then see **My Progress** (their sessions, leaderboard rank, accuracy trend and procedure results), **Practice** (the Live Session for themselves only, with the same camera feedback and step-by-step guide), the **Leaderboard** and the CPR Guide.
+   - **Every practice session is recorded and shown to both sides.** While a trainee practises, the admin's Dashboard shows it live in the *Live session monitor*; once saved, it appears in the trainee's My Progress, in the staff Dashboard (Recent sessions) and History with a **Self-practice** badge, and on the **Leaderboard**. Self-practice needs recorded consent like any session.
+   - **Leaderboard and Dashboard scope.** By default the Leaderboard and all Dashboard figures (sessions today, totals, averages, pass rate, 30-day trend, top 5) count **all sessions**. A switch narrows them to **Supervised** (sessions run by a trainer, the Chapter 4 evaluation set) or **Self-practice**. The API takes the same `scope=all|supervised|self` parameter.
+   - **What trainees see on the Leaderboard.** Their own row is highlighted and marked *You*, with a "You are #N of M" card; other trainees are shown as first name and initial only (e.g. "Ana R."). Staff see full names, or "Trainee N" with *Hide names* for projecting.
+   - **Trainees can download their own data** from My Progress: a personal backup (JSON with every compression recorded), a progress report (PDF), their sessions (CSV), and a Certificate of Practice Completion for any of their sessions. For existing trainees use the key button to create a login, and the reset button for a new temporary password. Deactivating a trainee disables their sign-in.
 2. **Live Session:** choose a trainee. A step-by-step panel follows the 2025 AHA adult sequence: the trainer confirms steps 1–2 (scene, response, breathing, calling 911 and an AED), then starts compressions (step 3). The trainer selects the victim (adult, child, infant) and the number of rescuers, which sets the ratio (30:2, or 15:2 for a child or infant with two rescuers); the panel counts each cycle toward about 5 cycles of 30:2 in 2 minutes and prompts for 2 breaths at the end of each cycle (step 4); "AED has arrived" walks through the AED steps and resumes CPR (step 5); the timer marks when to switch compressors (step 6). Finger tracking draws both hands and checks that they are stacked (it can be turned off on slow computers). Steps must be done in order, and the end-of-session summary shows a **Procedure followed** checklist and score (separate from the accuracy-based Pass/Needs Improvement). The camera starts so the trainee can get into position; **Start** becomes available once the arm is visible. A 3-2-1 countdown runs, then the session timer (default 2 minutes).
    - The large cue over the video says what to fix: *Push faster*, *Slow down*, *Lock your elbows* or *Good – keep going*. Optional metronome and spoken cues are available.
    - Sessions where the camera failed or nobody was in view are not saved.
    - Every session is stored in the browser first and then uploaded, so nothing is lost if the server is stopped or the sign-in expires. A badge in the top bar shows anything not yet uploaded; uploads retry automatically from any page.
 3. **Dashboard:** today's figures, a 30-day trend and a live monitor of the session in progress.
-4. **Leaderboard, History, Reports:** rankings, past sessions with charts, **PDF reports** (sessions, trainee list, test data; CSV also available) and a *Certificate of Practice Completion* downloadable as a **PDF** (this confirms a practice session only; it is not CPR certification).
-5. **Settings** (admin): calibration values, metronome speed, database backup and user accounts.
+4. **Leaderboard, History, Reports:** rankings (with a podium for the top 3 and CSV export), past sessions with charts, **PDF reports** (sessions, trainee list, test data; CSV also available) and a *Certificate of Practice Completion* downloadable as a **PDF** (this confirms a practice session only; it is not CPR certification).
+5. **Settings & Backup** (admin): data backups (see below), calibration values, metronome speed and user accounts.
 6. **CPR Guide:** the adult CPR sequence (2025 American Heart Association guidelines) that the Live Session checklist follows, what the camera measures versus what the trainer observes, and notes for children and infants.
 
 ### Camera setup
@@ -116,7 +120,7 @@ npm test                 # server API tests, vision unit tests, evaluation-scrip
 node scripts/evaluate.mjs --procedure life_sessions_export.csv
 ```
 
-prints the mean and SD of procedure adherence, how often each item was missed (sessions and people), and the frame-rate and inference-time statistics. Self-practice sessions are left out unless `--include-self-practice` is given. The Sessions PDF shows the same missed-item table.
+prints the mean and SD of procedure adherence, how often each item was missed (sessions and people), and the frame-rate and inference-time statistics. Self-practice sessions are left out unless `--include-self-practice` is given. The Sessions PDF shows the same missed-item table. For figures that match this trainer-supervised set in the app, switch the Leaderboard or Dashboard to **Supervised**.
 
 ### Questionnaire (ISO/IEC 25010)
 
@@ -131,9 +135,13 @@ prints the frequencies, weighted mean, SD and interpretation (paper Table 5) per
 ## Data, backups and privacy
 
 - Database: `database/life.db` (SQLite in WAL mode, so a crash or power cut cannot corrupt it). Not committed to Git.
-- **Settings → Back up database** writes a consistent copy to `database/backups/`.
+- **Settings & Backup → Data & backup** (admin):
+  - **Download backup** gives a consistent copy of the whole database (`life_backup_<time>.db`) made at that moment, including all trainee self-practice. The Dashboard has the same button. This is the file to keep on a USB drive or in a cloud folder, especially online, where the server's disk is not permanent.
+  - **Download JSON** gives every record as one readable file (trainees, accounts without password hashes, settings, every session with its compression-by-compression record).
+  - **Backups on this server** lists the copies in `database/backups/` (manual, daily automatic and pre-upgrade safety copies) with a download button for each; **Save a copy now** writes a new one there.
+- **Restoring a backup:** stop L.I.F.E., then run `npm run restore -- <file>` to check the file (it prints how many trainees, accounts and sessions it holds) and `npm run restore -- <file> --yes` to restore it. It accepts a downloaded `.db` backup, a file from `database/backups/`, or a **Turso cloud-snapshot export** (a copy of the online database holding the `life_snapshot_*` tables). The current `database/life.db` is first saved as `database/backups/life_before_restore_<time>.db`.
 - The server also makes an automatic backup once a day (`database/backups/auto_YYYY-MM-DD.db`) and keeps the newest 14. Manual backups are never deleted. Set `LIFE_AUTO_BACKUP=0` to turn this off.
-- Only metrics are stored (times, BPM, elbow angles, lock state, procedure checklist). No images or video are saved.
+- Only metrics are stored (times, BPM, elbow angles, lock state, procedure checklist). No images or video are saved; pose detection runs in the browser and the camera picture never leaves the device.
 - Passwords are hashed with bcrypt. Sign-in uses a JWT signed with a random secret generated on first start (`server/.jwt_secret`, not committed). Changing a password or deactivating a user signs them out everywhere.
 
 ## Online copy on Render (optional)
@@ -161,7 +169,7 @@ LIFE/
 │   ├── seed_admin.js      First admin account
 │   ├── lib/               Validation, escaping, JWT secret
 │   ├── middleware/        Authentication and roles
-│   ├── routes/            auth, trainees, sessions, live, leaderboard, stats, export, settings, users, health
+│   ├── routes/            auth, trainees, sessions, live, leaderboard, stats, export, settings (+ backups), users, me (trainee self-service), health
 │   └── test/              API tests
 ├── dashboard/             React + TypeScript + Vite
 │   ├── public/mediapipe/  Pose model and WASM runtime (offline)
@@ -174,11 +182,12 @@ LIFE/
 │       └── vision/        camera, pose, angle, cadence, scoring, coach, pipeline (+ unit tests)
 ├── database/schema.sql    Database schema
 ├── scripts/evaluate.mjs   Accuracy evaluation for Chapter 4
+├── scripts/restore-db.mjs Restore a .db backup or a Turso cloud-snapshot export (npm run restore)
 ├── docs/                  Calibration, camera setup and known limitations (calibration-and-limitations.md)
 └── docs/brand/            Original emblem (logo-source.jpg); web sizes live in dashboard/public/brand/
 ```
 
 ## Acknowledgments
 
-MediaPipe Tasks Vision, React, Vite, Recharts, Express, better-sqlite3.
+MediaPipe Tasks Vision, React, Vite, Recharts, Express, better-sqlite3, Inter (bundled font).
 "# L.I.F.E" 
