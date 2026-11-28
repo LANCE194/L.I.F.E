@@ -5,7 +5,8 @@
 
 import express from 'express';
 import { prepare } from '../db.js';
-import { SUPERVISED_SESSION } from '../lib/sessionFilters.js';
+import { parseScope, scopeCondition, SELF_PRACTICE_COUNT } from '../lib/sessionFilters.js';
+import { rankedLeaderboard } from './leaderboard.js';
 import { parseSessionRow } from './sessions.js';
 import { requiredId, timezoneModifier } from '../lib/validate.js';
 import { authenticate } from '../middleware/auth.js';
@@ -17,53 +18,46 @@ const router = express.Router();
 router.use(authenticate);
 
 /**
- * GET /api/stats/dashboard
- * Get dashboard summary statistics
+ * GET /api/stats/dashboard?tz_offset_min=&scope=all|supervised|self
+ * Dashboard summary. Statistics count every recorded session by default (trainer-supervised and
+ * trainee self-practice); ?scope=supervised gives the trainer-supervised (Chapter 4) figures.
+ * The recent-sessions feed always lists all activity, with self-practice flagged in counts.
  */
 router.get('/dashboard', trainerOrAdmin, (req, res) => {
     // Day boundaries follow the client's local time zone (?tz_offset_min=getTimezoneOffset()).
     const tz = timezoneModifier(req.query);
+    const scope = parseScope(req.query.scope);
+    const inScope = scopeCondition(scope);
 
-    // Total active trainees
     const traineeCount = prepare('SELECT COUNT(*) as count FROM trainees WHERE is_active = 1').get().count;
 
-    // Dashboard statistics use trainer-supervised sessions only (trainee self-practice is
-    // excluded, as on the leaderboard). The recent-sessions feed below still shows all activity.
-
-    // Sessions today
     const sessionsToday = prepare(`
         SELECT COUNT(*) as count FROM sessions s
-        WHERE date(s.date_time, ?) = date('now', ?) AND ${SUPERVISED_SESSION}
+        WHERE date(s.date_time, ?) = date('now', ?) AND ${inScope}
     `).get(tz, tz).count;
 
-    // Average accuracy (all time)
-    const avgAccuracy = prepare(`
-        SELECT AVG(s.accuracy_pct) as avg FROM sessions s WHERE ${SUPERVISED_SESSION}
-    `).get().avg || 0;
-
-    // Average BPM (all time)
-    const avgBpm = prepare(`
-        SELECT AVG(s.avg_bpm) as avg FROM sessions s WHERE ${SUPERVISED_SESSION}
-    `).get().avg || 0;
-
-    // Top 5 leaderboard
-    const top5 = prepare(`
+    const totals = prepare(`
         SELECT
-            t.trainee_id,
-            t.full_name,
-            t.organization,
-            AVG(s.accuracy_pct) as avg_accuracy,
-            MAX(s.accuracy_pct) as best_accuracy,
-            COUNT(s.session_id) as session_count
-        FROM trainees t
-        JOIN sessions s ON t.trainee_id = s.trainee_id
-        WHERE t.is_active = 1 AND ${SUPERVISED_SESSION}
-        GROUP BY t.trainee_id
-        ORDER BY avg_accuracy DESC
-        LIMIT 5
-    `).all();
+            COUNT(*) AS total_sessions,
+            ${SELF_PRACTICE_COUNT} AS self_practice_sessions,
+            SUM(CASE WHEN s.result = 'Pass' THEN 1 ELSE 0 END) AS passed,
+            AVG(s.accuracy_pct) AS avg_accuracy,
+            AVG(s.avg_bpm) AS avg_bpm,
+            SUM(s.total_compressions) AS total_compressions
+        FROM sessions s WHERE ${inScope}
+    `).get();
 
-    // Recent sessions (last 10, all activity; self-practice is flagged in counts)
+    const top5 = rankedLeaderboard({ scope }).slice(0, 5).map(entry => ({
+        trainee_id: entry.trainee_id,
+        full_name: entry.full_name,
+        organization: entry.organization,
+        avg_accuracy: entry.avg_accuracy,
+        best_accuracy: entry.best_accuracy,
+        session_count: entry.total_sessions,
+        self_practice_sessions: entry.self_practice_sessions,
+        rank: entry.rank,
+    }));
+
     const recentSessions = prepare(`
         SELECT s.*, t.full_name as trainee_name, t.organization
         FROM sessions s
@@ -79,23 +73,25 @@ router.get('/dashboard', trainerOrAdmin, (req, res) => {
             AVG(s.accuracy_pct) as avg_accuracy,
             COUNT(*) as session_count
         FROM sessions s
-        WHERE date(s.date_time, ?) >= date('now', ?, '-30 days') AND ${SUPERVISED_SESSION}
+        WHERE date(s.date_time, ?) >= date('now', ?, '-30 days') AND ${inScope}
         GROUP BY date(s.date_time, ?)
         ORDER BY date(s.date_time, ?)
     `).all(tz, tz, tz, tz, tz);
 
+    const totalSessions = totals.total_sessions || 0;
     res.json({
+        scope,
         stats: {
             trainee_count: traineeCount,
             sessions_today: sessionsToday,
-            avg_accuracy: Math.round(avgAccuracy * 10) / 10,
-            avg_bpm: Math.round(avgBpm * 10) / 10
+            avg_accuracy: Math.round((totals.avg_accuracy || 0) * 10) / 10,
+            avg_bpm: Math.round((totals.avg_bpm || 0) * 10) / 10,
+            total_sessions: totalSessions,
+            self_practice_sessions: totals.self_practice_sessions || 0,
+            total_compressions: totals.total_compressions || 0,
+            pass_rate: totalSessions ? Math.round(((totals.passed || 0) / totalSessions) * 100) : 0,
         },
-        top5: top5.map(t => ({
-            ...t,
-            avg_accuracy: Math.round(t.avg_accuracy * 10) / 10,
-            best_accuracy: Math.round(t.best_accuracy * 10) / 10
-        })),
+        top5,
         recent_sessions: recentSessions.map(parseSessionRow),
         accuracy_trend: accuracyTrend.map(t => ({
             ...t,

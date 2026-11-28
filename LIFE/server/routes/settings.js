@@ -4,8 +4,11 @@
  */
 
 import express from 'express';
+import fs from 'fs';
+import os from 'os';
 import path from 'path';
-import { prepare, transaction, backupDatabase, DATABASE_DIR } from '../db.js';
+import { prepare, transaction, backupDatabase, resolveDbPath } from '../db.js';
+import { attachmentHeader } from '../lib/escape.js';
 import { authenticate } from '../middleware/auth.js';
 import { trainerOrAdmin, adminOnly, practiceAccess } from '../middleware/roles.js';
 import { fail, handle } from '../lib/validate.js';
@@ -89,9 +92,13 @@ router.put('/:key', adminOnly, (req, res) => {
  * POST /api/settings/backup (admin only)
  * Writes a consistent copy to database/backups/.
  */
+const backupDir = () => path.join(path.dirname(resolveDbPath()), 'backups');
+const stampNow = () => new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+// Only plain names of .db files directly inside backups/ can be listed or downloaded.
+const BACKUP_NAME = /^[A-Za-z0-9._-]+\.db$/;
+
 router.post('/backup', adminOnly, handle(async (req, res) => {
-    const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
-    const backupPath = path.join(DATABASE_DIR, 'backups', `life_backup_${timestamp}.db`);
+    const backupPath = path.join(backupDir(), `life_backup_${stampNow()}.db`);
     try {
         await backupDatabase(backupPath);
         res.json({ message: 'Backup created successfully', path: backupPath });
@@ -100,5 +107,62 @@ router.post('/backup', adminOnly, handle(async (req, res) => {
         res.status(500).json({ error: 'Backup failed' });
     }
 }));
+
+/**
+ * GET /api/settings/backup/download (admin only)
+ * A consistent copy of the whole database as a .db file, made now. It can be opened with
+ * DB Browser for SQLite or restored with "npm run restore -- <file> --yes".
+ */
+router.get('/backup/download', adminOnly, handle(async (req, res) => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'life-backup-'));
+    const tempFile = path.join(tempDir, 'life.db');
+    try {
+        await backupDatabase(tempFile);
+        res.setHeader('Content-Type', 'application/vnd.sqlite3');
+        res.setHeader('Content-Disposition', attachmentHeader(`life_backup_${stampNow()}.db`));
+        res.setHeader('Cache-Control', 'no-store');
+        await new Promise((resolve, reject) => {
+            res.sendFile(tempFile, err => (err ? reject(err) : resolve()));
+        });
+    } finally {
+        fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+}));
+
+/**
+ * GET /api/settings/backups (admin only) -> { backups: [{ name, bytes, modified_at, kind }] }
+ * Backups kept on the server (manual, daily automatic and pre-upgrade copies), newest first.
+ */
+router.get('/backups', adminOnly, (req, res) => {
+    const dir = backupDir();
+    const kindOf = name => (name.startsWith('auto_') ? 'automatic'
+        : name.startsWith('life_backup_') ? 'manual'
+            : 'safety copy');
+    const backups = fs.existsSync(dir)
+        ? fs.readdirSync(dir)
+            .filter(name => BACKUP_NAME.test(name))
+            .map(name => {
+                const stat = fs.statSync(path.join(dir, name));
+                return { name, bytes: stat.size, modified_at: stat.mtime.toISOString(), kind: kindOf(name) };
+            })
+            .sort((a, b) => b.modified_at.localeCompare(a.modified_at))
+        : [];
+    res.json({ backups, directory: dir });
+});
+
+/**
+ * GET /api/settings/backups/:name (admin only) -> the backup file as a download.
+ */
+router.get('/backups/:name', adminOnly, (req, res) => {
+    const { name } = req.params;
+    const file = path.join(backupDir(), name);
+    if (!BACKUP_NAME.test(name) || !fs.existsSync(file)) {
+        return res.status(404).json({ error: 'Backup not found' });
+    }
+    res.setHeader('Content-Type', 'application/vnd.sqlite3');
+    res.setHeader('Content-Disposition', attachmentHeader(name));
+    res.setHeader('Cache-Control', 'no-store');
+    res.sendFile(file);
+});
 
 export default router;

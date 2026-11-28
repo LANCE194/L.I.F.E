@@ -377,7 +377,8 @@ test('admin creates a trainee with a sign-in account; trainee sees only their ow
 
     // Staff data stays closed to trainee accounts.
     // (GET /api/settings is readable for self-practice; changing settings is tested below.)
-    for (const url of ['/api/trainees', '/api/sessions', '/api/leaderboard', '/api/users', '/api/live', `/api/stats/trainee/${traineeId}`, '/api/export/trainees']) {
+    // (GET /api/leaderboard is open to trainees with other names shortened; tested below.)
+    for (const url of ['/api/trainees', '/api/sessions', '/api/users', '/api/live', `/api/stats/trainee/${traineeId}`, '/api/export/trainees', '/api/export/all', '/api/settings/backups', '/api/settings/backup/download', '/api/stats/dashboard']) {
         assert.equal((await api('GET', url, { token: traineeToken })).status, 403, url);
     }
     // Staff cannot use the trainee route.
@@ -485,56 +486,184 @@ test('trainee self-practice: own sessions only, flagged by the server, live stat
     assert.match(noConsent.json.error, /Ask your trainer/);
 });
 
-test('self-practice sessions are excluded from the leaderboard and dashboard top 5', async () => {
+/** Create a trainee with consent and a signed-in trainee account; returns { id, token }. */
+async function traineeWithAccount(fullName, organization) {
     const created = await api('POST', '/api/trainees', {
-        token: adminToken, body: { full_name: 'Solo Ranker', organization: 'Solo Club', consent_given: true, create_account: true },
+        token: adminToken, body: { full_name: fullName, organization, consent_given: true, create_account: true },
     });
     const id = created.json.trainee.trainee_id;
     const { username, temporary_password: temp } = created.json.account;
     const login = await api('POST', '/api/auth/login', { body: { username, password: temp } });
     const token = (await api('POST', '/api/auth/change-password', {
-        token: login.json.token, body: { currentPassword: temp, newPassword: 'Solo-pass-123' },
+        token: login.json.token, body: { currentPassword: temp, newPassword: `${username}-Pass-123` },
     })).json.token;
+    return { id, token };
+}
 
-    const body = accuracy => ({
-        client_session_id: `rank-${Math.random()}`, trainee_id: id, duration_sec: 120, total_compressions: 200,
-        avg_bpm: 110, elbow_lock_pct: 95, accuracy_pct: accuracy, counts: { correct: 190, incorrect: 10, total: 200 },
-    });
-
-    // A perfect self-practice session must not put the trainee on the leaderboard.
-    assert.equal((await api('POST', '/api/sessions', { token, body: body(100) })).status, 201);
-    const ranked = (await api('GET', '/api/leaderboard?limit=500', { token: adminToken })).json.leaderboard;
-    assert.equal(ranked.some(entry => entry.trainee_id === id), false);
-    const top5 = (await api('GET', '/api/stats/dashboard', { token: adminToken })).json.top5 ?? [];
-    assert.equal(top5.some(entry => entry.trainee_id === id), false);
-    const orgs = (await api('GET', '/api/leaderboard/organizations', { token: adminToken })).json.organizations;
-    assert.equal(orgs.find(org => org.organization === 'Solo Club')?.session_count ?? 0, 0);
-
-    // A supervised session counts; the self-practice one still does not.
-    assert.equal((await api('POST', '/api/sessions', { token: trainerToken, body: body(60) })).status, 201);
-    const after = (await api('GET', '/api/leaderboard?limit=500', { token: adminToken })).json.leaderboard;
-    const entry = after.find(item => item.trainee_id === id);
-    assert.ok(entry);
-    assert.equal(entry.total_sessions, 1);
-    assert.equal(entry.avg_accuracy, 60);
-
-    // The trainee's own progress still includes both.
-    assert.equal((await api('GET', '/api/me/progress', { token })).json.sessions.length, 2);
+const sessionBody = (traineeIdValue, accuracy, extra = {}) => ({
+    client_session_id: `rank-${Math.random()}`, trainee_id: traineeIdValue, duration_sec: 120, total_compressions: 200,
+    avg_bpm: 110, elbow_lock_pct: 95, accuracy_pct: accuracy, counts: { correct: 190, incorrect: 10, total: 200 },
+    details: [{ ts: 500, bpm: 110, elbow_angle: 171, elbow_locked: true }, { ts: 1050, bpm: 109, elbow_angle: 150, elbow_locked: false }],
+    ...extra,
 });
 
-test('dashboard statistics ignore self-practice; the recent feed still lists it', async () => {
-    const created = await api('POST', '/api/trainees', {
-        token: adminToken, body: { full_name: 'Dash Solo', consent_given: true, create_account: true },
-    });
-    const id = created.json.trainee.trainee_id;
-    const { username, temporary_password: temp } = created.json.account;
-    const login = await api('POST', '/api/auth/login', { body: { username, password: temp } });
-    const token = (await api('POST', '/api/auth/change-password', {
-        token: login.json.token, body: { currentPassword: temp, newPassword: 'Dash-pass-123' },
-    })).json.token;
+test('self-practice sessions count on the leaderboard by default; scope narrows the ranking', async () => {
+    const { id, token } = await traineeWithAccount('Solo Ranker', 'Solo Club');
+
+    // A self-practice session puts the trainee on the default (all sessions) leaderboard.
+    assert.equal((await api('POST', '/api/sessions', { token, body: sessionBody(id, 100) })).status, 201);
+    let all = (await api('GET', '/api/leaderboard?limit=500', { token: adminToken })).json;
+    assert.equal(all.scope, 'all');
+    let entry = all.leaderboard.find(item => item.trainee_id === id);
+    assert.ok(entry, 'self-practice is ranked');
+    assert.equal(entry.total_sessions, 1);
+    assert.equal(entry.self_practice_sessions, 1);
+    assert.equal(entry.rank, 1);
+
+    // ...but not on the trainer-supervised ranking, and it is in the self-practice one.
+    const supervised = (await api('GET', '/api/leaderboard?limit=500&scope=supervised', { token: adminToken })).json.leaderboard;
+    assert.equal(supervised.some(item => item.trainee_id === id), false);
+    const self = (await api('GET', '/api/leaderboard?limit=500&scope=self', { token: adminToken })).json.leaderboard;
+    assert.ok(self.every(item => item.self_practice_sessions === item.total_sessions));
+    assert.ok(self.some(item => item.trainee_id === id));
+    assert.equal((await api('GET', '/api/leaderboard?scope=everyone', { token: adminToken })).status, 400);
+
+    // Organizations follow the same scope.
+    const orgs = (await api('GET', '/api/leaderboard/organizations', { token: adminToken })).json.organizations;
+    assert.equal(orgs.find(org => org.organization === 'Solo Club')?.session_count, 1);
+    const orgsSupervised = (await api('GET', '/api/leaderboard/organizations?scope=supervised', { token: adminToken })).json.organizations;
+    assert.equal(orgsSupervised.find(org => org.organization === 'Solo Club')?.session_count ?? 0, 0);
+
+    // A supervised session is added to both views.
+    assert.equal((await api('POST', '/api/sessions', { token: trainerToken, body: sessionBody(id, 60) })).status, 201);
+    all = (await api('GET', '/api/leaderboard?limit=500', { token: adminToken })).json;
+    entry = all.leaderboard.find(item => item.trainee_id === id);
+    assert.equal(entry.total_sessions, 2);
+    assert.equal(entry.avg_accuracy, 80);
+    const supervisedEntry = (await api('GET', '/api/leaderboard?limit=500&scope=supervised', { token: adminToken })).json.leaderboard
+        .find(item => item.trainee_id === id);
+    assert.equal(supervisedEntry.total_sessions, 1);
+    assert.equal(supervisedEntry.avg_accuracy, 60);
+
+    // The dashboard top 5 counts self-practice by default too.
+    const top5 = (await api('GET', '/api/stats/dashboard', { token: adminToken })).json.top5;
+    assert.ok(top5.some(item => item.trainee_id === id));
+
+    // The trainee's own progress includes both sessions and their leaderboard place.
+    const progress = (await api('GET', '/api/me/progress', { token })).json;
+    assert.equal(progress.sessions.length, 2);
+    assert.equal(progress.ranking.total_ranked, all.total_ranked);
+    assert.equal(progress.ranking.rank, entry.rank);
+});
+
+test('trainees see the leaderboard with their own row marked and other names shortened', async () => {
+    const viewer = await traineeWithAccount('Viewer Trainee');
+    const rival = await traineeWithAccount('Ana Maria Rival', 'Rival Org');
+    await api('POST', '/api/sessions', { token: viewer.token, body: sessionBody(viewer.id, 42) });
+    await api('POST', '/api/sessions', { token: rival.token, body: sessionBody(rival.id, 99.9) });
+
+    const view = await api('GET', '/api/leaderboard?limit=500', { token: viewer.token });
+    assert.equal(view.status, 200);
+    const mine = view.json.leaderboard.find(item => item.trainee_id === viewer.id);
+    assert.equal(mine.is_me, true);
+    assert.equal(mine.full_name, 'Viewer Trainee');
+    const other = view.json.leaderboard.find(item => item.trainee_id === rival.id);
+    assert.equal(other.is_me, false);
+    assert.equal(other.full_name, 'Ana R.');
+    assert.equal(view.json.me.trainee_id, viewer.id);
+
+    // Outside a short top list, the own entry is still returned.
+    const top1 = (await api('GET', '/api/leaderboard?limit=1', { token: viewer.token })).json;
+    assert.equal(top1.leaderboard.length, 1);
+    assert.equal(top1.me.trainee_id, viewer.id);
+    assert.equal((await api('GET', '/api/leaderboard/organizations', { token: viewer.token })).status, 200);
+
+    // Staff still see full names, or neutral labels with hide_names.
+    const staff = (await api('GET', '/api/leaderboard?limit=500', { token: trainerToken })).json;
+    assert.equal(staff.leaderboard.find(item => item.trainee_id === rival.id).full_name, 'Ana Maria Rival');
+    assert.equal(staff.me, null);
+    const hidden = (await api('GET', '/api/leaderboard?limit=500&hide_names=true', { token: trainerToken })).json;
+    assert.equal(hidden.leaderboard.find(item => item.trainee_id === rival.id).full_name, `Trainee ${rival.id}`);
+});
+
+test('trainees download their own data (JSON with details, CSV, PDF) and own certificates only', async () => {
+    const owner = await traineeWithAccount('Data Owner');
+    const other = await traineeWithAccount('Someone Else');
+    const saved = await api('POST', '/api/sessions', { token: owner.token, body: sessionBody(owner.id, 85) });
+    const otherSaved = await api('POST', '/api/sessions', { token: other.token, body: sessionBody(other.id, 70) });
+
+    const json = await api('GET', '/api/me/export?format=json', { token: owner.token });
+    assert.equal(json.status, 200);
+    assert.match(json.headers.get('content-disposition'), /attachment; filename="life_my_data_data_owner_/);
+    assert.equal(json.json.kind, 'trainee-data-export');
+    assert.equal(json.json.trainee.full_name, 'Data Owner');
+    assert.equal(json.json.trainee.notes, undefined);
+    assert.equal(json.json.sessions.length, 1);
+    assert.equal(json.json.sessions[0].session_type, 'self-practice');
+    assert.equal(json.json.sessions[0].details.length, 2);
+    assert.equal(json.json.sessions[0].details[1].elbow_locked, false);
+
+    const csv = await api('GET', '/api/me/export?format=csv', { token: owner.token });
+    assert.equal(csv.status, 200);
+    assert.match(csv.headers.get('content-type'), /text\/csv/);
+    assert.match(csv.text, /Self-practice/);
+    assert.equal(csv.text.trim().split('\n').length, 2); // header + 1 session
+
+    const pdf = await fetch(`${baseUrl}/api/me/export?format=pdf`, { headers: { Authorization: `Bearer ${owner.token}` } });
+    assert.equal(pdf.status, 200);
+    assert.equal(pdf.headers.get('content-type'), 'application/pdf');
+    assert.equal(Buffer.from(await pdf.arrayBuffer()).subarray(0, 5).toString(), '%PDF-');
+
+    assert.equal((await api('GET', '/api/me/export?format=xml', { token: owner.token })).status, 400);
+    assert.equal((await api('GET', '/api/me/export', { token: adminToken })).status, 403);
+
+    const cert = await fetch(`${baseUrl}/api/me/certificate/${saved.json.session.session_id}`, { headers: { Authorization: `Bearer ${owner.token}` } });
+    assert.equal(cert.status, 200);
+    assert.equal(cert.headers.get('content-type'), 'application/pdf');
+    assert.equal((await api('GET', `/api/me/certificate/${otherSaved.json.session.session_id}`, { token: owner.token })).status, 404);
+});
+
+test('admins download database backups and a full JSON export; others cannot', async () => {
+    const download = await fetch(`${baseUrl}/api/settings/backup/download`, { headers: { Authorization: `Bearer ${adminToken}` } });
+    assert.equal(download.status, 200);
+    assert.match(download.headers.get('content-disposition'), /attachment; filename="life_backup_.*\.db"/);
+    const bytes = Buffer.from(await download.arrayBuffer());
+    assert.equal(bytes.subarray(0, 15).toString(), 'SQLite format 3');
+    assert.equal((await api('GET', '/api/settings/backup/download', { token: trainerToken })).status, 403);
+
+    // Backups saved on the server are listed and can be downloaded by name only.
+    const made = await api('POST', '/api/settings/backup', { token: adminToken });
+    const name = path.basename(made.json.path);
+    const list = await api('GET', '/api/settings/backups', { token: adminToken });
+    assert.equal(list.status, 200);
+    const listed = list.json.backups.find(item => item.name === name);
+    assert.ok(listed);
+    assert.equal(listed.kind, 'manual');
+    const file = await fetch(`${baseUrl}/api/settings/backups/${encodeURIComponent(name)}`, { headers: { Authorization: `Bearer ${adminToken}` } });
+    assert.equal(file.status, 200);
+    assert.equal(Buffer.from(await file.arrayBuffer()).subarray(0, 15).toString(), 'SQLite format 3');
+    assert.equal((await api('GET', `/api/settings/backups/${encodeURIComponent('../test.db')}`, { token: adminToken })).status, 404);
+    assert.equal((await api('GET', '/api/settings/backups/missing.db', { token: adminToken })).status, 404);
+    assert.equal((await api('GET', '/api/settings/backups', { token: trainerToken })).status, 403);
+    fs.rmSync(made.json.path);
+
+    const all = await api('GET', '/api/export/all', { token: adminToken });
+    assert.equal(all.status, 200);
+    assert.equal(all.json.kind, 'full-data-export');
+    assert.ok(all.json.trainees.length > 0);
+    assert.ok(all.json.sessions.some(session => session.details.length > 0));
+    assert.ok(all.json.accounts.length > 0);
+    assert.doesNotMatch(all.text, /password_hash|\$2[aby]\$/);
+    assert.equal((await api('GET', '/api/export/all', { token: trainerToken })).status, 403);
+});
+
+test('dashboard statistics include self-practice by default; scope=supervised leaves it out', async () => {
+    const { id, token } = await traineeWithAccount('Dash Solo');
 
     const offset = new Date().getTimezoneOffset();
-    const before = (await api('GET', `/api/stats/dashboard?tz_offset_min=${offset}`, { token: adminToken })).json;
+    const dash = query => api('GET', `/api/stats/dashboard?tz_offset_min=${offset}${query}`, { token: adminToken }).then(r => r.json);
+    const beforeAll = await dash('');
+    const beforeSupervised = await dash('&scope=supervised');
 
     const saved = await api('POST', '/api/sessions', {
         token,
@@ -545,14 +674,22 @@ test('dashboard statistics ignore self-practice; the recent feed still lists it'
     });
     assert.equal(saved.status, 201);
 
-    const after = (await api('GET', `/api/stats/dashboard?tz_offset_min=${offset}`, { token: adminToken })).json;
-    assert.equal(after.stats.sessions_today, before.stats.sessions_today);
-    assert.equal(after.stats.avg_accuracy, before.stats.avg_accuracy);
-    assert.equal(after.stats.avg_bpm, before.stats.avg_bpm);
-    assert.deepEqual(after.accuracy_trend, before.accuracy_trend);
+    const afterAll = await dash('');
+    assert.equal(afterAll.scope, 'all');
+    assert.equal(afterAll.stats.sessions_today, beforeAll.stats.sessions_today + 1);
+    assert.equal(afterAll.stats.total_sessions, beforeAll.stats.total_sessions + 1);
+    assert.equal(afterAll.stats.self_practice_sessions, beforeAll.stats.self_practice_sessions + 1);
+    assert.equal(afterAll.stats.total_compressions, beforeAll.stats.total_compressions + 220);
 
-    const recent = after.recent_sessions.find(session => session.session_id === saved.json.session.session_id);
-    assert.ok(recent, 'self-practice appears in the recent feed');
+    const afterSupervised = await dash('&scope=supervised');
+    assert.equal(afterSupervised.stats.sessions_today, beforeSupervised.stats.sessions_today);
+    assert.equal(afterSupervised.stats.avg_accuracy, beforeSupervised.stats.avg_accuracy);
+    assert.equal(afterSupervised.stats.avg_bpm, beforeSupervised.stats.avg_bpm);
+    assert.equal(afterSupervised.stats.self_practice_sessions, 0);
+    assert.deepEqual(afterSupervised.accuracy_trend, beforeSupervised.accuracy_trend);
+
+    const recent = afterSupervised.recent_sessions.find(session => session.session_id === saved.json.session.session_id);
+    assert.ok(recent, 'self-practice appears in the recent feed in every scope');
     assert.equal(recent.counts.self_practice, 1);
 });
 

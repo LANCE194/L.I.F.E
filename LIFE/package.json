@@ -12,6 +12,7 @@
     "dev": "node scripts/dev.mjs",
     "shortcut": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/create-shortcut.ps1",
     "test": "npm --prefix server test && npm --prefix dashboard test && node --test scripts/evaluate.test.mjs",
-    "evaluate": "node scripts/evaluate.mjs"
+    "evaluate": "node scripts/evaluate.mjs",
+    "restore": "node scripts/restore-db.mjs"
   }
 }

@@ -39,7 +39,7 @@ function certificateLogo() {
     return logoDataUri;
 }
 
-function sendCsv(res, filename, columns, rows) {
+export function sendCsv(res, filename, columns, rows) {
     res.setHeader('Content-Type', 'text/csv; charset=utf-8');
     res.setHeader('Content-Disposition', attachmentHeader(filename));
     // UTF-8 BOM so Excel shows accented names (e.g. ñ) correctly.
@@ -495,7 +495,7 @@ router.get('/certificate/:sessionId', trainerOrAdmin, (req, res) => {
 /**
  * Certificate of Practice Completion as a one-page landscape A4 PDF.
  */
-function sendCertificatePdf(req, res, session) {
+export function sendCertificatePdf(req, res, session) {
     const tz = tzOffsetFrom(req.query);
     const PDFDocument = PDFDocumentCtor;
     const doc = new PDFDocument({ size: 'A4', layout: 'landscape', margin: 0, info: { Title: 'Certificate of Practice Completion', Author: 'Project L.I.F.E.' } });
@@ -565,5 +565,40 @@ function sendCertificatePdf(req, res, session) {
 
     doc.end();
 }
+
+/**
+ * GET /api/export/all (admin only)
+ * Every record as one JSON file: trainees, sign-in accounts (never password hashes), settings and
+ * all sessions with their compression-by-compression details. Readable without L.I.F.E.; for a
+ * file that can be restored, use Settings -> Download backup (.db).
+ */
+router.get('/all', adminOnly, (req, res) => {
+    const details = prepare('SELECT session_id, ts, bpm, elbow_angle, elbow_locked FROM session_details ORDER BY session_id, ts').all();
+    const bySession = new Map();
+    for (const { session_id: sessionId, ...detail } of details) {
+        if (!bySession.has(sessionId)) bySession.set(sessionId, []);
+        bySession.get(sessionId).push({ ...detail, elbow_locked: Boolean(detail.elbow_locked) });
+    }
+    const data = {
+        app: 'L.I.F.E. – Localized Intelligent First-aid Evaluator',
+        kind: 'full-data-export',
+        version: 1,
+        exported_at: new Date().toISOString(),
+        trainees: prepare('SELECT * FROM trainees ORDER BY trainee_id').all(),
+        accounts: prepare('SELECT user_id, username, role, trainee_id, is_active, created_at FROM users ORDER BY user_id').all(),
+        settings: Object.fromEntries(prepare('SELECT key, value FROM settings ORDER BY key').all().map(row => [row.key, row.value])),
+        sessions: prepare('SELECT * FROM sessions ORDER BY session_id').all().map(row => ({
+            ...row,
+            counts: safeJson(row.counts),
+            procedure_steps: safeJson(row.procedure_steps),
+            session_type: safeJson(row.counts).self_practice === 1 ? 'self-practice' : 'supervised',
+            details: bySession.get(row.session_id) || [],
+        })),
+    };
+    res.setHeader('Content-Type', 'application/json; charset=utf-8');
+    res.setHeader('Content-Disposition', attachmentHeader(`life_full_data_${fileDate()}.json`));
+    res.setHeader('Cache-Control', 'no-store');
+    res.send(JSON.stringify(data, null, 2));
+});
 
 export default router;
