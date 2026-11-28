@@ -294,7 +294,7 @@ function LeaderboardRow({ entry, passMark }: { entry: LeaderboardEntry; passMark
       </td>
       <td>
         <strong>{entry.total_sessions}</strong>
-        <div className="person-meta">
+        <div className="person-meta" style={{ whiteSpace: 'nowrap' }}>
           {supervised > 0 && `${supervised} supervised`}
           {supervised > 0 && entry.self_practice_sessions > 0 && ' · '}
           {entry.self_practice_sessions > 0 && `${entry.self_practice_sessions} self`}

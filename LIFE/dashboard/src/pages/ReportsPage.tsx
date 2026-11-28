@@ -243,8 +243,6 @@ export function ReportsPage() {
             {exportButtons('sessions', 'sessions', dateRangeInvalid)}
           </div>
 
-          <div className="export-divider" />
-
           <div className="export-section">
             <h3>Trainees</h3>
             <p className="export-desc">All trainee profiles, including consent status.</p>
@@ -253,7 +251,6 @@ export function ReportsPage() {
 
           {isAdmin && (
             <>
-              <div className="export-divider" />
               <div className="export-section">
                 <h3>Test data (admin only)</h3>
                 <p className="export-desc">Per-compression data (time, BPM, elbow angle, lock) for accuracy analysis in Chapter 4.</p>

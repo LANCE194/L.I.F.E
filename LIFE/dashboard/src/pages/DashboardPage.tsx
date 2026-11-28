@@ -227,7 +227,7 @@ export function DashboardPage() {
                   <table className="table">
                     <thead>
                       <tr>
-                        <th>Trainee</th><th>Date / time</th><th>Duration</th>
+                        <th>Trainee</th><th>Date / time</th>
                         <th>Compressions</th><th>Avg BPM</th><th>Accuracy</th><th>Result</th>
                       </tr>
                     </thead>
@@ -237,14 +237,17 @@ export function DashboardPage() {
                           <td>
                             <Person
                               name={session.trainee_name ?? `Trainee ${session.trainee_id}`}
-                              meta={session.organization || 'Independent'}
-                              badge={session.counts?.self_practice === 1
-                                ? <span className="badge badge-info self-badge" title="Recorded by the trainee on the Practice page">Self-practice</span>
-                                : <span className="badge badge-neutral self-badge" title="Run by a trainer">Supervised</span>}
+                              meta={
+                                <>
+                                  {session.organization || 'Independent'}
+                                  {session.counts?.self_practice === 1
+                                    ? <span className="badge badge-info self-badge" title="Recorded by the trainee on the Practice page">Self-practice</span>
+                                    : <span className="badge badge-neutral self-badge" title="Run by a trainer">Supervised</span>}
+                                </>
+                              }
                             />
                           </td>
-                          <td className="text-muted">{formatDateTime(session.date_time)}</td>
-                          <td>{formatDuration(session.duration_sec)}</td>
+                          <td className="text-muted" style={{ whiteSpace: 'nowrap' }} title={`Duration ${formatDuration(session.duration_sec)}`}>{formatDateTime(session.date_time)}</td>
                           <td>{session.total_compressions}</td>
                           <td>{formatNumber(session.avg_bpm)}</td>
                           <td>
