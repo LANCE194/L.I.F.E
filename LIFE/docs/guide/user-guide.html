@@ -37,6 +37,7 @@
   .shot { display: block; max-width: 100%; border: 1px solid #dde2ea; border-radius: 6px; box-shadow: 0 1px 4px rgba(2,22,64,0.12); margin: 2mm 0 1mm; }
   .shot.small { max-width: 62%; }
   .shot.mid { max-width: 78%; }
+  .shot.tall { width: auto; max-width: 100%; max-height: 215mm; margin-left: auto; margin-right: auto; }
   .caption { font-size: 9.5pt; color: #5b6880; margin: 0 0 2mm; }
   .key { background: #fff3c4; border-radius: 4px; padding: 0 2mm; font-weight: 700; font-family: Consolas, monospace; }
   .btn { display: inline-block; background: #0a2e56; color: #fff; border-radius: 4px; padding: 0 2mm; font-weight: 700; font-size: 10.5pt; }
@@ -46,7 +47,7 @@
   .tip b, .warn b { display: block; margin-bottom: 1mm; }
   .side { display: grid; grid-template-columns: 1fr 1fr; gap: 5mm; align-items: start; }
   .camera-wrap { position: relative; display: inline-block; max-width: 100%; }
-  .camera-wrap .cover-cam { position: absolute; left: 0.9%; top: 13.6%; width: 58.3%; height: 59.8%; background: rgba(2,22,64,0.92); color: #f2df9f; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 12pt; font-weight: 700; border-radius: 5px; padding: 2mm; }
+  .camera-wrap .cover-cam { position: absolute; left: 3.1%; top: 16.2%; width: 53.9%; height: 59.0%; background: rgba(2,22,64,0.92); color: #f2df9f; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 12pt; font-weight: 700; border-radius: 5px; padding: 2mm; }
 
   /* Messages */
   .msgs { display: grid; grid-template-columns: auto 1fr; gap: 2mm 4mm; align-items: center; margin: 2mm 0; }
@@ -88,10 +89,10 @@
 <section class="page-break">
   <div class="part"><h2>Part A &mdash; For the trainer</h2><p>Sign in, add a trainee, set up the camera and run a 2-minute CPR practice.</p></div>
 
-  <div class="warn"><b>&#9888; Read first (online website)</b>
-    The free website <strong>forgets everything after about 15 minutes with no visitors</strong>: trainees, their usernames and results.
-    Do the whole practice <strong>in one sitting</strong>. The admin sign-in always works.
-    To keep records, use the laptop version (the <strong>L.I.F.E.</strong> shortcut on the Desktop), which never forgets.
+  <div class="tip"><b>&#10004; Your records are kept</b>
+    The online website saves trainees, usernames and results permanently in its cloud database, and the laptop version
+    (the <strong>L.I.F.E.</strong> shortcut on the Desktop) keeps them on the computer. Records stay until an admin deletes them.
+    For extra safety, the admin can download a backup at any time (step 12).
   </div>
 
   <div class="step">
@@ -280,6 +281,8 @@
       <p>When a trainee practises on their own account, the <strong>Dashboard</strong> shows it live in the <strong>Live session monitor</strong>.
       The saved session then appears in <strong>Recent sessions</strong> and <strong>Session History</strong> with a <span class="key">Self-practice</span> label,
       and it counts on the <strong>Leaderboard</strong> straight away.</p>
+      <img class="shot tall" src="img/02-dashboard.png" alt="Dashboard with the live session monitor, figures, top 5 and recent sessions">
+      <p class="caption">The Dashboard: live session monitor, figures for the chosen sessions, top 5, accuracy trend and recent sessions (Supervised or Self-practice label).</p>
       <ul>
         <li>Use the switch at the top of the Leaderboard or Dashboard: <span class="btn">All sessions</span>, <span class="btn">Supervised</span> (only sessions you ran) or <span class="btn">Self-practice</span>.</li>
         <li><strong>Hide names</strong> shows &ldquo;Trainee 12&rdquo; instead of names when you project the leaderboard. <strong>Export</strong> saves the table as CSV.</li>
@@ -292,6 +295,7 @@
     <div>
       <h3>Back up the data (admin)</h3>
       <p>Open <strong>Settings &amp; Backup</strong>. In <strong>Data &amp; backup</strong>:</p>
+      <img class="shot mid" src="img/10-backup.png" alt="Data and backup panel">
       <ul>
         <li><span class="btn">Download backup</span>: one file (<span class="key">.db</span>) with every trainee, account and session. Keep it on a USB drive or in a cloud folder.</li>
         <li><span class="btn">Download JSON</span>: all records in a readable file (passwords are never included).</li>
@@ -322,8 +326,8 @@
     <div class="num">2</div>
     <div>
       <h3>See your progress</h3>
-      <p>Your page shows your number of sessions, your best and average accuracy, a tip for next time, and all your results.</p>
-      <img class="shot" src="img/08-my-progress.png" alt="My Progress page">
+      <p>Your page shows your <strong>leaderboard rank</strong>, number of sessions, best and average accuracy, your latest session with a tip for next time, a chart of your progress, and all your results (supervised and self-practice).</p>
+      <img class="shot tall" src="img/08-my-progress.png" alt="My Progress page">
     </div>
   </div>
 
@@ -343,6 +347,8 @@
       <h3>See your place on the leaderboard</h3>
       <p>Click <strong>Leaderboard</strong>. The card at the top says your rank (for example <strong>You are #3 of 25</strong>), and your row is highlighted and marked <span class="key">You</span>.
       Other trainees are shown by first name and initial only.</p>
+      <img class="shot tall" src="img/09-leaderboard.png" alt="Leaderboard as seen by a trainee">
+      <p class="caption">The Leaderboard as a trainee sees it: your rank, the top 3 and your highlighted row.</p>
     </div>
   </div>
 
@@ -368,7 +374,7 @@
     <tr><th>Problem</th><th>What to do</th></tr>
     <tr><td>The website is slow to open</td><td>Wait about 1 minute. It was sleeping.</td></tr>
     <tr><td>&ldquo;Invalid username or password&rdquo; (admin)</td><td>Use <span class="key">admin</span> and <span class="key">LifeCPR@2026</span>.</td></tr>
-    <tr><td>A trainee can&rsquo;t sign in</td><td>On the free website, trainees are forgotten after about 15 minutes with no visitors. Add the trainee again and give them a new slip.</td></tr>
+    <tr><td>A trainee can&rsquo;t sign in</td><td>Check the username on their slip. If they forgot the password, the admin clicks the <strong>reset</strong> button on the Trainees page and gives them a new slip.</td></tr>
     <tr><td>&ldquo;Too many failed attempts&rdquo;</td><td>Wait 5 minutes, then try again.</td></tr>
     <tr><td>The camera doesn&rsquo;t start</td><td>Click the camera icon in the address bar and choose <strong>Allow</strong>. Close other apps that use the camera (Zoom, Messenger).</td></tr>
     <tr><td>&ldquo;Start compressions&rdquo; is grey</td><td>Wait until all 4 checks are green, and tick the 4 CPR steps in order.</td></tr>
@@ -401,7 +407,7 @@
       <div class="item"><div class="n">9</div><div><strong>Result:</strong> Pass if 80% or more</div></div>
       <div class="item"><div class="n">10</div><div><strong>Reports &amp; Export</strong> &rarr; PDF results and certificate</div></div>
     </div>
-    <div class="warn" style="margin-top:6mm"><b>&#9888; Free website</b>Everything is forgotten after about 15 minutes with no visitors. Finish in one sitting.</div>
+    <div class="tip" style="margin-top:6mm"><b>&#10004; Saved automatically</b>Every session is saved, shown to the trainer and counted on the leaderboard. Admins: download a backup from Settings &amp; Backup now and then.</div>
   </div>
 </section>
 
