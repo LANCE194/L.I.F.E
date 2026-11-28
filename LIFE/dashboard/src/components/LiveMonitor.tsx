@@ -45,12 +45,15 @@ export function LiveMonitor({ bpmMin = 100, bpmMax = 120 }: { bpmMin?: number; b
   return (
     <div className="card live-monitor">
       <div className="card-header">
-        <h2 className="card-title"><PulseIcon /> Live Session</h2>
-        <span className={`badge ${active ? 'badge-success' : stale || unreachable ? 'badge-warning' : 'badge-neutral'}`}>{status}</span>
+        <div>
+          <h2 className="card-title"><PulseIcon /> Live session monitor {active && <span className="live-dot" aria-hidden="true" />}</h2>
+          <div className="card-subtitle">Trainer sessions and trainee practice, updated every few seconds</div>
+        </div>
+        <span className={`badge badge-dot ${active ? 'badge-success' : stale || unreachable ? 'badge-warning' : 'badge-neutral'}`}>{active ? 'Live' : status}</span>
       </div>
       <div className="card-body">
         {!active && live?.status !== 'Completed' ? (
-          <p className="text-muted">No session is running. Start one from the Live Session page; its progress appears here automatically.</p>
+          <p className="text-muted">No session is running. When a trainer starts a Live Session, or a trainee starts Practice on their own account, its progress appears here automatically.</p>
         ) : (
           <>
             <p className="live-monitor-trainee"><strong>{live?.trainee_name ?? 'Trainee'}</strong>{live?.status === 'Completed' && ' — last session completed'}</p>

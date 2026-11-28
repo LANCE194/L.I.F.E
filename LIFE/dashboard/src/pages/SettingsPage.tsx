@@ -11,7 +11,8 @@ import type { ChangeEvent, FormEvent } from 'react';
 import { api, type Settings, type SettingsUpdateRequest, type User } from '../api/client';
 import { useAuth } from '../hooks/useAuth';
 import { Banner, EmptyState, Modal, PageHeader, Spinner } from '../components/ui';
-import { DownloadIcon, EditIcon, PlusIcon, TrashIcon, UsersIcon } from '../components/icons';
+import { BackupPanel } from '../components/BackupPanel';
+import { EditIcon, PlusIcon, TrashIcon, UsersIcon } from '../components/icons';
 import { PASSWORD_MIN_LENGTH } from '../components/ChangePasswordForm';
 import { errorMessage, formatDate } from '../utils/format';
 import { ALL_FIELDS, SETTING_GROUPS, parseInput, rangeError, type FieldSpec, type SettingKey } from '../utils/settingsSchema';
@@ -30,7 +31,6 @@ export function SettingsPage() {
   const [inputs, setInputs] = useState<Partial<Record<SettingKey, string>>>({});
   const [loadingSettings, setLoadingSettings] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [backingUp, setBackingUp] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
@@ -120,19 +120,8 @@ export function SettingsPage() {
 
   const applyDefault = (field: FieldSpec) => setInputs(previous => ({ ...previous, [field.key]: String(field.defaultValue) }));
 
-  const handleBackup = async () => {
-    setBackingUp(true);
-    setError('');
-    setSuccess('');
-    try {
-      const res = await api.backupDatabase();
-      setSuccess(`Database backed up to ${res.path}`);
-    } catch (err) {
-      setError(errorMessage(err, 'Backup failed'));
-    } finally {
-      setBackingUp(false);
-    }
-  };
+  const showError = useCallback((message: string) => { setSuccess(''); setError(message); }, []);
+  const showSuccess = useCallback((message: string) => { setError(''); setSuccess(message); }, []);
 
   // --- Users ---
 
@@ -212,14 +201,12 @@ export function SettingsPage() {
       <Banner kind="success" onDismiss={() => setSuccess('')}>{success}</Banner>
 
       <PageHeader
-        title="Settings"
-        subtitle="Calibration, backups and user accounts"
-        actions={
-          <button type="button" className="btn btn-secondary" onClick={() => void handleBackup()} disabled={backingUp}>
-            {backingUp ? <><Spinner /> Backing up...</> : <><DownloadIcon /> Back up database</>}
-          </button>
-        }
+        eyebrow="Administration"
+        title="Settings & Backup"
+        subtitle="Data backups, detection calibration and staff accounts"
       />
+
+      <BackupPanel onError={showError} onSuccess={showSuccess} />
 
       {loadingSettings ? (
         <div className="page-loading"><Spinner size={24} /> Loading settings...</div>

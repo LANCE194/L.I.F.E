@@ -16,7 +16,7 @@ import { CameraView, type CameraStatus } from '../components/CameraView';
 import { FeedbackOverlay, type SessionPhase } from '../components/FeedbackOverlay';
 import { SessionSummary, type SummaryData } from '../components/SessionSummary';
 import { Banner, Modal } from '../components/ui';
-import { CheckCircleIcon, CloseIcon, HistoryIcon, PlayIcon, RefreshIcon, StopIcon, VolumeIcon, VolumeOffIcon } from '../components/icons';
+import { CheckCircleIcon, CloseIcon, HistoryIcon, PlayIcon, RefreshIcon, StopIcon, TrophyIcon, VolumeIcon, VolumeOffIcon } from '../components/icons';
 import { SessionPipeline, type PipelineSnapshot } from '../vision/pipeline';
 import { Metronome } from '../utils/metronome';
 import { errorMessage, formatDuration } from '../utils/format';
@@ -589,7 +589,7 @@ export function LiveSessionPage() {
           <div className="trainee-selector self-practice-label">
             <span className="form-label">Self-practice</span>
             <strong>{selectedTrainee?.full_name ?? 'Loading...'}</strong>
-            <small>Your results are saved to My Progress and your trainer can see them.</small>
+            <small>Each session is recorded to My Progress, shown to your trainer and counted on the leaderboard.</small>
           </div>
         ) : (
         <div className="trainee-selector">
@@ -804,6 +804,9 @@ export function LiveSessionPage() {
           onClose={() => setShowSummary(false)}
           actions={
             <>
+              <button type="button" className="btn btn-secondary" onClick={() => navigate('/leaderboard')}>
+                <TrophyIcon /> Leaderboard
+              </button>
               <button type="button" className="btn btn-secondary" onClick={() => navigate(isTrainee ? '/my-progress' : '/history')}>
                 <HistoryIcon /> {isTrainee ? 'My Progress' : 'View History'}
               </button>
@@ -814,7 +817,13 @@ export function LiveSessionPage() {
           }
         >
           {saveState?.kind === 'saving' && <Banner kind="info">Saving session...</Banner>}
-          {saveState?.kind === 'saved' && <Banner kind="success">Session saved.</Banner>}
+          {saveState?.kind === 'saved' && (
+            <Banner kind="success">
+              {isTrainee
+                ? 'Session saved. It is on My Progress, visible to your trainer and counted on the leaderboard.'
+                : 'Session saved to History and counted on the leaderboard.'}
+            </Banner>
+          )}
           {saveState?.kind === 'queued' && <Banner kind="warning">{saveState.message}</Banner>}
           {saveState?.kind === 'rejected' && <Banner kind="error">{saveState.message}</Banner>}
           {saveState?.kind === 'invalid' && <Banner kind="warning">{saveState.message}</Banner>}

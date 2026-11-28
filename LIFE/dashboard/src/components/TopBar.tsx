@@ -13,6 +13,8 @@ import { ChevronDownIcon, CloudOffIcon, KeyIcon, LogoutIcon, MenuIcon } from './
 import { Banner, Modal } from './ui';
 import './TopBar.css';
 
+const TODAY = new Intl.DateTimeFormat('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+
 interface TopBarProps {
   title: string;
   onMenuClick?: () => void;
@@ -65,10 +67,16 @@ export function TopBar({ title, onMenuClick, menuOpen = false }: TopBarProps) {
         >
           <MenuIcon size={24} />
         </button>
-        <h1 className="topbar-title">{title}</h1>
+        <div className="topbar-heading">
+          <h1 className="topbar-title">{title}</h1>
+          <div className="topbar-date">{TODAY.format(new Date())}</div>
+        </div>
       </div>
 
       <div className="topbar-actions">
+        <span className="status-chip" title="Pose detection runs in this browser; camera video is never uploaded or stored">
+          On-device AI
+        </span>
         {unsynced > 0 && (
           <button
             type="button"

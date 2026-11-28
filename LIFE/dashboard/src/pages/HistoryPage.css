@@ -1,44 +1,5 @@
 /* History Page Styles */
 
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 24px;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-
-.page-title {
-  font-size: 24px;
-  font-weight: 700;
-  color: var(--primary);
-  margin: 0;
-}
-
-.page-subtitle {
-  color: var(--text-muted);
-  margin: 4px 0 0;
-}
-
-.filters-bar {
-  display: flex;
-  gap: 16px;
-  margin-bottom: 24px;
-  flex-wrap: wrap;
-}
-
-.filter-group {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  min-width: 150px;
-}
-
-.filter-group .form-label {
-  margin: 0;
-}
-
 .pagination {
   display: flex;
   align-items: center;

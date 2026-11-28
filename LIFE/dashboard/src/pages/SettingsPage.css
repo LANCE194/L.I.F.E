@@ -1,31 +1,5 @@
 /* Settings Page Styles */
 
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 24px;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-
-.page-title {
-  font-size: 24px;
-  font-weight: 700;
-  color: var(--primary);
-  margin: 0;
-}
-
-.page-subtitle {
-  color: var(--text-muted);
-  margin: 4px 0 0;
-}
-
-.header-actions {
-  display: flex;
-  gap: 12px;
-}
-
 .access-denied {
   display: flex;
   flex-direction: column;
@@ -62,22 +36,22 @@
 
 .settings-card {
   background: var(--surface);
-  border-radius: var(--radius);
+  border-radius: var(--radius-lg);
   box-shadow: var(--shadow);
   border: 1px solid var(--border);
   overflow: hidden;
 }
 
 .settings-card-header {
-  padding: 20px 24px;
+  padding: 18px 22px;
   border-bottom: 1px solid var(--border);
-  background: var(--background);
+  background: var(--surface-muted);
 }
 
 .settings-card-header h3 {
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--primary);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
   margin: 0 0 4px;
 }
 
@@ -145,3 +119,54 @@
   border-radius: var(--radius);
   box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.06);
 }
+
+/* Data & backup panel */
+.backup-panel { margin-bottom: 28px; }
+
+.backup-actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.backup-action {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  padding: 16px 18px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface-muted);
+}
+
+.backup-action-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--primary-50);
+  color: var(--primary);
+  flex-shrink: 0;
+}
+
+.backup-action-icon.gold { background: var(--gold-50); color: var(--gold-dark); }
+
+.backup-action-text { flex: 1; min-width: 200px; display: flex; flex-direction: column; gap: 2px; }
+.backup-action-text strong { font-size: 14px; }
+.backup-action-text span { font-size: 12.5px; color: var(--text-muted); }
+
+.backup-panel code {
+  font-family: ui-monospace, 'Cascadia Code', Consolas, monospace;
+  font-size: 12px;
+  background: #eef1f6;
+  padding: 1px 6px;
+  border-radius: 6px;
+}
+
+.backup-list-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; flex-wrap: wrap; }
+.backup-list-head h3 { font-size: 14px; font-weight: 700; }
+.backup-table { border: 1px solid var(--border); border-radius: var(--radius); }

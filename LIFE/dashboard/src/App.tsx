@@ -133,13 +133,14 @@ const App = () => (
           <Route path="/guide" element={<CprGuidePage />} />
           {/* Staff run sessions for any trainee; trainee accounts practise as themselves. */}
           <Route path="/live" element={<LiveSessionPage />} />
+          {/* Everyone sees the ranking; trainee accounts see their own row marked. */}
+          <Route path="/leaderboard" element={<LeaderboardPage />} />
           <Route element={<TraineeRoute />}>
             <Route path="/my-progress" element={<MyProgressPage />} />
           </Route>
           <Route element={<StaffRoute />}>
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/trainees" element={<TraineesPage />} />
-            <Route path="/leaderboard" element={<LeaderboardPage />} />
             <Route path="/history" element={<HistoryPage />} />
             <Route path="/reports" element={<ReportsPage />} />
             <Route element={<AdminRoute />}>

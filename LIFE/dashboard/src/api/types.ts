@@ -77,6 +77,8 @@ export interface MyProgressResponse {
   progress: TraineeProgressPoint[];
   sessions: Session[];
   pass_mark_pct: number;
+  /** Place on the overall leaderboard (all sessions), or null before the first session. */
+  ranking: { rank: number; total_ranked: number; avg_accuracy: number } | null;
 }
 
 export interface TraineeUpdateRequest {
@@ -234,21 +236,41 @@ export interface LiveStatusUpdateRequest {
 }
 
 // Leaderboard
+/** Which sessions rankings and statistics count: every session, trainer-supervised, or self-practice. */
+export type SessionScope = 'all' | 'supervised' | 'self';
+
 export interface LeaderboardEntry {
   trainee_id: number;
   full_name: string;
   organization: string | null;
   total_sessions: number;
+  self_practice_sessions: number;
+  passed_sessions: number;
+  pass_rate: number;
+  total_compressions: number;
   avg_accuracy: number;
   best_accuracy: number;
   avg_bpm: number;
   last_session: string;
   rank: number;
+  /** True on the signed-in trainee's own row. */
+  is_me?: boolean;
 }
 
 export interface LeaderboardResponse {
   leaderboard: LeaderboardEntry[];
   top3: LeaderboardEntry[];
+  total_ranked: number;
+  scope: SessionScope;
+  /** Trainee accounts: their own entry, even when outside the list shown. */
+  me: LeaderboardEntry | null;
+}
+
+export interface ServerBackup {
+  name: string;
+  bytes: number;
+  modified_at: string;
+  kind: 'automatic' | 'manual' | 'safety copy';
 }
 
 export interface OrganizationStats {
@@ -264,6 +286,10 @@ export interface DashboardStats {
   sessions_today: number;
   avg_accuracy: number;
   avg_bpm: number;
+  total_sessions: number;
+  self_practice_sessions: number;
+  total_compressions: number;
+  pass_rate: number;
 }
 
 export interface TopTrainee {
@@ -273,6 +299,8 @@ export interface TopTrainee {
   avg_accuracy: number;
   best_accuracy: number;
   session_count: number;
+  self_practice_sessions?: number;
+  rank?: number;
 }
 
 export interface AccuracyTrendPoint {
@@ -282,6 +310,7 @@ export interface AccuracyTrendPoint {
 }
 
 export interface DashboardResponse {
+  scope: SessionScope;
   stats: DashboardStats;
   top5: TopTrainee[];
   recent_sessions: Session[];

@@ -1,26 +1,5 @@
 /* Reports Page Styles */
 
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 24px;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-
-.page-title {
-  font-size: 24px;
-  font-weight: 700;
-  color: var(--primary);
-  margin: 0;
-}
-
-.page-subtitle {
-  color: var(--text-muted);
-  margin: 4px 0 0;
-}
-
 .export-section {
   margin-bottom: 24px;
   padding-bottom: 24px;
@@ -51,17 +30,6 @@
   gap: 16px;
   margin-bottom: 16px;
   flex-wrap: wrap;
-}
-
-.filter-group {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  min-width: 180px;
-}
-
-.filter-group .form-label {
-  margin: 0;
 }
 
 .export-divider {

@@ -33,7 +33,9 @@ import type {
   TopTrainee,
   AccuracyTrendPoint,
   TraineeCredentials,
-  MyProgressResponse
+  MyProgressResponse,
+  SessionScope,
+  ServerBackup
 } from './types';
 
 export type {
@@ -66,7 +68,9 @@ export type {
   TopTrainee,
   AccuracyTrendPoint,
   TraineeCredentials,
-  MyProgressResponse
+  MyProgressResponse,
+  SessionScope,
+  ServerBackup
 };
 
 const API_BASE = '/api';
@@ -274,9 +278,21 @@ class ApiClient {
     return this.request(`/trainees/${id}/account/reset`, { method: 'POST' });
   }
 
-  /** Trainee accounts: own profile, statistics and sessions. */
+  /** Trainee accounts: own profile, statistics, ranking and sessions. */
   async getMyProgress(): Promise<MyProgressResponse> {
     return this.request('/me/progress');
+  }
+
+  /** Trainee accounts: own data as a JSON backup (with every compression), CSV or PDF report. */
+  async exportMyData(format: 'json' | 'csv' | 'pdf'): Promise<Blob> {
+    const query = format === 'pdf' ? exportQuery('pdf') : new URLSearchParams();
+    query.set('format', format);
+    return this.download(`/me/export?${query.toString()}`);
+  }
+
+  /** Trainee accounts: certificate (PDF) for one of their own sessions. */
+  async getMyCertificatePdf(sessionId: number): Promise<Blob> {
+    return this.download(`/me/certificate/${sessionId}?${exportQuery('pdf').toString()}`);
   }
 
   async deleteTrainee(id: number): Promise<{ message: string }> {
@@ -350,8 +366,10 @@ class ApiClient {
     end_date?: string;
     organization?: string;
     hide_names?: boolean;
+    scope?: SessionScope;
   }): Promise<LeaderboardResponse> {
     const query = new URLSearchParams();
+    if (params?.scope) query.set('scope', params.scope);
     if (params?.limit) query.set('limit', String(params.limit));
     if (params?.start_date) query.set('start_date', params.start_date);
     if (params?.end_date) query.set('end_date', params.end_date);
@@ -361,14 +379,14 @@ class ApiClient {
     return this.request(`/leaderboard?${query.toString()}`);
   }
 
-  async getLeaderboardOrganizations(): Promise<{ organizations: OrganizationStats[] }> {
-    return this.request('/leaderboard/organizations');
+  async getLeaderboardOrganizations(scope: SessionScope = 'all'): Promise<{ organizations: OrganizationStats[] }> {
+    return this.request(`/leaderboard/organizations?scope=${scope}`);
   }
 
   // Stats
-  async getDashboardStats(): Promise<DashboardResponse> {
+  async getDashboardStats(scope: SessionScope = 'all'): Promise<DashboardResponse> {
     // Lets the server bucket "today" and the trend by this computer's local day.
-    return this.request(`/stats/dashboard?tz_offset_min=${new Date().getTimezoneOffset()}`);
+    return this.request(`/stats/dashboard?tz_offset_min=${new Date().getTimezoneOffset()}&scope=${scope}`);
   }
 
   async getTraineeStats(id: number): Promise<TraineeStatsResponse> {
@@ -424,6 +442,25 @@ class ApiClient {
 
   async backupDatabase(): Promise<{ message: string; path: string }> {
     return this.request('/settings/backup', { method: 'POST' });
+  }
+
+  /** Admin: a fresh copy of the whole database (.db), made now. */
+  async downloadBackup(): Promise<Blob> {
+    return this.download('/settings/backup/download');
+  }
+
+  /** Admin: backups kept on the server, newest first. */
+  async getBackups(): Promise<{ backups: ServerBackup[]; directory: string }> {
+    return this.request('/settings/backups');
+  }
+
+  async downloadServerBackup(name: string): Promise<Blob> {
+    return this.download(`/settings/backups/${encodeURIComponent(name)}`);
+  }
+
+  /** Admin: every record as one readable JSON file (no password hashes). */
+  async exportAllData(): Promise<Blob> {
+    return this.download('/export/all');
   }
 
   // Users (Admin only)

@@ -61,3 +61,9 @@ export const VolumeIcon = (p: IconProps) => <Icon {...p}><polygon points="11 5 6
 export const VolumeOffIcon = (p: IconProps) => <Icon {...p}><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" /><line x1="23" y1="9" x2="17" y2="15" /><line x1="17" y1="9" x2="23" y2="15" /></Icon>;
 export const UserIcon = (p: IconProps) => <Icon {...p}><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></Icon>;
 export const HeartPulseIcon = (p: IconProps) => <Icon {...p}><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1.1L12 21l7.8-7.5 1-1.1a5.5 5.5 0 0 0 0-7.8z" /><polyline points="3.5 12 8 12 10 9 13 15 15 12 20.5 12" /></Icon>;
+export const TrophyIcon = (p: IconProps) => <Icon {...p}><path d="M8 21h8" /><path d="M12 17v4" /><path d="M7 4h10v5a5 5 0 0 1-10 0V4z" /><path d="M17 5h3a1 1 0 0 1 1 1v1a4 4 0 0 1-4 4" /><path d="M7 5H4a1 1 0 0 0-1 1v1a4 4 0 0 0 4 4" /></Icon>;
+export const DatabaseIcon = (p: IconProps) => <Icon {...p}><ellipse cx="12" cy="5" rx="9" ry="3" /><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3" /><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5" /></Icon>;
+export const SparkleIcon = (p: IconProps) => <Icon {...p}><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z" /><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z" /></Icon>;
+export const MedalIcon = (p: IconProps) => <Icon {...p}><circle cx="12" cy="15" r="6" /><path d="M8.2 10.4 5 3h4l3 6" /><path d="M15.8 10.4 19 3h-4l-3 6" /><path d="m12 12.5.9 1.8 2 .3-1.4 1.4.3 2-1.8-.9-1.8.9.3-2-1.4-1.4 2-.3z" /></Icon>;
+export const ArrowRightIcon = (p: IconProps) => <Icon {...p}><line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" /></Icon>;
+export const ShieldIcon = (p: IconProps) => <Icon {...p}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /><polyline points="9 12 11 14 15 10" /></Icon>;
